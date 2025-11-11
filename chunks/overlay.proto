@@ -1,0 +1,17 @@
+syntax = "proto3";
+package overlay;
+
+service OverlayNode {
+  // Accept a generic request, possibly forward, reply with aggregate.
+  rpc Forward(Request) returns (Response);
+}
+
+message Request {
+  string payload = 1;
+  repeated string hops = 2; // Path this request has taken (for loop/back prevention)
+}
+
+message Response {
+  string result = 1;
+  repeated string hops = 2; // Nodes that contributed
+}
