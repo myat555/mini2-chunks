@@ -10,13 +10,13 @@ if ! command -v python3 &> /dev/null; then
 fi
 
 # Check if config file exists
-if [ ! -f "two_hosts_config.json" ]; then
+if [ ! -f "../two_hosts_config.json" ]; then
     echo "Error: two_hosts_config.json not found."
     exit 1
 fi
 
 # Check if proto files are generated
-if [ ! -f "overlay_pb2.py" ]; then
+if [ ! -f "../overlay_pb2.py" ]; then
     echo "Generating proto files..."
     python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
     if [ $? -ne 0 ]; then

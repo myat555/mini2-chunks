@@ -11,14 +11,14 @@ if errorlevel 1 (
 )
 
 :: Check if config file exists
-if not exist "two_hosts_config.json" (
+if not exist "../two_hosts_config.json" (
     echo Error: two_hosts_config.json not found.
     pause
     exit /b 1
 )
 
 :: Check if proto files are generated
-if not exist "overlay_pb2.py" (
+if not exist "../overlay_pb2.py" (
     echo Generating proto files...
     python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
     if errorlevel 1 (
