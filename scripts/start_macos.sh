@@ -27,8 +27,9 @@ if [ ! -f "../overlay_pb2.py" ]; then
     fi
 fi
 
-# Create logs directory
+# Create logs and pids directories
 mkdir -p logs
+mkdir -p pids
 
 echo "Starting Process C (Worker) on port 50053..."
 python3 ../node.py ../two_hosts_config.json C > logs/process_c.log 2>&1 &
