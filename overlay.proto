@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+service OverlayNode {
+  rpc Forward(Request) returns (Response) {}
+  rpc GetMetrics(MetricsRequest) returns (MetricsResponse) {}
+}
+
+message Request {
+  string payload = 1;
+  repeated string hops = 2;
+}
+
+message Response {
+  string result = 1;
+  repeated string hops = 2;
+}
+
+message MetricsRequest {}
+
+message MetricsResponse {
+  string process_id = 1;
+  string role = 2;
+  string team = 3;
+  int32 active_requests = 4;
+  int32 max_capacity = 5;
+  bool is_healthy = 6;
+  int32 queue_size = 7;
+  float avg_processing_time_ms = 8;
+}
