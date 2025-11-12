@@ -4,6 +4,9 @@ package overlay;
 service OverlayNode {
   // Accept a generic request, possibly forward, reply with aggregate.
   rpc Forward(Request) returns (Response);
+  
+  // Metrics RPC for monitoring
+  rpc GetMetrics(MetricsRequest) returns (MetricsResponse);
 }
 
 message Request {
@@ -14,4 +17,19 @@ message Request {
 message Response {
   string result = 1;
   repeated string hops = 2; // Nodes that contributed
+}
+
+message MetricsRequest {
+  // Empty - just request metrics
+}
+
+message MetricsResponse {
+  string process_id = 1;
+  string role = 2;
+  string team = 3;
+  int32 active_requests = 4;
+  int32 max_capacity = 5;
+  bool is_healthy = 6;
+  int32 queue_size = 7;
+  double avg_processing_time_ms = 8;
 }
