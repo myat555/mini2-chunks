@@ -1,0 +1,8 @@
+{
+  "id": "node-1",
+  "listen_port": 50051,
+  "neighbors": [
+    { "host": "localhost", "port": 50052 }
+  ]
+}
+

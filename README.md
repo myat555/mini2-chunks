@@ -2,7 +2,7 @@
 
 
 ## Run a virtual environment
-`python -m venv .venv`
+`python3 -m venv .venv`  (On macOS, use `python3` instead of `python`)
 
 ## Activate the virtual environment
 - On Windows: `.venv\Scripts\activate`

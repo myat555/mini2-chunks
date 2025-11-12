@@ -3,8 +3,8 @@ import test_pb2
 import test_pb2_grpc
 
 def run():
-    # Use the server's LAN IP address; replace below as needed
-    server_ip = "192.168.1.2"  # Replace with Windows PC IP for test
+    # Use localhost for single-machine testing, or replace with server's IP for network testing
+    server_ip = "localhost"  # Use "localhost" or "127.0.0.1" for same machine, or actual IP for network
     channel = grpc.insecure_channel(f"{server_ip}:50051")
     stub = test_pb2_grpc.PingServiceStub(channel)
 
