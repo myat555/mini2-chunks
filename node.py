@@ -168,8 +168,8 @@ def serve(config_path, process_id):
     with open(config_path) as f:
         config = json.load(f)
     process_config = config['processes'][process_id]
-    server_address = f"[::]:{process_config['port']}"
-    
+    server_address = f"0.0.0.0:{process_config['port']}"
+
     server.add_insecure_port(server_address)
     server.start()
     

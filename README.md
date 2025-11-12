@@ -6,24 +6,24 @@ A distributed overlay network system built with gRPC that implements a leader-qu
 
 ### Host Configuration
 
-- **Windows Host**: `192.168.1.1`
-- **macOS Host**: `192.168.1.2`
+- **Windows Host**: `192.168.1.2`
+- **macOS Host**: `192.168.1.1`
 
 ### Process Roles and Distribution
 
 | Process | Role | Team | Host | Port |
 |---------|------|------|------|------|
-| A | Leader | Green | Windows (192.168.1.1) | 50051 |
-| B | Team Leader | Green | Windows (192.168.1.1) | 50052 |
-| C | Worker | Green | macOS (192.168.1.2) | 50053 |
-| D | Worker | Pink | Windows (192.168.1.1) | 50054 |
-| E | Team Leader | Pink | macOS (192.168.1.2) | 50055 |
-| F | Worker | Pink | macOS (192.168.1.2) | 50056 |
+| A | Leader | Green | Windows (192.168.1.2) | 50051 |
+| B | Team Leader | Green | Windows (192.168.1.2) | 50052 |
+| C | Worker | Green | macOS (192.168.1.1) | 50053 |
+| D | Worker | Pink | Windows (192.168.1.2) | 50054 |
+| E | Team Leader | Pink | macOS (192.168.1.1) | 50055 |
+| F | Worker | Pink | macOS (192.168.1.1) | 50056 |
 
 ### Network Topology
 
 ```
-Windows Host (192.168.1.1)           macOS Host (192.168.1.2)
+Windows Host (192.168.1.2)           macOS Host (192.168.1.1)
 ┌─────────────────┐                  ┌─────────────────┐
 │   Process A     │◄── Leader ────►│   Process E     │
 │   (Leader)      │                  │ (Team Leader)   │
@@ -87,24 +87,26 @@ chmod +x build_proto.sh
 
 ### Start Windows Processes
 
-Run the following command on the Windows host (192.168.1.1):
+Run the following command on the Windows host (192.168.1.2):
 
 ```bash
-scripts\start_windows.bat
+cd scripts
+start_windows.bat
 ```
 
 This starts:
 - Process A (Leader) on port 50051
-- Process B (Team Leader) on port 50052  
+- Process B (Team Leader) on port 50052
 - Process D (Worker) on port 50054
 
 ### Start macOS Processes
 
-Run the following command on the macOS host (192.168.1.2):
+Run the following command on the macOS host (192.168.1.1):
 
 ```bash
-chmod +x scripts/start_macos.sh
-./scripts/start_macos.sh
+cd scripts
+chmod +x start_macos.sh
+./start_macos.sh
 ```
 
 This starts:
@@ -119,7 +121,7 @@ This starts:
 Test a single request through the leader:
 
 ```bash
-python client.py 192.168.1.1 50051
+python client.py 192.168.1.2 50051
 ```
 
 ### Check Queue Status
@@ -127,7 +129,7 @@ python client.py 192.168.1.1 50051
 Monitor the leader's queue status:
 
 ```bash
-python client.py 192.168.1.1 50051 check
+python client.py 192.168.1.2 50051 check
 ```
 
 ### Comprehensive System Test
@@ -135,7 +137,7 @@ python client.py 192.168.1.1 50051 check
 Run the full test suite:
 
 ```bash
-python test_system.py 192.168.1.1 50051
+python test_system.py 192.168.1.2 50051
 ```
 
 This performs:
@@ -179,7 +181,7 @@ The system configuration is defined in [`two_hosts_config.json`](two_hosts_confi
       "id": "A",
       "role": "leader",
       "team": "green",
-      "host": "192.168.1.1",
+      "host": "192.168.1.2",
       "port": 50051,
       "neighbors": ["B", "E"]
     },
@@ -203,16 +205,26 @@ The gRPC service is defined in [`overlay.proto`](overlay.proto):
    - Verify Python and dependencies are installed
    - Check if ports are available
    - Ensure proto files are generated
+   - Run startup scripts from the `scripts/` directory
 
 2. **Network connectivity issues**
    - Verify hosts can ping each other
    - Check firewall settings on both hosts
-   - Ensure IP addresses are correct in configuration
+   - Ensure IP addresses match configuration (Windows: 192.168.1.2, macOS: 192.168.1.1)
+   - Verify server binds to 0.0.0.0 for proper network accessibility
 
 3. **gRPC connection errors**
-   - Verify all processes are running
+   - Verify all processes are running on correct hosts
    - Check port numbers match configuration
    - Ensure network connectivity between hosts
+   - Confirm configuration file matches startup script process assignments
+
+### Recent Fixes
+
+**Configuration and Connectivity Updates:**
+- Fixed host IP assignments to match startup scripts (Windows: 192.168.1.2, macOS: 192.168.1.1)
+- Changed server binding from [::] to 0.0.0.0 in node.py for proper IPv4 network connectivity
+- Corrected file path references in startup scripts to use relative paths from scripts/ directory
 
 ### Log Files
 

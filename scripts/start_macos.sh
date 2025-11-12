@@ -18,7 +18,9 @@ fi
 # Check if proto files are generated
 if [ ! -f "../overlay_pb2.py" ]; then
     echo "Generating proto files..."
+    cd ..
     python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
+    cd scripts
     if [ $? -ne 0 ]; then
         echo "Error: Failed to generate proto files."
         exit 1
@@ -29,19 +31,19 @@ fi
 mkdir -p logs
 
 echo "Starting Process C (Worker) on port 50053..."
-python3 node.py two_hosts_config.json C > logs/process_c.log 2>&1 &
+python3 ../node.py ../two_hosts_config.json C > logs/process_c.log 2>&1 &
 C_PID=$!
 echo $C_PID > pids/process_c.pid
 sleep 2
 
 echo "Starting Process E (Team Leader) on port 50055..."
-python3 node.py two_hosts_config.json E > logs/process_e.log 2>&1 &
+python3 ../node.py ../two_hosts_config.json E > logs/process_e.log 2>&1 &
 E_PID=$!
 echo $E_PID > pids/process_e.pid
 sleep 2
 
 echo "Starting Process F (Worker) on port 50056..."
-python3 node.py two_hosts_config.json F > logs/process_f.log 2>&1 &
+python3 ../node.py ../two_hosts_config.json F > logs/process_f.log 2>&1 &
 F_PID=$!
 echo $F_PID > pids/process_f.pid
 sleep 2
