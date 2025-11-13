@@ -70,10 +70,17 @@ def main():
     
     # Import and run benchmark
     from benchmark import Benchmark
-    
-    # Use logs directory for Windows
     import os
-    output_dir = "logs" if os.name == 'nt' else "."
+    import platform
+    
+    # Use platform-specific logs directory
+    if os.name == 'nt':  # Windows
+        output_dir = "logs/windows"
+    elif platform.system() == "Darwin":  # macOS
+        output_dir = "logs/macos"
+    else:  # Linux or other
+        output_dir = "logs/linux"
+    
     os.makedirs(output_dir, exist_ok=True)
     
     benchmark = Benchmark(args.host, args.port)

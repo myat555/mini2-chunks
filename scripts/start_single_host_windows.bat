@@ -28,28 +28,32 @@ if not exist "..\overlay_pb2.py" (
     )
 )
 
+:: Create logs directory structure
+if not exist "..\logs" mkdir ..\logs
+if not exist "..\logs\windows" mkdir ..\logs\windows
+
 echo Starting Process A (Leader)...
-start "Node A" python -u ..\node.py %CONFIG% A
+start "Node A" cmd /c "cd /d .. && python -u node.py %CONFIG% A > logs\windows\node_a.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process B (Team Leader)...
-start "Node B" python -u ..\node.py %CONFIG% B
+start "Node B" cmd /c "cd /d .. && python -u node.py %CONFIG% B > logs\windows\node_b.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process C (Worker)...
-start "Node C" python -u ..\node.py %CONFIG% C
+start "Node C" cmd /c "cd /d .. && python -u node.py %CONFIG% C > logs\windows\node_c.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process D (Worker)...
-start "Node D" python -u ..\node.py %CONFIG% D
+start "Node D" cmd /c "cd /d .. && python -u node.py %CONFIG% D > logs\windows\node_d.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process E (Team Leader)...
-start "Node E" python -u ..\node.py %CONFIG% E
+start "Node E" cmd /c "cd /d .. && python -u node.py %CONFIG% E > logs\windows\node_e.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process F (Worker)...
-start "Node F" python -u ..\node.py %CONFIG% F
+start "Node F" cmd /c "cd /d .. && python -u node.py %CONFIG% F > logs\windows\node_f.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo.

@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CONFIG_FILE="${ROOT_DIR}/one_host_config.json"
-LOG_DIR="${SCRIPT_DIR}/logs"
+LOG_DIR="${ROOT_DIR}/logs/macos"
 PID_DIR="${SCRIPT_DIR}/pids"
 
 REQUESTS="${1:-200}"
@@ -26,7 +26,7 @@ mkdir -p "${LOG_DIR}" "${PID_DIR}"
 start_process() {
     local proc_id="$1"
     local role="$2"
-    local log_file="${LOG_DIR}/process_${proc_id}.log"
+    local log_file="${LOG_DIR}/node_$(echo ${proc_id} | tr '[:upper:]' '[:lower:]').log"
     echo "Starting Process ${proc_id} (${role})..."
     python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1 &
     local pid=$!
@@ -71,7 +71,7 @@ echo
 echo "Running single-host benchmark..."
 echo
 
-python3 benchmark.py 127.0.0.1 60051 "${REQUESTS}" "${CONCURRENCY}"
+python3 benchmark.py 127.0.0.1 60051 "${REQUESTS}" "${CONCURRENCY}" "${LOG_DIR}"
 
 echo
 echo "Stopping servers..."
@@ -86,5 +86,7 @@ if [[ -d "${PID_DIR}" ]]; then
     done < <(find "${PID_DIR}" -name 'process_*.pid' -print 2>/dev/null || true)
 fi
 
-echo "Benchmark complete. Results saved to benchmark_results.json"
+echo "Benchmark complete."
+echo "Results saved to ${LOG_DIR}/benchmark_results.json"
+echo "Process logs saved to ${LOG_DIR}/node_*.log"
 

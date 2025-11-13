@@ -29,12 +29,12 @@ if [[ ! -f "${ROOT_DIR}/overlay_pb2.py" ]]; then
 fi
 
 mkdir -p "${LOG_DIR}" "${PID_DIR}"
-mkdir -p "${ROOT_DIR}/logs"
+mkdir -p "${ROOT_DIR}/logs/macos"
 
 start_process() {
     local proc_id="$1"
     local role="$2"
-    local log_file="${ROOT_DIR}/logs/process_${proc_id}.log"
+    local log_file="${ROOT_DIR}/logs/macos/node_$(echo ${proc_id} | tr '[:upper:]' '[:lower:]').log"
     echo "Starting Process ${proc_id} (${role})..."
     python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1 &
     local pid=$!
