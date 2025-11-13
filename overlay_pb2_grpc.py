@@ -5,7 +5,7 @@ import warnings
 
 import overlay_pb2 as overlay__pb2
 
-GRPC_GENERATED_VERSION = '1.76.0'
+GRPC_GENERATED_VERSION = '1.70.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in overlay_pb2_grpc.py depends on'
+        + f' but the generated code in overlay_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -34,22 +34,38 @@ class OverlayNodeStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Forward = channel.unary_unary(
-                '/OverlayNode/Forward',
-                request_serializer=overlay__pb2.Request.SerializeToString,
-                response_deserializer=overlay__pb2.Response.FromString,
+        self.Query = channel.unary_unary(
+                '/OverlayNode/Query',
+                request_serializer=overlay__pb2.QueryRequest.SerializeToString,
+                response_deserializer=overlay__pb2.QueryResponse.FromString,
+                _registered_method=True)
+        self.GetChunk = channel.unary_unary(
+                '/OverlayNode/GetChunk',
+                request_serializer=overlay__pb2.ChunkRequest.SerializeToString,
+                response_deserializer=overlay__pb2.ChunkResponse.FromString,
                 _registered_method=True)
         self.GetMetrics = channel.unary_unary(
                 '/OverlayNode/GetMetrics',
                 request_serializer=overlay__pb2.MetricsRequest.SerializeToString,
                 response_deserializer=overlay__pb2.MetricsResponse.FromString,
                 _registered_method=True)
+        self.Shutdown = channel.unary_unary(
+                '/OverlayNode/Shutdown',
+                request_serializer=overlay__pb2.ShutdownRequest.SerializeToString,
+                response_deserializer=overlay__pb2.ShutdownResponse.FromString,
+                _registered_method=True)
 
 
 class OverlayNodeServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Forward(self, request, context):
+    def Query(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetChunk(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -61,18 +77,34 @@ class OverlayNodeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Shutdown(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_OverlayNodeServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Forward': grpc.unary_unary_rpc_method_handler(
-                    servicer.Forward,
-                    request_deserializer=overlay__pb2.Request.FromString,
-                    response_serializer=overlay__pb2.Response.SerializeToString,
+            'Query': grpc.unary_unary_rpc_method_handler(
+                    servicer.Query,
+                    request_deserializer=overlay__pb2.QueryRequest.FromString,
+                    response_serializer=overlay__pb2.QueryResponse.SerializeToString,
+            ),
+            'GetChunk': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetChunk,
+                    request_deserializer=overlay__pb2.ChunkRequest.FromString,
+                    response_serializer=overlay__pb2.ChunkResponse.SerializeToString,
             ),
             'GetMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.GetMetrics,
                     request_deserializer=overlay__pb2.MetricsRequest.FromString,
                     response_serializer=overlay__pb2.MetricsResponse.SerializeToString,
+            ),
+            'Shutdown': grpc.unary_unary_rpc_method_handler(
+                    servicer.Shutdown,
+                    request_deserializer=overlay__pb2.ShutdownRequest.FromString,
+                    response_serializer=overlay__pb2.ShutdownResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -86,7 +118,7 @@ class OverlayNode(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Forward(request,
+    def Query(request,
             target,
             options=(),
             channel_credentials=None,
@@ -99,9 +131,36 @@ class OverlayNode(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/OverlayNode/Forward',
-            overlay__pb2.Request.SerializeToString,
-            overlay__pb2.Response.FromString,
+            '/OverlayNode/Query',
+            overlay__pb2.QueryRequest.SerializeToString,
+            overlay__pb2.QueryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetChunk(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/OverlayNode/GetChunk',
+            overlay__pb2.ChunkRequest.SerializeToString,
+            overlay__pb2.ChunkResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -129,6 +188,33 @@ class OverlayNode(object):
             '/OverlayNode/GetMetrics',
             overlay__pb2.MetricsRequest.SerializeToString,
             overlay__pb2.MetricsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Shutdown(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/OverlayNode/Shutdown',
+            overlay__pb2.ShutdownRequest.SerializeToString,
+            overlay__pb2.ShutdownResponse.FromString,
             options,
             channel_credentials,
             insecure,
