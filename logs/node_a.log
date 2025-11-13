@@ -1,0 +1,202 @@
+[Overlay] A (leader/green) listening on 127.0.0.1:60051, dataset=datasets/2020-fire/data
+[Facade] A query d6f16de2: 100 records, 20.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 48152ed3: 100 records, 20.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 22bbf4ad: 100 records, 21.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 587c15ac: 100 records, 12.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d20ad5cd: 100 records, 14.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query e9c0d90f: 100 records, 21.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 3b5610a4: 100 records, 21.3ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 5eb87d30: 100 records, 20.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query f02bd7b7: 100 records, 27.5ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query bb8694ad: 100 records, 13.8ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query bb5bcc60: 100 records, 21.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+
+[Facade] A query a88acdd5: 100 records, 28.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 03116b54: 100 records, 26.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 8117d4a8: 100 records, 29.5ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 6c173866: 100 records, 11.7ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 586f352f: 100 records, 29.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query be6ad9a3: 100 records, 12.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query d30f3db3: 100 records, 21.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query e6eb756e: 100 records, 7.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5b3cc377: 100 records, 8.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 20507965: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 31149074: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3ad542f3: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c628119c: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8c6ecb3e: 100 records, 7.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f0acc856: 100 records, 5.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query eea206d7: 100 records, 5.9ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query b67e8d05: 100 records, 8.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1b46b782: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 40ba0d33: 100 records, 5.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8117ff3a: 100 records, 4.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 03528779: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a23f9e32: 100 records, 3.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ba343e7e: 100 records, 7.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 02e8849c: 100 records, 4.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f849de43: 100 records, 5.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 0b36b7bd: 100 records, 5.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query cbc3ab67: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ac249a5b: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2322536b: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 190de33f: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f6dae8f2: 100 records, 6.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 40f203c5: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b5017487: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 087beea3: 100 records, 6.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query bc046ff8: 100 records, 4.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 38894ab1: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6ced5856: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3ffcdb23: 100 records, 6.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 11c71fdf: 100 records, 4.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b059646a: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query eefb53eb: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query de02ba7c: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c0e009e9: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7c9bef17: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query cd63dd0b: 100 records, 6.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 772e1193: 100 records, 4.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 80268940: 100 records, 5.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query fae3065a: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 360e3abb: 100 records, 6.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 302e4b25: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7772e44d: 100 records, 5.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8c2edeb3: 100 records, 8.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 001f7168: 100 records, 6.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 4e5ad8aa: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a8a0cdd2: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5f10a95d: 100 records, 7.4ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 786e99c3: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 87f6a1a6: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 811de7cd: 100 records, 8.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c343feb8: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d73ba2cc: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 57600928: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 0cf7fde1: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query abb3361c: 100 records, 4.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 4bc3dfc2: 100 records, 7.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 19dd2a68: 100 records, 3.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 0ede4d6d: 100 records, 6.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 4b2b56a3: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 78e683ed: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query cd626840: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e0c4cd21: 100 records, 6.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 692e362f: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 38168097: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query eb41c0cd: 100 records, 7.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1e792e04: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3c6c0d47: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 68b12693: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1ed24fe6: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 578d0657: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1c9ca74a: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a7863d44: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ceaae53b: 100 records, 4.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 48f20f46: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7113cbeb: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5ec14940: 100 records, 3.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c4e02680: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 461ac4cf: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ee7dff1c: 100 records, 3.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c5811e65: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query dc90b9f7: 100 records, 6.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 15479b31: 100 records, 6.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1cce6e65: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9dc24f5a: 100 records, 6.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 841d27ee: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b6ab15c7: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 3a12f1ad: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 47a37fea: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2771c61f: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f8080ae4: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 67136a13: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 146444e9: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 565c7241: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 62a5d12a: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 738ae9db: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f7181de8: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1610139f: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query eec2fb76: 100 records, 6.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 4a7fa95e: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c0c35d1c: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query baf3a323: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 33560703: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query ad84c75e: 100 records, 6.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 79e0b165: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1ee08e83: 100 records, 3.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ed33ec4d: 100 records, 5.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f7880fe1: 100 records, 2.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 65d682eb: 100 records, 5.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 94639e0f: 100 records, 7.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 786cc63b: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1703ad1b: 100 records, 6.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 22c064e1: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query eb9459fc: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 51ac6513: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 88d235b4: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query fc8e4655: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 30150954: 100 records, 7.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query bc1f7c49: 100 records, 7.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 735c18a0: 100 records, 4.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5f1e9db2: 100 records, 7.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 17f5a075: 100 records, 5.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 4d49477a: 100 records, 4.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 867f1df2: 100 records, 7.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3220eef0: 100 records, 7.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f9954b59: 100 records, 6.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 048d1ba3: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5bd5c9db: 100 records, 3.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 943d437b: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c55f7b0f: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 2fdce2f2: 100 records, 4.3ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query c67f8ac1: 100 records, 7.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+
+[Facade] A query f80acf1b: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 23400347: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c180214e: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6db35f15: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query d82ee2f6: 100 records, 8.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 251d084a: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 37f4bf5d: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query daebcd84: 100 records, 5.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 89d1efa2: 100 records, 4.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 388ccfa4: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b46bb795: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query b8e65a47: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 2d18949c: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f368657f: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 046a89bd: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 85e1263c: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6b37f013: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b9ca33c2: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f14de46e: 100 records, 3.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9ad0d06f: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 560e11a2: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 64b40e03: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2dc6220f: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8d72fb9a: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ef9b3b12: 100 records, 2.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 620594f5: 100 records, 6.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1f7d60a3: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 41ee26a3: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 06ef313b: 100 records, 6.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 360d6b0b: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 40dfeea1: 100 records, 3.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 06dd7d13: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d3b5e9dd: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1d12300b: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2b2bcbcc: 100 records, 6.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f4110ffc: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 812598a0: 100 records, 6.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a7d7e42d: 100 records, 6.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9e268e70: 100 records, 6.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2cb56321: 100 records, 8.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c9f867ab: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e9e3aff0: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 15c319b5: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 807f9c9e: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b20905a4: 100 records, 6.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 80dd0fc3: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3e8d6319: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a02bb5b7: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3c8dd56d: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+^C

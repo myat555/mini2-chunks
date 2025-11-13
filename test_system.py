@@ -4,6 +4,7 @@ Automated system test for 2-host leader-queue implementation
 """
 
 import grpc
+import json
 import time
 import threading
 import sys
@@ -14,140 +15,123 @@ sys.path.append(os.path.dirname(__file__))
 import overlay_pb2
 import overlay_pb2_grpc
 
+
 class SystemTester:
     def __init__(self, leader_host, leader_port):
         self.leader_address = f"{leader_host}:{leader_port}"
-    
-    def test_single_request(self):
-        """Test a single request through the entire system"""
-        print("Testing single request...")
-        
+
+    def _open_stub(self):
         channel = grpc.insecure_channel(self.leader_address)
-        stub = overlay_pb2_grpc.OverlayNodeStub(channel)
-        
-        req = overlay_pb2.Request(payload="system-test", hops=[])
-        
+        return channel, overlay_pb2_grpc.OverlayNodeStub(channel)
+
+    def _basic_query(self, payload: str):
+        return overlay_pb2.QueryRequest(
+            query_type="filter",
+            query_params=json.dumps({"parameter": "PM2.5", "limit": 20}),
+            hops=[],
+            client_id=payload,
+        )
+
+    def test_single_request(self):
+        print("Testing single request...")
+        channel, stub = self._open_stub()
         try:
-            start_time = time.time()
-            resp = stub.Forward(req)
-            end_time = time.time()
-            
-            print(f"   Single Request Test PASSED")
-            print(f"   Response: {resp.result}")
-            print(f"   Hops: {resp.hops}")
-            print(f"   Latency: {(end_time - start_time)*1000:.2f} ms")
-            print(f"   Nodes visited: {len(resp.hops)}")
-            
+            start = time.time()
+            response = stub.Query(self._basic_query("single"))
+            latency = (time.time() - start) * 1000
+            if response.status != "ready":
+                print(f"   Single Request FAILED: status={response.status}")
+                return False
+
+            chunk = stub.GetChunk(overlay_pb2.ChunkRequest(uid=response.uid, chunk_index=0))
+            if chunk.status != "success":
+                print(f"   Single Request FAILED: chunk status={chunk.status}")
+                return False
+
+            rows = json.loads(chunk.data)
+            print(f"   Single Request PASSED, rows={len(rows)}, latency={latency:.2f} ms, hops={list(response.hops)}")
             return True
-        except Exception as e:
-            print(f"   Single Request Test FAILED: {e}")
+        except Exception as exc:
+            print(f"   Single Request FAILED: {exc}")
             return False
         finally:
             channel.close()
-    
+
     def test_queue_status(self):
-        """Test queue status monitoring"""
         print("Testing queue status...")
-        
-        channel = grpc.insecure_channel(self.leader_address)
-        stub = overlay_pb2_grpc.OverlayNodeStub(channel)
-        
+        channel, stub = self._open_stub()
         try:
             metrics = stub.GetMetrics(overlay_pb2.MetricsRequest())
-            print(f"   Queue Status Test PASSED")
-            print(f"   Process: {metrics.process_id}")
-            print(f"   Role: {metrics.role}")
-            print(f"   Queue Size: {metrics.queue_size}")
-            print(f"   Active Requests: {metrics.active_requests}")
-            
+            print(
+                f"   Metrics: id={metrics.process_id} active={metrics.active_requests} "
+                f"queue={metrics.queue_size} avg_ms={metrics.avg_processing_time_ms:.2f}"
+            )
             return True
-        except Exception as e:
-            print(f"   Queue Status Test FAILED: {e}")
+        except Exception as exc:
+            print(f"   Queue Status FAILED: {exc}")
             return False
         finally:
             channel.close()
-    
+
     def test_concurrent_requests(self, num_requests=10):
-        """Test concurrent request handling"""
         print(f"Testing {num_requests} concurrent requests...")
-        
         results = []
         lock = threading.Lock()
-        
-        def send_request(request_id):
+
+        def worker(idx: int):
+            channel, stub = self._open_stub()
             try:
-                channel = grpc.insecure_channel(self.leader_address)
-                stub = overlay_pb2_grpc.OverlayNodeStub(channel)
-                
-                req = overlay_pb2.Request(payload=f"concurrent-{request_id}", hops=[])
-                resp = stub.Forward(req)
-                
+                request = self._basic_query(f"concurrent-{idx}")
+                response = stub.Query(request)
+                ok = response.status == "ready"
+                if ok:
+                    chunk = stub.GetChunk(overlay_pb2.ChunkRequest(uid=response.uid, chunk_index=0))
+                    ok = chunk.status == "success"
                 with lock:
-                    results.append(True)
-                
-                channel.close()
+                    results.append(ok)
             except Exception:
                 with lock:
                     results.append(False)
-        
+            finally:
+                channel.close()
+
         threads = []
-        start_time = time.time()
-        
-        for i in range(num_requests):
-            thread = threading.Thread(target=send_request, args=(i,))
+        start = time.time()
+        for idx in range(num_requests):
+            thread = threading.Thread(target=worker, args=(idx,))
             thread.start()
             threads.append(thread)
-        
         for thread in threads:
             thread.join()
-        
-        end_time = time.time()
-        success_count = sum(results)
-        success_rate = (success_count / num_requests) * 100
-        
-        print(f"   Concurrent Request Test COMPLETED")
-        print(f"   Success: {success_count}/{num_requests} ({success_rate:.1f}%)")
-        print(f"   Total Time: {end_time - start_time:.2f} seconds")
-        
-        return success_rate > 80  # Allow some failures due to network
-    
+        duration = time.time() - start
+        success = sum(1 for r in results if r)
+        rate = (success / num_requests) * 100
+        print(f"   Concurrent requests success {success}/{num_requests} ({rate:.1f}%), time={duration:.2f}s")
+        return rate >= 80
+
     def run_full_test(self):
-        """Run all tests"""
         print("=" * 50)
-        print("2-HOST LEADER-QUEUE SYSTEM TEST")
+        print("OVERLAY SYSTEM TEST")
         print("=" * 50)
-        print(f"Testing leader at: {self.leader_address}")
-        print()
-        
+        print(f"Leader address: {self.leader_address}\n")
+
         tests = [
             ("Single Request", self.test_single_request),
             ("Queue Status", self.test_queue_status),
-            ("Concurrent Requests", lambda: self.test_concurrent_requests(10))
+            ("Concurrent Requests", lambda: self.test_concurrent_requests(10)),
         ]
-        
+
         passed = 0
-        total = len(tests)
-        
-        for test_name, test_func in tests:
-            try:
-                if test_func():
-                    passed += 1
-                print()
-            except Exception as e:
-                print(f"{test_name} Test FAILED with exception: {e}")
-                print()
-        
+        for name, func in tests:
+            print(f"[{name}]")
+            if func():
+                passed += 1
+            print()
+
         print("=" * 50)
-        print(f"TEST SUMMARY: {passed}/{total} tests passed")
-        
-        if passed == total:
-            print(" ALL TESTS PASSED! System is working correctly.")
-        else:
-            print(" Some tests failed. Check process logs for details.")
-        
+        print(f"TEST SUMMARY: {passed}/{len(tests)} passed")
         print("=" * 50)
-        
-        return passed == total
+        return passed == len(tests)
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

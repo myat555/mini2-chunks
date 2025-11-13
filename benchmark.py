@@ -39,7 +39,7 @@ class Benchmark:
             channel.close()
             return {
                 'queue_size': metrics.queue_size,
-                'avg_processing_time': metrics.avg_processing_time_ms,
+                'avg_processing_time_ms': metrics.avg_processing_time_ms,
                 'active_requests': metrics.active_requests,
                 'role': metrics.role,
                 'team': metrics.team
@@ -53,27 +53,55 @@ class Benchmark:
         try:
             channel = grpc.insecure_channel(self.leader_address)
             stub = overlay_pb2_grpc.OverlayNodeStub(channel)
-            
-            payload = json.dumps({
-                'type': 'query',
-                'query': query_params
-            })
-            
-            req = overlay_pb2.Request(payload=payload, hops=[])
-            
+
+            req = overlay_pb2.QueryRequest(
+                query_type='filter',
+                query_params=json.dumps(query_params),
+                hops=[],
+                client_id='benchmark'
+            )
+
             start_time = time.time()
-            resp = stub.Forward(req)
-            end_time = time.time()
-            
-            latency = (end_time - start_time) * 1000  # ms
-            
+            resp = stub.Query(req)
+            latency = (time.time() - start_time) * 1000
+
+            if resp.status != 'ready':
+                channel.close()
+                return {
+                    'success': False,
+                    'error': resp.status,
+                    'latency': latency,
+                    'hops': len(resp.hops)
+                }
+
+            chunk = stub.GetChunk(overlay_pb2.ChunkRequest(uid=resp.uid, chunk_index=0))
             channel.close()
+
+            if chunk.status != 'success':
+                return {
+                    'success': False,
+                    'error': f"chunk:{chunk.status}",
+                    'latency': latency,
+                    'hops': len(resp.hops)
+                }
+
+            rows = json.loads(chunk.data) if chunk.data else []
+            
+            # Verify we got actual data records
+            sample_record = None
+            if rows:
+                sample_record = rows[0]
+                # Validate record structure
+                if not isinstance(sample_record, dict) or 'parameter' not in sample_record:
+                    print(f"Warning: Unexpected record format: {sample_record}")
             
             return {
                 'success': True,
                 'latency': latency,
-                'response': resp.result,
-                'hops': len(resp.hops)
+                'records': len(rows),
+                'hops': len(resp.hops),
+                'sample_parameter': sample_record.get('parameter') if sample_record else None,
+                'sample_value': sample_record.get('value') if sample_record else None
             }
         except Exception as e:
             return {
@@ -82,7 +110,7 @@ class Benchmark:
                 'latency': 0
             }
     
-    def run_benchmark(self, num_requests=100, concurrency=10, query_type='simple'):
+    def run_benchmark_internal(self, num_requests=100, concurrency=10, query_type='simple'):
         """Run benchmark with specified parameters"""
         print(f"\n{'='*60}")
         print(f"BENCHMARK: {num_requests} requests, concurrency={concurrency}")
@@ -98,6 +126,7 @@ class Benchmark:
         errors = 0
         
         def worker(worker_id, num_requests_per_worker):
+            nonlocal errors
             local_results = []
             query_params = {
                 'parameter': 'PM2.5',
@@ -146,11 +175,28 @@ class Benchmark:
         # Collect metrics
         latencies = [r['latency'] for r in results if r['success']]
         hops_counts = [r['hops'] for r in results if r['success']]
+        record_counts = [r.get('records', 0) for r in results if r['success']]
+        
+        # Show data verification info
+        successful_results = [r for r in results if r['success']]
+        if successful_results:
+            first_success = successful_results[0]
+            print(f"\nData Verification:")
+            print(f"  Records returned: {first_success.get('records', 0)}")
+            if first_success.get('sample_parameter'):
+                print(f"  Sample parameter: {first_success.get('sample_parameter')}")
+                print(f"  Sample value: {first_success.get('sample_value')}")
+            print(f"  Average records per query: {sum(record_counts) / len(record_counts):.1f}" if record_counts else "  No records returned")
         
         # Final metrics
         final_metrics = self.get_metrics()
         
         # Calculate statistics
+        total_records = sum(record_counts) if record_counts else 0
+        avg_records_per_query = statistics.mean(record_counts) if record_counts else 0
+        max_records = max(record_counts) if record_counts else 0
+        min_records = min(record_counts) if record_counts else 0
+        
         stats = {
             'total_requests': num_requests,
             'successful_requests': len([r for r in results if r['success']]),
@@ -167,120 +213,49 @@ class Benchmark:
             'max_queue_size': max(queue_samples) if queue_samples else 0,
             'avg_queue_size': statistics.mean(queue_samples) if queue_samples else 0,
             'final_queue_size': final_metrics['queue_size'] if final_metrics else 0,
-            'avg_processing_time_ms': final_metrics['avg_processing_time_ms'] if final_metrics else 0
+            'avg_processing_time_ms': final_metrics['avg_processing_time_ms'] if final_metrics else 0,
+            'total_records_returned': total_records,
+            'avg_records_per_query': avg_records_per_query,
+            'max_records_per_query': max_records,
+            'min_records_per_query': min_records
         }
         
         return stats
     
-    def print_results(self, stats_one_host, stats_two_hosts):
-        """Print comparison results"""
-        print(f"\n{'='*60}")
-        print("BENCHMARK RESULTS: ONE HOST vs TWO HOSTS")
-        print(f"{'='*60}\n")
+    def run_benchmark(self, num_requests: int, concurrency: int, output_dir: str = "."):
+        """Run benchmark and return stats."""
+        stats = self.run_benchmark_internal(num_requests, concurrency)
         
-        print(f"{'Metric':<30} {'One Host':<15} {'Two Hosts':<15} {'Improvement':<15}")
-        print("-" * 75)
+        # Save results to output directory
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+        output_file = os.path.join(output_dir, 'benchmark_results.json')
         
-        metrics_to_compare = [
-            ('Throughput (req/s)', 'throughput_rps', 'higher'),
-            ('Avg Latency (ms)', 'avg_latency_ms', 'lower'),
-            ('P95 Latency (ms)', 'p95_latency_ms', 'lower'),
-            ('Max Queue Size', 'max_queue_size', 'lower'),
-            ('Avg Processing Time (ms)', 'avg_processing_time_ms', 'lower'),
-            ('Success Rate (%)', lambda s: (s['successful_requests']/s['total_requests']*100) if s['total_requests'] > 0 else 0, 'higher')
-        ]
+        with open(output_file, 'w') as f:
+            json.dump(stats, f, indent=2)
         
-        for metric_name, metric_key, direction in metrics_to_compare:
-            if callable(metric_key):
-                val1 = metric_key(stats_one_host)
-                val2 = metric_key(stats_two_hosts)
-            else:
-                val1 = stats_one_host.get(metric_key, 0)
-                val2 = stats_two_hosts.get(metric_key, 0)
-            
-            if direction == 'higher':
-                improvement = ((val2 - val1) / val1 * 100) if val1 > 0 else 0
-                symbol = "↑" if improvement > 0 else "↓"
-            else:
-                improvement = ((val1 - val2) / val1 * 100) if val1 > 0 else 0
-                symbol = "↓" if improvement > 0 else "↑"
-            
-            print(f"{metric_name:<30} {val1:<15.2f} {val2:<15.2f} {improvement:>6.1f}% {symbol}")
+        print(f"\nResults saved to {output_file}")
         
-        print("\n" + "="*60)
-        print("DISCOVERIES:")
-        print("="*60)
-        
-        discoveries = []
-        
-        # Discovery 1: Network overhead vs parallelism
-        latency_diff = stats_one_host['avg_latency_ms'] - stats_two_hosts['avg_latency_ms']
-        if latency_diff > 0:
-            discoveries.append(
-                f"1. NETWORK OVERHEAD: Two-host setup adds {latency_diff:.2f}ms average latency "
-                f"due to network communication, but enables parallel processing across hosts."
-            )
-        else:
-            discoveries.append(
-                f"1. PARALLELISM BENEFIT: Two-host setup reduces latency by {abs(latency_diff):.2f}ms "
-                f"through distributed processing, outweighing network overhead."
-            )
-        
-        # Discovery 2: Queue pressure management
-        queue_diff = stats_one_host['max_queue_size'] - stats_two_hosts['max_queue_size']
-        if queue_diff > 0:
-            discoveries.append(
-                f"2. QUEUE PRESSURE: Two-host setup reduces max queue size by {queue_diff} requests "
-                f"({(queue_diff/stats_one_host['max_queue_size']*100) if stats_one_host['max_queue_size'] > 0 else 0:.1f}%), "
-                f"demonstrating better load distribution."
-            )
-        else:
-            discoveries.append(
-                f"2. LOAD DISTRIBUTION: Queue pressure similar, but two-host setup distributes "
-                f"load across network, preventing single-host bottlenecks."
-            )
-        
-        # Discovery 3: Throughput scalability
-        throughput_ratio = stats_two_hosts['throughput_rps'] / stats_one_host['throughput_rps'] if stats_one_host['throughput_rps'] > 0 else 0
-        if throughput_ratio > 1.2:
-            discoveries.append(
-                f"3. SCALABILITY: Two-host setup achieves {throughput_ratio:.2f}x throughput, "
-                f"demonstrating near-linear scaling with distributed architecture."
-            )
-        elif throughput_ratio < 0.8:
-            discoveries.append(
-                f"3. NETWORK BOTTLENECK: Two-host setup shows {((1-throughput_ratio)*100):.1f}% "
-                f"throughput reduction, indicating network communication overhead dominates."
-            )
-        else:
-            discoveries.append(
-                f"3. BALANCED PERFORMANCE: Two-host setup maintains similar throughput "
-                f"({throughput_ratio:.2f}x) while enabling fault tolerance and geographic distribution."
-            )
-        
-        for discovery in discoveries:
-            print(f"  {discovery}")
-        
-        print("\n" + "="*60)
+        return stats
 
 def main():
     if len(sys.argv) < 5:
-        print("Usage: python benchmark.py <leader_host> <leader_port> <num_requests> <concurrency>")
-        print("Example: python benchmark.py 192.168.1.2 50051 100 10")
+        print("Usage: python benchmark.py <leader_host> <leader_port> <num_requests> <concurrency> [output_dir]")
+        print("Example: python benchmark.py 192.168.1.2 60051 100 10 logs")
         sys.exit(1)
     
     leader_host = sys.argv[1]
     leader_port = int(sys.argv[2])
     num_requests = int(sys.argv[3])
     concurrency = int(sys.argv[4])
+    output_dir = sys.argv[5] if len(sys.argv) > 5 else "."
     
     benchmark = Benchmark(leader_host, leader_port)
     
     print("Running benchmark...")
-    print("Note: Run this script twice - once with one-host config, once with two-host config")
-    print("Then compare the results manually or modify script to run both automatically\n")
+    print("Tip: use run_benchmark_comparison.py or scripts/benchmark_windows.bat to automate single-host vs two-host comparisons.\n")
     
-    stats = benchmark.run_benchmark(num_requests, concurrency)
+    stats = benchmark.run_benchmark(num_requests, concurrency, output_dir)
     
     print("\n" + "="*60)
     print("BENCHMARK STATISTICS")
@@ -297,12 +272,11 @@ def main():
     print(f"Max Queue Size: {stats['max_queue_size']}")
     print(f"Average Queue Size: {stats['avg_queue_size']:.2f}")
     print(f"Average Processing Time: {stats['avg_processing_time_ms']:.2f} ms")
-    
-    # Save results to file
-    with open('benchmark_results.json', 'w') as f:
-        json.dump(stats, f, indent=2)
-    
-    print(f"\nResults saved to benchmark_results.json")
+    print(f"\nData Processing:")
+    print(f"Total Records Returned: {stats['total_records_returned']}")
+    print(f"Average Records per Query: {stats['avg_records_per_query']:.1f}")
+    print(f"Max Records per Query: {stats['max_records_per_query']}")
+    print(f"Min Records per Query: {stats['min_records_per_query']}")
 
 if __name__ == "__main__":
     main()

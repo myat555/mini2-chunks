@@ -1,0 +1,22 @@
+{
+  "total_requests": 200,
+  "successful_requests": 200,
+  "failed_requests": 0,
+  "total_time_seconds": 2.0372467041015625,
+  "throughput_rps": 98.17171361590258,
+  "avg_latency_ms": 19.419902563095093,
+  "median_latency_ms": 19.62757110595703,
+  "p95_latency_ms": 24.78088140487671,
+  "p99_latency_ms": 29.7739315032959,
+  "min_latency_ms": 5.628347396850586,
+  "max_latency_ms": 30.772686004638672,
+  "avg_hops": 1,
+  "max_queue_size": 6,
+  "avg_queue_size": 0.6,
+  "final_queue_size": 0,
+  "avg_processing_time_ms": 6.518498420715332,
+  "total_records_returned": 20000,
+  "avg_records_per_query": 100,
+  "max_records_per_query": 100,
+  "min_records_per_query": 100
+}

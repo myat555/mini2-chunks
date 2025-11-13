@@ -5,7 +5,7 @@
       "role": "leader",
       "team": "green",
       "host": "127.0.0.1",
-      "port": 50051,
+      "port": 60051,
       "neighbors": ["B", "E"]
     },
     "B": {
@@ -13,7 +13,7 @@
       "role": "team_leader",
       "team": "green",
       "host": "127.0.0.1",
-      "port": 50052,
+      "port": 60052,
       "neighbors": ["A", "C", "D"]
     },
     "C": {
@@ -21,7 +21,7 @@
       "role": "worker",
       "team": "green",
       "host": "127.0.0.1",
-      "port": 50053,
+      "port": 60053,
       "neighbors": ["B"]
     },
     "D": {
@@ -29,7 +29,7 @@
       "role": "worker",
       "team": "pink",
       "host": "127.0.0.1",
-      "port": 50054,
+      "port": 60054,
       "neighbors": ["B", "E"]
     },
     "E": {
@@ -37,7 +37,7 @@
       "role": "team_leader",
       "team": "pink",
       "host": "127.0.0.1",
-      "port": 50055,
+      "port": 60055,
       "neighbors": ["A", "F", "D"]
     },
     "F": {
@@ -45,7 +45,7 @@
       "role": "worker",
       "team": "pink",
       "host": "127.0.0.1",
-      "port": 50056,
+      "port": 60056,
       "neighbors": ["E"]
     }
   }
