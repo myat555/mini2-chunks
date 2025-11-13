@@ -31,15 +31,15 @@ if not exist "../overlay_pb2.py" (
 )
 
 echo Starting Process A (Leader) on port 50051...
-start "Process A - Leader" python ..\node.py ..\two_hosts_config.json A
+start "Process A - Leader" python -u ..\node.py ..\two_hosts_config.json A
 timeout /t 2 /nobreak >nul
 
 echo Starting Process B (Team Leader) on port 50052...
-start "Process B - Team Leader" python ..\node.py ..\two_hosts_config.json B
+start "Process B - Team Leader" python -u ..\node.py ..\two_hosts_config.json B
 timeout /t 2 /nobreak >nul
 
 echo Starting Process D (Worker) on port 50054...
-start "Process D - Worker" python ..\node.py ..\two_hosts_config.json D
+start "Process D - Worker" python -u ..\node.py ..\two_hosts_config.json D
 timeout /t 2 /nobreak >nul
 
 echo.
