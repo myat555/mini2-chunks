@@ -32,7 +32,7 @@ class SystemTester:
             resp = stub.Forward(req)
             end_time = time.time()
             
-            print(f"✅ Single Request Test PASSED")
+            print(f"   Single Request Test PASSED")
             print(f"   Response: {resp.result}")
             print(f"   Hops: {resp.hops}")
             print(f"   Latency: {(end_time - start_time)*1000:.2f} ms")
@@ -40,7 +40,7 @@ class SystemTester:
             
             return True
         except Exception as e:
-            print(f"❌ Single Request Test FAILED: {e}")
+            print(f"   Single Request Test FAILED: {e}")
             return False
         finally:
             channel.close()
