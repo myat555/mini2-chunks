@@ -31,13 +31,15 @@ fi
 mkdir -p "${LOG_DIR}" "${PID_DIR}"
 mkdir -p "${ROOT_DIR}/logs/two_hosts"
 
+cd "${ROOT_DIR}"
+
 start_process() {
     local proc_id="$1"
     local role="$2"
     local host_ip="192.168.1.1"
     local log_file="${ROOT_DIR}/logs/two_hosts/macos_${host_ip}_node_$(echo ${proc_id} | tr '[:upper:]' '[:lower:]').log"
     echo "Starting Process ${proc_id} (${role})..."
-    python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1 &
+    (cd "${ROOT_DIR}" && python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1) &
     local pid=$!
     echo "${pid}" > "${PID_DIR}/process_${proc_id}.pid"
     echo "  PID=${pid}, log: ${log_file}"

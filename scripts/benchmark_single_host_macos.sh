@@ -28,7 +28,7 @@ start_process() {
     local role="$2"
     local log_file="${LOG_DIR}/node_$(echo ${proc_id} | tr '[:upper:]' '[:lower:]').log"
     echo "Starting Process ${proc_id} (${role})..."
-    python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1 &
+    (cd "${ROOT_DIR}" && python3 -u "${ROOT_DIR}/node.py" "${CONFIG_FILE}" "${proc_id}" >"${log_file}" 2>&1) &
     local pid=$!
     echo "${pid}" > "${PID_DIR}/process_${proc_id}.pid"
     sleep 2
