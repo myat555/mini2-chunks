@@ -138,7 +138,11 @@ class QueryOrchestrator:
             filter_summary = f"param={filters.get('parameter', 'any')}"
             if 'min_value' in filters or 'max_value' in filters:
                 filter_summary += f", value=[{filters.get('min_value', '')}, {filters.get('max_value', '')}]"
-            log_msg = f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}"
+            
+            if self._process.role == "leader":
+                log_msg = f"[Orchestrator] {self._process.id} coordinated query {uid[:8]}: aggregated {len(records)} records from team leaders, {duration_ms:.1f}ms, filters={{{filter_summary}}}"
+            else:
+                log_msg = f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}"
             print(log_msg, flush=True)
             self._add_log(log_msg)
 
@@ -311,6 +315,10 @@ class QueryOrchestrator:
             hops=hops,
             client_id=client_id or self._process.id,
         )
+
+        log_msg = f"[Orchestrator] {self._process.id} forwarding to {neighbor.id} ({neighbor.role}/{neighbor.team}), remaining={remaining}"
+        print(log_msg, flush=True)
+        self._add_log(log_msg)
 
         try:
             response = client.query(forward_request)
