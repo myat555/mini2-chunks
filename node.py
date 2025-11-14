@@ -74,7 +74,8 @@ def serve(
     server.start()
     print(
         f"[Overlay] {process.id} ({process.role}/{process.team}) "
-        f"listening on {process.host}:{process.port}, dataset={dataset_root}"
+        f"listening on {process.host}:{process.port}, dataset={dataset_root}",
+        flush=True
     )
     server.wait_for_termination()
 

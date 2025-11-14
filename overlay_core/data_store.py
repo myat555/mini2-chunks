@@ -47,7 +47,7 @@ class DataStore:
             for csv_file in sorted(date_dir.glob("*.csv")):
                 self._load_file(csv_file, date_str)
 
-        print(f"[DataStore] {self.process_id} loaded {self.records_loaded} rows from {self.files_loaded} files.")
+        print(f"[DataStore] {self.process_id} loaded {self.records_loaded} rows from {self.files_loaded} files.", flush=True)
 
     def _load_file(self, path: Path, date_str: str) -> None:
         try:
@@ -61,7 +61,7 @@ class DataStore:
                         self._records.append(record)
             self._files_loaded += 1
         except Exception as exc:
-            print(f"[DataStore] failed to load {path}: {exc}")
+            print(f"[DataStore] failed to load {path}: {exc}", flush=True)
 
     @staticmethod
     def _convert_row(row: List[str], date_str: str) -> Optional[Dict[str, object]]:

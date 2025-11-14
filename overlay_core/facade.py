@@ -132,11 +132,10 @@ class QueryOrchestrator:
             duration_ms = (time.time() - start) * 1000
             self._metrics.record_completion(duration_ms)
             
-            # Log query execution for verification
             filter_summary = f"param={filters.get('parameter', 'any')}"
             if 'min_value' in filters or 'max_value' in filters:
                 filter_summary += f", value=[{filters.get('min_value', '')}, {filters.get('max_value', '')}]"
-            print(f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}")
+            print(f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}", flush=True)
 
             return overlay_pb2.QueryResponse(
                 uid=uid,
@@ -224,7 +223,7 @@ class QueryOrchestrator:
         if self._data_store is not None:
             local_rows = self._data_store.query(filters, limit=remaining)
             if local_rows:
-                print(f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total")
+                print(f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total", flush=True)
             aggregated.extend(local_rows)
             remaining -= len(local_rows)
             if remaining <= 0:
@@ -297,7 +296,7 @@ class QueryOrchestrator:
         try:
             response = client.query(forward_request)
         except Exception as exc:
-            print(f"[Orchestrator] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}")
+            print(f"[Orchestrator] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}", flush=True)
             return []
 
         if response.status != "ready" or not response.uid:

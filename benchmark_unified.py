@@ -153,28 +153,35 @@ class UnifiedBenchmark:
         """Read recent server log output."""
         logs = {}
         
-        if not log_dir.exists():
+        if not log_dir or not log_dir.exists():
             return logs
         
-        # Try to find log files for each process
-        for process_id in self.config.get("processes", {}).keys():
+        processes_config = self.config.get("processes", {})
+        for process_id, process_info in processes_config.items():
+            host = process_info.get("host", "")
+            proc_lower = process_id.lower()
+            
             patterns = [
-                f"*{process_id.lower()}*.log",
-                f"*node_{process_id.lower()}.log",
+                f"*{host}*node_{proc_lower}.log",
+                f"*node_{proc_lower}.log",
+                f"*{proc_lower}*.log",
                 f"*{process_id}*.log",
+                f"macos_*_node_{proc_lower}.log",
+                f"windows_*_node_{proc_lower}.log",
             ]
             
             for pattern in patterns:
                 log_files = list(log_dir.glob(pattern))
                 if log_files:
                     try:
-                        with open(log_files[0], "r", encoding="utf-8", errors="ignore") as f:
+                        log_file = log_files[0]
+                        with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
                             all_lines = f.readlines()
                             recent = [line.strip() for line in all_lines[-lines:] if line.strip()]
                             if recent:
                                 logs[process_id] = recent
                             break
-                    except:
+                    except Exception:
                         pass
         
         return logs
