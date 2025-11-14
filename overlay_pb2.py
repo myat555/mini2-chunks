@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\roverlay.proto\"Y\n\x0cQueryRequest\x12\x12\n\nquery_type\x18\x01 \x01(\t\x12\x14\n\x0cquery_params\x18\x02 \x01(\t\x12\x0c\n\x04hops\x18\x03 \x03(\t\x12\x11\n\tclient_id\x18\x04 \x01(\t\"g\n\rQueryResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x14\n\x0ctotal_chunks\x18\x02 \x01(\x05\x12\x15\n\rtotal_records\x18\x03 \x01(\x03\x12\x0c\n\x04hops\x18\x04 \x03(\t\x12\x0e\n\x06status\x18\x05 \x01(\t\"0\n\x0c\x43hunkRequest\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x13\n\x0b\x63hunk_index\x18\x02 \x01(\x05\"v\n\rChunkResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x13\n\x0b\x63hunk_index\x18\x02 \x01(\x05\x12\x14\n\x0ctotal_chunks\x18\x03 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x04 \x01(\t\x12\x0f\n\x07is_last\x18\x05 \x01(\x08\x12\x0e\n\x06status\x18\x06 \x01(\t\"\x10\n\x0eMetricsRequest\"\xd3\x01\n\x0fMetricsResponse\x12\x12\n\nprocess_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0c\n\x04team\x18\x03 \x01(\t\x12\x17\n\x0f\x61\x63tive_requests\x18\x04 \x01(\x05\x12\x14\n\x0cmax_capacity\x18\x05 \x01(\x05\x12\x12\n\nis_healthy\x18\x06 \x01(\x08\x12\x12\n\nqueue_size\x18\x07 \x01(\x05\x12\x1e\n\x16\x61vg_processing_time_ms\x18\x08 \x01(\x02\x12\x19\n\x11\x64\x61ta_files_loaded\x18\t \x01(\x05\"#\n\x0fShutdownRequest\x12\x10\n\x08graceful\x18\x01 \x01(\x08\"\"\n\x10ShutdownResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xca\x01\n\x0bOverlayNode\x12(\n\x05Query\x12\r.QueryRequest\x1a\x0e.QueryResponse\"\x00\x12+\n\x08GetChunk\x12\r.ChunkRequest\x1a\x0e.ChunkResponse\"\x00\x12\x31\n\nGetMetrics\x12\x0f.MetricsRequest\x1a\x10.MetricsResponse\"\x00\x12\x31\n\x08Shutdown\x12\x10.ShutdownRequest\x1a\x11.ShutdownResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\roverlay.proto\"Y\n\x0cQueryRequest\x12\x12\n\nquery_type\x18\x01 \x01(\t\x12\x14\n\x0cquery_params\x18\x02 \x01(\t\x12\x0c\n\x04hops\x18\x03 \x03(\t\x12\x11\n\tclient_id\x18\x04 \x01(\t\"g\n\rQueryResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x14\n\x0ctotal_chunks\x18\x02 \x01(\x05\x12\x15\n\rtotal_records\x18\x03 \x01(\x03\x12\x0c\n\x04hops\x18\x04 \x03(\t\x12\x0e\n\x06status\x18\x05 \x01(\t\"0\n\x0c\x43hunkRequest\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x13\n\x0b\x63hunk_index\x18\x02 \x01(\x05\"v\n\rChunkResponse\x12\x0b\n\x03uid\x18\x01 \x01(\t\x12\x13\n\x0b\x63hunk_index\x18\x02 \x01(\x05\x12\x14\n\x0ctotal_chunks\x18\x03 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x04 \x01(\t\x12\x0f\n\x07is_last\x18\x05 \x01(\x08\x12\x0e\n\x06status\x18\x06 \x01(\t\"\x10\n\x0eMetricsRequest\"\xc0\x02\n\x0fMetricsResponse\x12\x12\n\nprocess_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0c\n\x04team\x18\x03 \x01(\t\x12\x17\n\x0f\x61\x63tive_requests\x18\x04 \x01(\x05\x12\x14\n\x0cmax_capacity\x18\x05 \x01(\x05\x12\x12\n\nis_healthy\x18\x06 \x01(\x08\x12\x12\n\nqueue_size\x18\x07 \x01(\x05\x12\x1e\n\x16\x61vg_processing_time_ms\x18\x08 \x01(\x02\x12\x19\n\x11\x64\x61ta_files_loaded\x18\t \x01(\x05\x12\x1b\n\x13\x66orwarding_strategy\x18\n \x01(\t\x12\x18\n\x10\x61sync_forwarding\x18\x0b \x01(\x08\x12\x19\n\x11\x63hunking_strategy\x18\x0c \x01(\t\x12\x19\n\x11\x66\x61irness_strategy\x18\r \x01(\t\"#\n\x0fShutdownRequest\x12\x10\n\x08graceful\x18\x01 \x01(\x08\"\"\n\x10ShutdownResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xca\x01\n\x0bOverlayNode\x12(\n\x05Query\x12\r.QueryRequest\x1a\x0e.QueryResponse\"\x00\x12+\n\x08GetChunk\x12\r.ChunkRequest\x1a\x0e.ChunkResponse\"\x00\x12\x31\n\nGetMetrics\x12\x0f.MetricsRequest\x1a\x10.MetricsResponse\"\x00\x12\x31\n\x08Shutdown\x12\x10.ShutdownRequest\x1a\x11.ShutdownResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -42,11 +42,11 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_METRICSREQUEST']._serialized_start=383
   _globals['_METRICSREQUEST']._serialized_end=399
   _globals['_METRICSRESPONSE']._serialized_start=402
-  _globals['_METRICSRESPONSE']._serialized_end=613
-  _globals['_SHUTDOWNREQUEST']._serialized_start=615
-  _globals['_SHUTDOWNREQUEST']._serialized_end=650
-  _globals['_SHUTDOWNRESPONSE']._serialized_start=652
-  _globals['_SHUTDOWNRESPONSE']._serialized_end=686
-  _globals['_OVERLAYNODE']._serialized_start=689
-  _globals['_OVERLAYNODE']._serialized_end=891
+  _globals['_METRICSRESPONSE']._serialized_end=722
+  _globals['_SHUTDOWNREQUEST']._serialized_start=724
+  _globals['_SHUTDOWNREQUEST']._serialized_end=759
+  _globals['_SHUTDOWNRESPONSE']._serialized_start=761
+  _globals['_SHUTDOWNRESPONSE']._serialized_end=795
+  _globals['_OVERLAYNODE']._serialized_start=798
+  _globals['_OVERLAYNODE']._serialized_end=1000
 # @@protoc_insertion_point(module_scope)

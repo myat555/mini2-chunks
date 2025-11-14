@@ -195,6 +195,10 @@ class OverlayFacade:
             queue_size=len(self._cache),
             avg_processing_time_ms=float(stats["avg_ms"]),
             data_files_loaded=self._data_store.files_loaded if self._data_store else 0,
+            forwarding_strategy=self._forwarding_strategy.__class__.__name__,
+            async_forwarding=self._use_async_forwarding,
+            chunking_strategy=self._chunking_strategy.__class__.__name__,
+            fairness_strategy=self._admission._fairness.__class__.__name__,
         )
 
     def _parse_filters(self, raw_params: str) -> Dict[str, object]:

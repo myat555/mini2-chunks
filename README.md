@@ -1,6 +1,6 @@
 # Distributed Overlay Network System
 
-A gRPC-based distributed system implementing a leader-queue architecture with team-based routing and data partitioning.
+A gRPC-based distributed system implementing a leader-queue architecture with team-based routing, data partitioning, and configurable strategies for forwarding, chunking, and fairness. Features real-time benchmarking with visual monitoring of data distribution across multiple hosts.
 
 ## Architecture
 
@@ -17,17 +17,19 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 
 ### Data Distribution
 
-- **Leader (A)**: Coordinator only, no data storage
+- **Leader (A)**: Coordinator only, no data storage - delegates queries to team leaders
 - **Team Leaders (B, E)**: Load their team's data partition and coordinate workers
-- **Workers (C, D, F)**: Load their team's data partition
+- **Workers (C, D, F)**: Load their team's data partition and process queries
 - **Partitions**: Team Green (20200810-20200820), Team Pink (20200821-20200924)
+- **No Cross-Team Replication**: Each team has non-overlapping data as per mini2 requirements
 
 ### Query Flow
 
-1. Client sends query to Leader
-2. Leader forwards to Team Leaders
-3. Team Leaders query local data and forward to Workers
+1. Client sends query to Leader (A)
+2. Leader forwards to Team Leaders (B, E) - can use parallel or sequential forwarding
+3. Team Leaders query local data and forward to Workers (C, D, F)
 4. Results aggregated and returned in chunks
+5. Chunks retrieved by client on-demand
 
 ## Project Structure
 
@@ -45,7 +47,6 @@ mini2-chunks/
 │           ├── ... (through 20200820)
 │           ├── 20200821/              # Team Pink: 20200821-20200924
 │           ├── ... (through 20200924)
-│
 │
 ├── logs/                              # Benchmark logs and results
 │   ├── windows/                       # Single-host Windows logs
@@ -68,7 +69,7 @@ mini2-chunks/
 │       ├── macos_192.168.1.1_node_c.log      # macOS host, Process C (Worker)
 │       ├── macos_192.168.1.1_node_e.log      # macOS host, Process E (Team Leader)
 │       ├── macos_192.168.1.1_node_f.log      # macOS host, Process F (Worker)
-│       └── benchmark_results_two_hosts.json  # Two-host benchmark results
+│       └── benchmark_results.json            # Two-host benchmark results
 │
 ├── overlay_core/                      # Core implementation modules
 │   ├── __init__.py
@@ -78,7 +79,8 @@ mini2-chunks/
 │   ├── metrics.py                     # Performance metrics tracking
 │   ├── proxies.py                     # Remote node proxy management
 │   ├── request_controller.py          # Request admission and fairness
-│   └── result_cache.py                # Chunked result caching
+│   ├── result_cache.py                # Chunked result caching
+│   └── strategies.py                  # Strategy pattern implementations
 │
 ├── scripts/                           # Automation scripts
 │   ├── benchmark_single_host.bat      # Single-host benchmark (Windows)
@@ -92,10 +94,8 @@ mini2-chunks/
 │   └── wait_for_leader.py             # Leader readiness check utility
 │
 ├── benchmark_unified.py               # Unified benchmark tool with real-time visualization
-│
 ├── .gitignore                         # Git ignore patterns
 ├── .venv/                             # Virtual environment (ignored by git)
-├── benchmark.py                       # Benchmark implementation
 ├── build_proto.sh                     # Protocol buffer generation script
 ├── client.py                          # Client for testing queries
 ├── node.py                            # Process node implementation
@@ -106,8 +106,7 @@ mini2-chunks/
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
 ├── test_system.py                     # System test suite
-├── two_hosts_config.json              # Two-host configuration
-└── verify_data_loading.py             # Data loading verification script
+└── two_hosts_config.json              # Two-host configuration
 ```
 
 **Important Notes:**
@@ -121,7 +120,7 @@ mini2-chunks/
 - Python 3.7+
 - Virtual environment (recommended)
 - Network connectivity between hosts (for two-host setup)
-- **Dataset files**: The `datasets/2020-fire/data/` folder must contain CSV files
+- **Dataset files**: The `datasets/2020-fire/data/` folder must contain CSV files organized by date
 
 ## Setup
 
@@ -148,16 +147,16 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
 
 **Windows:**
 ```bash
-cd scripts
-start_single_host_windows.bat
+scripts\start_single_host_windows.bat
 ```
 
 **macOS/Linux:**
 ```bash
-cd scripts
-chmod +x start_single_host_macos.sh
-./start_single_host_macos.sh
+chmod +x scripts/start_single_host_macos.sh
+./scripts/start_single_host_macos.sh
 ```
+
+This starts all processes (A-F) on localhost (127.0.0.1) with ports 60051-60056.
 
 Press Ctrl+C to stop all processes.
 
@@ -167,202 +166,309 @@ Start servers on both machines:
 
 **Windows (192.168.1.2):**
 ```bash
-cd scripts
-start_two_hosts_windows.bat
+scripts\start_two_hosts_windows.bat
 ```
 Starts: A (Leader), B (Team Leader), D (Worker)
 
 **macOS (192.168.1.1):**
 ```bash
-cd scripts
-chmod +x start_two_hosts_macos.sh
-./start_two_hosts_macos.sh
+chmod +x scripts/start_two_hosts_macos.sh
+./scripts/start_two_hosts_macos.sh
 ```
 Starts: C (Worker), E (Team Leader), F (Worker)
 
 ## Testing
 
-### Verify Data Loading
-```bash
-python verify_data_loading.py one_host_config.json
-```
-
 ### Basic Query Test
 ```bash
-python client.py 192.168.1.2 60051 query PM2.5 5 35
+python client.py 127.0.0.1 60051 query PM2.5 5 35
 ```
 
 ### System Test
 ```bash
-python test_system.py 192.168.1.2 60051
+python test_system.py 127.0.0.1 60051
 ```
 
 ### Metrics
 ```bash
-python client.py 192.168.1.2 60051 metrics
+python client.py 127.0.0.1 60051 metrics
 ```
+
+## Strategy Configuration
+
+The system implements a strategy pattern for configurable behavior in forwarding, chunking, and fairness. This allows testing different approaches to coordination and request control as required by mini2-chunks.md.
+
+### Forwarding Strategies
+
+Controls how queries are forwarded to neighbors:
+
+- **`round_robin`** (default): Sequential round-robin forwarding
+  - Processes neighbors one by one in round-robin order
+  - Can be used with async flag for parallel execution while maintaining order
+- **`parallel`**: Parallel forwarding to all neighbors simultaneously
+  - Uses custom threading implementation (not gRPC async APIs)
+  - All neighbors queried in parallel for maximum throughput
+- **`capacity`**: Capacity-based forwarding (least-loaded first)
+  - Sorts neighbors by load (active/capacity ratio)
+  - Routes to least-loaded neighbors first
+
+### Chunking Strategies
+
+Controls how results are chunked:
+
+- **`fixed`** (default): Fixed chunk size (configurable via `--chunk-size`)
+- **`adaptive`**: Adaptive chunk size based on result size
+  - Small results (< 100 records): 50 records per chunk
+  - Medium results (< 500 records): base size
+  - Large results (< 2000 records): 2x base size
+  - Very large (> 2000 records): max size (1000)
+- **`query_based`**: Chunk size based on query limit
+  - Uses 10% of query limit as chunk size
+  - Minimum: base size, Maximum: 500
+
+### Fairness Strategies
+
+Controls request admission and fairness between teams:
+
+- **`strict`** (default): Strict per-team limits
+  - Each team has a hard limit (default: 60 concurrent requests)
+  - No flexibility when one team is overloaded
+- **`weighted`**: Weighted fairness based on team load
+  - Allows slight over-limit if other teams are underutilized
+  - Better overall system utilization
+- **`hybrid`**: Hybrid approach
+  - Strict when system load > 80%
+  - Weighted when system load < 80%
+  - Balances fairness and performance
+
+### Async vs Blocking Forwarding
+
+The system supports both blocking and async forwarding modes:
+
+- **Blocking mode** (default): Sequential forwarding, one neighbor at a time
+- **Async mode** (`--async-forwarding` flag): Parallel forwarding using custom threading
+  - Uses Python `threading` module (not gRPC async APIs as per requirements)
+  - Leader forwards to team leaders in parallel
+  - Team leaders forward to workers in parallel
+  - Local data queries remain blocking
+
+### Usage
+
+Configure strategies when starting nodes:
+
+```bash
+# Example: Parallel async forwarding with adaptive chunking and weighted fairness
+python node.py config.json A --forwarding-strategy parallel --async-forwarding --chunking-strategy adaptive --fairness-strategy weighted --chunk-size 200
+
+# Example: Round-robin blocking with fixed chunking (default)
+python node.py config.json A
+
+# Example: Capacity-based async forwarding
+python node.py config.json A --forwarding-strategy capacity --async-forwarding
+```
+
+All processes in a deployment can use different strategies, allowing comparison of approaches.
 
 ## Benchmarking
 
-### Single-Host Benchmark
+### Unified Benchmark Tool
 
-Automatically starts servers, runs benchmark, stops servers:
+The unified benchmark tool (`benchmark_unified.py`) provides real-time visualization showing:
+- Server output from all processes across all hosts in real-time
+- Data distribution between hosts (macOS and Windows)
+- Process metrics (active requests, queue size, processing time)
+- Benchmark statistics (latency, throughput, success rate)
+- Data processing indicators (loaded ✓, processing →, ready ✓)
+- Recent log output from each process
+
+### Single-Host Benchmark
 
 **Windows:**
 ```bash
-cd scripts
-benchmark_single_host_windows.bat [requests] [concurrency]
+scripts\benchmark_single_host.bat
 ```
 
 **macOS/Linux:**
 ```bash
-cd scripts
-chmod +x benchmark_single_host_macos.sh
-./benchmark_single_host_macos.sh [requests] [concurrency]
+./scripts/benchmark_single_host.sh
 ```
 
-Default: 200 requests, 20 concurrency
+**With options:**
+```bash
+scripts\benchmark_single_host.bat --num-requests 200 --concurrency 20 --update-interval 0.5
+```
+
 Results saved to: `logs/windows/benchmark_results.json` or `logs/macos/benchmark_results.json`
 
 ### Two-Host Benchmark
 
-Requires servers to be running on both hosts:
-
-**Windows:**
+**Windows (from Windows machine):**
 ```bash
-cd scripts
-benchmark_two_hosts.bat [host] [port] [requests] [concurrency]
+scripts\benchmark_two_hosts.bat
 ```
 
-**macOS/Linux:**
+**macOS (from macOS machine):**
 ```bash
-cd scripts
-chmod +x benchmark_two_hosts.sh
-./benchmark_two_hosts.sh [host] [port] [requests] [concurrency]
+./scripts/benchmark_two_hosts.sh
 ```
 
-Default: host=192.168.1.2, port=60051, requests=200, concurrency=20
-Results saved to: `logs/two_hosts/benchmark_results_two_hosts.json`
-Process logs saved to: `logs/two_hosts/` with filenames indicating platform and IP (e.g., `windows_192.168.1.2_node_a.log`, `macos_192.168.1.1_node_c.log`)
+**With options:**
+```bash
+scripts\benchmark_two_hosts.bat --num-requests 200 --concurrency 20
+```
 
-**Log structure:**
-Both hosts write logs to `logs/two_hosts/` with filenames indicating platform and IP:
-- Windows (192.168.1.2): `windows_192.168.1.2_node_*.log`
-- macOS (192.168.1.1): `macos_192.168.1.1_node_*.log`
+Results saved to: `logs/two_hosts/benchmark_results.json`
 
-**View logs:**
-- **Windows**: `scripts\view_two_hosts_logs.bat` - Shows logs from Windows host
-- **macOS**: `scripts/view_two_hosts_logs.sh` - Shows logs from macOS host
+### Benchmark Options
 
-**Note**: Logs are stored locally on each host. To view logs from both hosts, check `logs/two_hosts/` on each respective machine.
+All benchmark scripts support these options:
+- `--num-requests N`: Number of requests (default: 100)
+- `--concurrency N`: Concurrency level (default: 10)
+- `--update-interval N`: Dashboard update interval in seconds (default: 1.0)
+- `--output-dir DIR`: Output directory for results (default: logs/windows or logs/two_hosts)
+
+### Real-Time Dashboard
+
+The benchmark tool displays a real-time dashboard that updates every second (configurable), showing:
+
+**Process Status:**
+- Process ID, role, team for each process
+- Online/offline status
+- Active requests count
+- Queue size
+- Average processing time
+- Data files loaded
+- Processing indicators (→ processing, ✓ loaded, ✓ ready)
+
+**Server Output:**
+- Recent log lines from each process
+- Query execution logs
+- Data processing logs
+
+**Benchmark Statistics:**
+- Total requests, successful, failed
+- Success rate percentage
+- Average, P95, P99 latency
+- Throughput (requests per second)
+- Total records returned
+
+**Data Distribution:**
+- Files loaded per host
+- Active requests per host
+- Queue sizes per host
+- Online process count per host
+
+The dashboard clearly shows:
+- Whether data is being distributed between macOS and Windows
+- Whether benchmarking is working correctly
+- Which processes are processing queries
+- Real-time performance metrics
 
 ## Configuration
 
 Configuration files:
 - `one_host_config.json` - Single-host setup (all processes on 127.0.0.1)
-- `two_hosts_config.json` - Two-host setup (Windows + macOS)
+- `two_hosts_config.json` - Two-host setup (Windows 192.168.1.2 + macOS 192.168.1.1)
 
 Each process requires:
 - `id`: Process identifier (A-F)
 - `role`: leader, team_leader, or worker
 - `team`: green or pink
 - `host`: IP address or hostname
-- `port`: Listening port
-- `neighbors`: List of neighbor process IDs
+- `port`: Listening port (60051-60056)
+- `neighbors`: List of neighbor process IDs (defines overlay topology)
 
 ## gRPC API
 
 Defined in `overlay.proto`:
 
-- `Query` - Submit query with filters, returns query UID and chunk metadata
-- `GetChunk` - Retrieve data chunks by UID and chunk index
-- `GetMetrics` - Get process metrics (queue size, active requests, etc.)
-- `Shutdown` - Graceful shutdown (optional)
+- **`Query`** - Submit query with filters, returns query UID and chunk metadata
+  - Returns: `uid`, `total_chunks`, `total_records`, `hops`, `status`
+- **`GetChunk`** - Retrieve data chunks by UID and chunk index
+  - Returns: `uid`, `chunk_index`, `total_chunks`, `data` (JSON), `is_last`, `status`
+- **`GetMetrics`** - Get process metrics (queue size, active requests, etc.)
+  - Returns: `process_id`, `role`, `team`, `active_requests`, `queue_size`, `avg_processing_time_ms`, `data_files_loaded`, `is_healthy`
+- **`Shutdown`** - Graceful shutdown (optional)
 
 ## Implementation
 
-Core modules in `overlay_core/`:
+### Core Modules (`overlay_core/`)
 
-- `OverlayFacade` - Main facade coordinating queries, caching, and routing
-- `ProxyRegistry` - Manages proxies for remote neighbor communication
-- `DataStore` - Team-specific data loading and filtering
-- `ResultCache` - TTL-based chunk caching
-- `RequestAdmissionController` - Capacity management and fairness
-- `MetricsTracker` - Performance metrics collection
+- **`OverlayFacade`** - Main facade orchestrating queries, caching, routing, and strategies
+  - Coordinates between all subsystems
+  - Handles query execution, forwarding, and result aggregation
+  - Manages strategy selection and execution
+  
+- **`ProxyRegistry`** - Manages proxies for remote neighbor communication
+  - Lazy proxy creation per neighbor
+  - Handles gRPC channel management
+  
+- **`DataStore`** - Team-specific data loading and filtering
+  - Loads CSV files for assigned date ranges
+  - Enforces team-specific data partitioning
+  - Provides query filtering capabilities
+  
+- **`ResultCache`** - TTL-based chunk caching
+  - Stores `ChunkedResult` objects with expiration
+  - Thread-safe cache with automatic eviction
+  
+- **`RequestAdmissionController`** - Capacity management and fairness
+  - Admits/rejects requests based on capacity limits
+  - Implements fairness strategies (strict, weighted, hybrid)
+  - Tracks active requests per team
+  
+- **`MetricsTracker`** - Performance metrics collection
+  - Tracks processing times
+  - Provides snapshot of current metrics
+  
+- **`strategies.py`** - Strategy pattern implementations
+  - Forwarding strategies (RoundRobin, Parallel, CapacityBased)
+  - Chunking strategies (Fixed, Adaptive, QueryBased)
+  - Fairness strategies (StrictPerTeam, Weighted, Hybrid)
+  - Custom async implementation using threading (not gRPC async)
 
-## Strategy Configuration
+### Design Patterns
 
-The system supports multiple strategies for forwarding, chunking, and fairness:
+- **Facade Pattern**: `OverlayFacade` provides unified interface to complex subsystem
+- **Proxy Pattern**: `ProxyRegistry` and `NodeProxy` hide remote gRPC complexity
+- **Strategy Pattern**: Configurable forwarding, chunking, and fairness algorithms
+- **Template Method**: Strategy base classes define common interface
 
-### Forwarding Strategies
-- `round_robin` (default): Sequential round-robin forwarding
-- `parallel`: Parallel forwarding to all neighbors
-- `capacity`: Capacity-based forwarding (least-loaded first)
+### Async Implementation
 
-### Chunking Strategies
-- `fixed` (default): Fixed chunk size
-- `adaptive`: Adaptive chunk size based on result size
-- `query_based`: Chunk size based on query limit
-
-### Fairness Strategies
-- `strict` (default): Strict per-team limits
-- `weighted`: Weighted fairness based on team load
-- `hybrid`: Hybrid approach (strict when high load, weighted when low load)
-
-### Usage
-
-Configure strategies when starting nodes:
-```bash
-python node.py config.json A --forwarding-strategy parallel --async-forwarding --chunking-strategy adaptive --fairness-strategy weighted
-```
-
-## Benchmarking
-
-### Unified Benchmark Tool
-
-The unified benchmark tool provides real-time visualization showing:
-- Server output from all processes across all hosts
-- Data distribution between hosts (macOS and Windows)
-- Process metrics (active requests, queue size, processing time)
-- Benchmark statistics (latency, throughput, success rate)
-- Data processing indicators (loaded, processing, ready)
-
-**Single-host benchmark:**
-```bash
-# Windows
-scripts\benchmark_single_host.bat
-
-# macOS/Linux
-./scripts/benchmark_single_host.sh
-```
-
-**Two-host benchmark:**
-```bash
-# Windows (from Windows machine)
-scripts\benchmark_two_hosts.bat
-
-# macOS (from macOS machine)
-./scripts/benchmark_two_hosts.sh
-```
-
-**Options (can be passed to any benchmark script):**
-- `--num-requests N`: Number of requests (default: 100)
-- `--concurrency N`: Concurrency level (default: 10)
-- `--update-interval N`: Dashboard update interval in seconds (default: 1.0)
-- `--output-dir DIR`: Output directory for results (default: logs/windows or logs/two_hosts)
-
-The benchmark tool displays a real-time dashboard that updates every second, showing:
-- Process status across all hosts
-- Active requests and queue sizes
-- Data files loaded per process
-- Recent server log output
-- Benchmark statistics (latency, throughput, records returned)
-- Data distribution across hosts
-
-Results are saved to `logs/benchmark_results.json`.
+As per mini2-chunks.md requirements:
+- **Custom async implementation** using Python `threading` module
+- **NOT using gRPC async APIs** (as specified in requirements)
+- Parallel forwarding implemented via threads, not asyncio
+- Blocking operations remain for local data access and cache retrieval
 
 ## Network Requirements
 
 - TCP ports 60051-60056 must be open between hosts
 - Hosts should be on the same subnet or have routing configured
 - Network latency < 100ms recommended for optimal performance
+- For two-host setup: Windows should be on 192.168.1.2, macOS on 192.168.1.1
+
+## Features
+
+- ✅ Multi-process coordination with leader-team leader-worker hierarchy
+- ✅ Team-based data partitioning (non-overlapping)
+- ✅ Chunked query responses for memory efficiency
+- ✅ Configurable forwarding strategies (round-robin, parallel, capacity-based)
+- ✅ Custom async implementation (threading-based, not gRPC async)
+- ✅ Configurable chunking strategies (fixed, adaptive, query-based)
+- ✅ Fairness algorithms (strict, weighted, hybrid)
+- ✅ Real-time benchmarking with visual monitoring
+- ✅ Cross-host data distribution visibility
+- ✅ TTL-based result caching
+- ✅ Request admission control and capacity management
+- ✅ Comprehensive metrics collection
+
+## Notes
+
+- The system adheres to mini2-chunks.md requirements:
+  - Teams have non-overlapping data (no cross-team replication)
+  - Leader does not hold data, only coordinates
+  - Custom async implementation (not gRPC async APIs)
+  - Multiple strategies for coordination and request control
+  - Chunked responses for large result sets
