@@ -11,10 +11,46 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
 from collections import defaultdict
+from io import StringIO
+from contextlib import contextmanager
 
 import overlay_pb2
 import overlay_pb2_grpc
 import grpc
+
+
+class OutputCapture:
+    """Captures stdout and stderr to a buffer."""
+    
+    def __init__(self):
+        self.stdout_buffer = StringIO()
+        self.stderr_buffer = StringIO()
+        self.original_stdout = sys.stdout
+        self.original_stderr = sys.stderr
+        
+    def start(self):
+        """Start capturing output."""
+        sys.stdout = self
+        sys.stderr = self
+        
+    def stop(self):
+        """Stop capturing output."""
+        sys.stdout = self.original_stdout
+        sys.stderr = self.original_stderr
+        
+    def write(self, text):
+        """Write to both original stream and buffer."""
+        self.original_stdout.write(text)
+        self.stdout_buffer.write(text)
+        self.original_stdout.flush()
+        
+    def flush(self):
+        """Flush the original stream."""
+        self.original_stdout.flush()
+        
+    def get_output(self) -> str:
+        """Get all captured output."""
+        return self.stdout_buffer.getvalue()
 
 
 class UnifiedBenchmark:
@@ -36,6 +72,7 @@ class UnifiedBenchmark:
         self.monitoring = False
         self.process_metrics_history = defaultdict(list)
         self.server_outputs = defaultdict(list)
+        self.output_capture = OutputCapture()
 
     def _load_config(self):
         """Load overlay configuration."""
@@ -343,148 +380,203 @@ class UnifiedBenchmark:
         log_dir: Optional[str] = None,
     ) -> Dict:
         """Run benchmark with real-time monitoring."""
-        print("=" * 120)
-        print("UNIFIED BENCHMARK WITH REAL-TIME MONITORING")
-        print("=" * 120)
-        print(f"Requests: {num_requests}, Concurrency: {concurrency}")
-        print("=" * 120)
+        # Start capturing output
+        self.output_capture.start()
         
-        log_path = Path(log_dir) if log_dir else None
-        results = []
-        errors = 0
-        lock = threading.Lock()
-        monitoring = [True]
-        
-        # Start monitoring thread
-        def monitor_loop():
-            iteration = 0
-            while monitoring[0]:
-                iteration += 1
-                metrics = self.collect_process_metrics()
-                logs = self.read_server_logs(log_path, lines=3) if log_path else {}
-                
-                # Compute benchmark stats so far
-                with lock:
-                    current_results = list(results)
-                    current_errors = errors
-                
-                benchmark_stats = None
-                if current_results:
-                    latencies = [r["latency"] for r in current_results if r.get("success")]
-                    total_records = sum(r.get("records", 0) for r in current_results)
-                    successful = sum(1 for r in current_results if r.get("success"))
-                    failed = current_errors + len(current_results) - successful
-                    
-                    if latencies:
-                        sorted_latencies = sorted(latencies)
-                        benchmark_stats = {
-                            "total_requests": len(current_results),
-                            "successful_requests": successful,
-                            "failed_requests": failed,
-                            "statistics": {
-                                "success_rate": (successful / len(current_results) * 100) if current_results else 0,
-                                "avg_latency_ms": sum(latencies) / len(latencies),
-                                "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
-                                "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
-                                "throughput_req_per_sec": len(current_results) / (time.time() - start_time) if time.time() > start_time else 0,
-                                "total_records_returned": total_records,
-                            },
-                        }
-                
-                self.display_dashboard(metrics, logs, benchmark_stats)
-                time.sleep(update_interval)
-        
-        start_time = time.time()
-        monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
-        monitor_thread.start()
-        time.sleep(1)  # Let monitoring start
-        
-        # Run benchmark
-        query_params = {
-            "parameter": "PM2.5",
-            "min_value": 10.0,
-            "max_value": 50.0,
-            "limit": 100,
-        }
-        
-        def worker(worker_id: int, num_per_worker: int):
-            nonlocal errors
-            local_results = []
-            for i in range(num_per_worker):
-                result = self.send_query_request(query_params)
-                local_results.append(result)
-                if not result.get("success"):
-                    with lock:
-                        errors += 1
-                time.sleep(0.01)
+        try:
+            print("=" * 120)
+            print("UNIFIED BENCHMARK WITH REAL-TIME MONITORING")
+            print("=" * 120)
+            print(f"Requests: {num_requests}, Concurrency: {concurrency}")
+            print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print("=" * 120)
             
-            with lock:
-                results.extend(local_results)
-        
-        # Start workers
-        workers = []
-        requests_per_worker = num_requests // concurrency
-        for i in range(concurrency):
-            worker_id = i
-            num_reqs = requests_per_worker + (1 if i < num_requests % concurrency else 0)
-            thread = threading.Thread(target=worker, args=(worker_id, num_reqs))
-            thread.start()
-            workers.append(thread)
-        
-        # Wait for workers
-        for thread in workers:
-            thread.join()
-        
-        # Stop monitoring
-        monitoring[0] = False
-        time.sleep(update_interval + 0.5)
-        
-        # Final metrics
-        final_metrics = self.collect_process_metrics()
-        final_logs = self.read_server_logs(log_path, lines=5) if log_path else {}
-        
-        # Compute final statistics
-        latencies = [r["latency"] for r in results if r.get("success")]
-        total_records = sum(r.get("records", 0) for r in results)
-        successful = sum(1 for r in results if r.get("success"))
-        failed = errors
-        duration = time.time() - start_time
-        
-        if latencies:
-            sorted_latencies = sorted(latencies)
-            statistics = {
-                "success_rate": (successful / len(results) * 100) if results else 0,
-                "avg_latency_ms": sum(latencies) / len(latencies),
-                "min_latency_ms": min(latencies),
-                "max_latency_ms": max(latencies),
-                "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
-                "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
-                "throughput_req_per_sec": len(results) / duration if duration > 0 else 0,
-                "total_records_returned": total_records,
-                "avg_records_per_query": total_records / successful if successful > 0 else 0,
+            log_path = Path(log_dir) if log_dir else None
+            results = []
+            errors = 0
+            lock = threading.Lock()
+            monitoring = [True]
+            
+            # Start monitoring thread
+            def monitor_loop():
+                iteration = 0
+                while monitoring[0]:
+                    iteration += 1
+                    metrics = self.collect_process_metrics()
+                    logs = self.read_server_logs(log_path, lines=3) if log_path else {}
+                    
+                    # Compute benchmark stats so far
+                    with lock:
+                        current_results = list(results)
+                        current_errors = errors
+                    
+                    benchmark_stats = None
+                    if current_results:
+                        latencies = [r["latency"] for r in current_results if r.get("success")]
+                        total_records = sum(r.get("records", 0) for r in current_results)
+                        successful = sum(1 for r in current_results if r.get("success"))
+                        failed = current_errors + len(current_results) - successful
+                        
+                        if latencies:
+                            sorted_latencies = sorted(latencies)
+                            benchmark_stats = {
+                                "total_requests": len(current_results),
+                                "successful_requests": successful,
+                                "failed_requests": failed,
+                                "statistics": {
+                                    "success_rate": (successful / len(current_results) * 100) if current_results else 0,
+                                    "avg_latency_ms": sum(latencies) / len(latencies),
+                                    "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
+                                    "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
+                                    "throughput_req_per_sec": len(current_results) / (time.time() - start_time) if time.time() > start_time else 0,
+                                    "total_records_returned": total_records,
+                                },
+                            }
+                    
+                    self.display_dashboard(metrics, logs, benchmark_stats)
+                    time.sleep(update_interval)
+            
+            start_time = time.time()
+            monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
+            monitor_thread.start()
+            time.sleep(1)  # Let monitoring start
+            
+            # Run benchmark
+            query_params = {
+                "parameter": "PM2.5",
+                "min_value": 10.0,
+                "max_value": 50.0,
+                "limit": 100,
             }
-        else:
-            statistics = {}
+            
+            def worker(worker_id: int, num_per_worker: int):
+                nonlocal errors
+                local_results = []
+                for i in range(num_per_worker):
+                    result = self.send_query_request(query_params)
+                    local_results.append(result)
+                    if not result.get("success"):
+                        with lock:
+                            errors += 1
+                    time.sleep(0.01)
+                
+                with lock:
+                    results.extend(local_results)
         
-        benchmark_results = {
-            "total_requests": len(results),
-            "successful_requests": successful,
-            "failed_requests": failed,
-            "duration_seconds": duration,
-            "statistics": statistics,
-            "final_metrics": final_metrics,
-            "timestamp": time.time(),
-        }
-        
-        # Final display
-        self.display_dashboard(final_metrics, final_logs, benchmark_results)
-        
-        # Save results
-        output_file = self.output_dir / "benchmark_results.json"
-        with open(output_file, "w") as f:
-            json.dump(benchmark_results, f, indent=2, default=str)
-        
-        print(f"\nResults saved to: {output_file}")
+            # Start workers
+            workers = []
+            requests_per_worker = num_requests // concurrency
+            for i in range(concurrency):
+                worker_id = i
+                num_reqs = requests_per_worker + (1 if i < num_requests % concurrency else 0)
+                thread = threading.Thread(target=worker, args=(worker_id, num_reqs))
+                thread.start()
+                workers.append(thread)
+            
+            # Wait for workers
+            for thread in workers:
+                thread.join()
+            
+            # Stop monitoring
+            monitoring[0] = False
+            time.sleep(update_interval + 0.5)
+            
+            # Final metrics
+            final_metrics = self.collect_process_metrics()
+            final_logs = self.read_server_logs(log_path, lines=5) if log_path else {}
+            
+            # Compute final statistics
+            latencies = [r["latency"] for r in results if r.get("success")]
+            total_records = sum(r.get("records", 0) for r in results)
+            successful = sum(1 for r in results if r.get("success"))
+            failed = errors
+            duration = time.time() - start_time
+            
+            if latencies:
+                sorted_latencies = sorted(latencies)
+                statistics = {
+                    "success_rate": (successful / len(results) * 100) if results else 0,
+                    "avg_latency_ms": sum(latencies) / len(latencies),
+                    "min_latency_ms": min(latencies),
+                    "max_latency_ms": max(latencies),
+                    "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
+                    "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
+                    "throughput_req_per_sec": len(results) / duration if duration > 0 else 0,
+                    "total_records_returned": total_records,
+                    "avg_records_per_query": total_records / successful if successful > 0 else 0,
+                }
+            else:
+                statistics = {}
+            
+            benchmark_results = {
+                "total_requests": len(results),
+                "successful_requests": successful,
+                "failed_requests": failed,
+                "duration_seconds": duration,
+                "statistics": statistics,
+                "final_metrics": final_metrics,
+                "timestamp": time.time(),
+            }
+            
+            # Final display
+            self.display_dashboard(final_metrics, final_logs, benchmark_results)
+            
+            # Stop capturing output
+            self.output_capture.stop()
+            
+            # Save all console output to text file
+            output_file = self.output_dir / "benchmark_results.txt"
+            captured_output = self.output_capture.get_output()
+            
+            # Add final summary section
+            summary = f"""
+{'=' * 120}
+BENCHMARK SUMMARY
+{'=' * 120}
+Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Duration: {duration:.2f} seconds
+
+Total Requests: {len(results)}
+Successful: {successful}
+Failed: {failed}
+Success Rate: {statistics.get('success_rate', 0):.2f}%
+
+Performance Metrics:
+  Average Latency: {statistics.get('avg_latency_ms', 0):.2f} ms
+  Min Latency: {statistics.get('min_latency_ms', 0):.2f} ms
+  Max Latency: {statistics.get('max_latency_ms', 0):.2f} ms
+  P95 Latency: {statistics.get('p95_latency_ms', 0):.2f} ms
+  P99 Latency: {statistics.get('p99_latency_ms', 0):.2f} ms
+  Throughput: {statistics.get('throughput_req_per_sec', 0):.2f} req/sec
+
+Data Metrics:
+  Total Records Returned: {statistics.get('total_records_returned', 0)}
+  Average Records per Query: {statistics.get('avg_records_per_query', 0):.2f}
+
+Final Process Metrics:
+"""
+            for process_id, metrics in final_metrics.items():
+                if metrics.get("status") == "online":
+                    summary += f"  {process_id} ({metrics.get('role', 'unknown')}/{metrics.get('team', 'unknown')}): "
+                    summary += f"Active={metrics.get('active_requests', 0)}, "
+                    summary += f"Queue={metrics.get('queue_size', 0)}, "
+                    summary += f"AvgTime={metrics.get('avg_processing_time_ms', 0):.2f}ms, "
+                    summary += f"Files={metrics.get('data_files_loaded', 0)}\n"
+            
+            summary += f"{'=' * 120}\n"
+            
+            # Write complete output to file
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(captured_output)
+                f.write(summary)
+            
+            print(f"\n{'=' * 120}")
+            print(f"Complete benchmark output saved to: {output_file}")
+            print(f"{'=' * 120}")
+        finally:
+            # Ensure output capture is stopped even on error
+            if hasattr(self, 'output_capture'):
+                self.output_capture.stop()
         
         return benchmark_results
 

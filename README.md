@@ -56,12 +56,12 @@ mini2-chunks/
 │   │   ├── node_d.log                 # Process D (Worker) logs
 │   │   ├── node_e.log                 # Process E (Team Leader) logs
 │   │   ├── node_f.log                 # Process F (Worker) logs
-│   │   └── benchmark_results.json     # Single-host benchmark results
+│   │   └── benchmark_results.txt       # Single-host benchmark results (full console output)
 │   ├── macos/                         # Single-host macOS logs
 │   │   ├── node_a.log
 │   │   ├── node_b.log
 │   │   ├── ... (same structure as windows/)
-│   │   └── benchmark_results.json
+│   │   └── benchmark_results.txt
 │   └── two_hosts/                     # Two-host setup logs (filtered by IP and platform)
 │       ├── windows_192.168.1.2_node_a.log    # Windows host, Process A (Leader)
 │       ├── windows_192.168.1.2_node_b.log    # Windows host, Process B (Team Leader)
@@ -69,7 +69,7 @@ mini2-chunks/
 │       ├── macos_192.168.1.1_node_c.log      # macOS host, Process C (Worker)
 │       ├── macos_192.168.1.1_node_e.log      # macOS host, Process E (Team Leader)
 │       ├── macos_192.168.1.1_node_f.log      # macOS host, Process F (Worker)
-│       └── benchmark_results.json            # Two-host benchmark results
+│       └── benchmark_results.txt             # Two-host benchmark results (full console output)
 │
 ├── overlay_core/                      # Core implementation modules
 │   ├── __init__.py
@@ -318,7 +318,7 @@ scripts\benchmark_single_host.bat
 scripts\benchmark_single_host.bat --num-requests 200 --concurrency 20 --update-interval 0.5
 ```
 
-Results saved to: `logs/windows/benchmark_results.json` or `logs/macos/benchmark_results.json`
+Results saved to: `logs/windows/benchmark_results.txt` or `logs/macos/benchmark_results.txt`
 
 ### Two-Host Benchmark
 
@@ -337,7 +337,7 @@ scripts\benchmark_two_hosts.bat
 scripts\benchmark_two_hosts.bat --num-requests 200 --concurrency 20
 ```
 
-Results saved to: `logs/two_hosts/benchmark_results.json`
+Results saved to: `logs/two_hosts/benchmark_results.txt`
 
 ### Benchmark Options
 
