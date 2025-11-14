@@ -64,8 +64,22 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 echo
+echo "============================================================"
 echo "macOS-side processes started: C, E, F"
-echo "Make sure Windows-side processes (A, B, D) are started on 192.168.1.2"
+echo "============================================================"
+echo
+echo "Process information:"
+echo "  - Process C (Worker):     192.168.1.1:60053"
+echo "  - Process E (Team Leader): 192.168.1.1:60055"
+echo "  - Process F (Worker):     192.168.1.1:60056"
+echo
+echo "Log files location: logs/two_hosts/"
+echo "  - macos_192.168.1.1_node_c.log"
+echo "  - macos_192.168.1.1_node_e.log"
+echo "  - macos_192.168.1.1_node_f.log"
+echo
+echo "View logs: scripts/view_two_hosts_logs.sh"
+echo
 echo "Press Ctrl+C to stop macOS processes..."
 while true; do
     sleep 1

@@ -15,6 +15,64 @@ import overlay_pb2
 import overlay_pb2_grpc
 
 
+def show_log_summary(log_dir):
+    """Show summary of recent log entries from both hosts."""
+    import os
+    from pathlib import Path
+    
+    log_path = Path(log_dir)
+    if not log_path.exists():
+        print(f"Log directory not found: {log_dir}")
+        return
+    
+    # Windows logs
+    print("\n--- Windows Host (192.168.1.2) ---")
+    windows_logs = {
+        "A (Leader)": log_path / "windows_192.168.1.2_node_a.log",
+        "B (Team Leader)": log_path / "windows_192.168.1.2_node_b.log",
+        "D (Worker)": log_path / "windows_192.168.1.2_node_d.log",
+    }
+    
+    for process_name, log_file in windows_logs.items():
+        if log_file.exists():
+            try:
+                with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = f.readlines()
+                    # Get last 3-5 meaningful lines (skip empty lines)
+                    recent = [l for l in lines[-10:] if l.strip()][-3:]
+                    if recent:
+                        print(f"\n  {process_name} ({log_file.name}):")
+                        for line in recent:
+                            print(f"    {line.rstrip()}")
+            except Exception as e:
+                print(f"  {process_name}: Error reading log: {e}")
+        else:
+            print(f"  {process_name}: Log file not found")
+    
+    # macOS logs
+    print("\n--- macOS Host (192.168.1.1) ---")
+    macos_logs = {
+        "C (Worker)": log_path / "macos_192.168.1.1_node_c.log",
+        "E (Team Leader)": log_path / "macos_192.168.1.1_node_e.log",
+        "F (Worker)": log_path / "macos_192.168.1.1_node_f.log",
+    }
+    
+    for process_name, log_file in macos_logs.items():
+        if log_file.exists():
+            try:
+                with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = f.readlines()
+                    # Get last 3-5 meaningful lines (skip empty lines)
+                    recent = [l for l in lines[-10:] if l.strip()][-3:]
+                    if recent:
+                        print(f"\n  {process_name} ({log_file.name}):")
+                        for line in recent:
+                            print(f"    {line.rstrip()}")
+            except Exception as e:
+                print(f"  {process_name}: Error reading log: {e}")
+        else:
+            print(f"  {process_name}: Log file not found (check macOS machine: 192.168.1.1)")
+
 def wait_for_leader(address, timeout=60):
     """Wait for leader to be ready."""
     start_time = time.time()
@@ -61,7 +119,26 @@ def main():
     print()
     
     if not wait_for_leader(f"{args.host}:{args.port}"):
-        print("ERROR: Could not connect to leader. Make sure servers are running.")
+        print("\n" + "=" * 80)
+        print("ERROR: Could not connect to leader.")
+        print("=" * 80)
+        print("\nMake sure servers are running on both hosts:")
+        print("\n1. On Windows (192.168.1.2):")
+        print("   cd scripts")
+        print("   start_two_hosts_windows.bat")
+        print("   - This starts: A (Leader), B (Team Leader), D (Worker)")
+        print("\n2. On macOS (192.168.1.1):")
+        print("   cd scripts")
+        print("   chmod +x start_two_hosts_macos.sh")
+        print("   ./start_two_hosts_macos.sh")
+        print("   - This starts: C (Worker), E (Team Leader), F (Worker)")
+        print("\n3. Check process logs in logs/two_hosts/ for errors:")
+        print("   - Windows: windows_192.168.1.2_node_*.log")
+        print("   - macOS: macos_192.168.1.1_node_*.log")
+        print("\n4. Verify connectivity:")
+        print(f"   - Can ping {args.host}?")
+        print(f"   - Is firewall allowing port {args.port}?")
+        print("=" * 80)
         sys.exit(1)
     
     print()
@@ -88,10 +165,23 @@ def main():
     print()
     print(f"Results saved to {output_file}")
     print("=" * 80)
+    
+    # Show log summary if available
     print()
-    print("Process logs location:")
-    print(f"  Windows (192.168.1.2): {output_dir}/windows_192.168.1.2_node_*.log")
-    print(f"  macOS (192.168.1.1): {output_dir}/macos_192.168.1.1_node_*.log")
+    print("PROCESS LOGS SUMMARY")
+    print("=" * 80)
+    show_log_summary(output_dir)
+    
+    print()
+    print("=" * 80)
+    print("To view complete logs from both hosts:")
+    print("  Windows: scripts\\view_two_hosts_logs.bat")
+    print("  macOS:   scripts/view_two_hosts_logs.sh")
+    print("=" * 80)
+    print("NOTE: macOS logs are on the macOS machine (192.168.1.1)")
+    print("      To view them, either:")
+    print("      1. Run view_two_hosts_logs.sh on the macOS machine")
+    print("      2. Access logs/two_hosts/ via network share")
     print("=" * 80)
 
 

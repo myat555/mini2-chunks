@@ -1,0 +1,802 @@
+[Overlay] A (leader/green) listening on 192.168.1.2:60051, dataset=datasets/2020-fire/data
+[Facade] A query 87fa6971: 100 records, 13.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 45127428: 100 records, 16.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query dc537432: 100 records, 20.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2cf8cc60: 100 records, 12.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c7c35068: 100 records, 18.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f86810db: 100 records, 21.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1cc40f59: 100 records, 20.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 32828469: 100 records, 11.4ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 011734ce: 100 records, 15.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d89875f0: 100 records, 7.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 46c4aa27: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b51cfe03: 100 records, 3.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9a9f204c: 100 records, 4.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 187fc644: 100 records, 3.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query cdcc2b61: 100 records, 3.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f20cccd3: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748378+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748551+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748379+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748287+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:50.7748656+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+
+
+
+[Facade] A query 88805fed: 100 records, 2054.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a05ac4bd: 100 records, 2057.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ac4184a5: 100 records, 2057.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 722778cf: 100 records, 2049.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e7d1907c: 100 records, 2052.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:50.7774163+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7773933+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748849+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.777445+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7773718+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7770507+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:50.7773785+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7773863+00:00"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748181+00:00"}"
+>
+
+
+
+
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:50.7748414+00:00"}"
+>
+
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:50.7748004+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] A query 738dc592: 100 records, 6.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query d1539e9a: 100 records, 9.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 408d0cbc: 100 records, 2037.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9c1b0663: 100 records, 2016.7ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 3c2745a4: 100 records, 2074.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 86da6c5b: 100 records, 2033.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query b3a36d86: 100 records, 2040.8ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 71a70d0c: 100 records, 2038.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query d1952768: 100 records, 2035.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c4acd589: 100 records, 2061.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a6d7ba1b: 100 records, 2083.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5843b394: 100 records, 2066.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c90f3dc2: 100 records, 2079.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c40684a1: 100 records, 7.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7ea3adbe: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f7a7e57f: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8d2db55f: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2ba2f88d: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2e69f7dd: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6f85dcde: 100 records, 4.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 89ada994: 100 records, 4.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7bdf1a9a: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 64852afa: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f8390341: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1615e1a9: 100 records, 3.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6b91617f: 100 records, 3.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 835ce12c: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8416971+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8417113+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:52.8417123+00:00"}"
+>
+
+[Facade] A query a7a7ee2e: 100 records, 2020.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 559ed51b: 100 records, 2051.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f0113d27: 100 records, 2000.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6eaabdf0: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8431945+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:52.8432419+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8417029+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8429849+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:52.8431813+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8417146+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8416971+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:52.8433074+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8417162+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8417278+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8432472+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:52.8416971+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+
+[Facade] A query 5a39ceeb: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:52.8432278+00:00"}"
+>
+
+
+
+
+
+
+
+
+
+[Facade] A query 9339ef98: 100 records, 2046.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8a4ccaa4: 100 records, 2050.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a9bcbeb2: 100 records, 2044.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query aec3f16f: 100 records, 2027.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 09722ac3: 100 records, 2051.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 98cc3562: 100 records, 2037.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 78cbf169: 100 records, 2043.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d8cdda99: 100 records, 2062.5ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query eaf3bc64: 100 records, 2068.8ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query c62eb416: 100 records, 2065.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 898ddb3e: 100 records, 2050.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query afbd88ce: 100 records, 2094.3ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query f5e3d3d7: 100 records, 2046.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e662c58d: 100 records, 9.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query e09332e8: 100 records, 9.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d09cdd02: 100 records, 7.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 97e5e8dd: 100 records, 6.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 07af3df5: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6711759b: 100 records, 4.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 60c72cea: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 339ad32e: 100 records, 5.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 0a1a85cb: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1750f69a: 100 records, 3.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2bbc58eb: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query dd84b9b6: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d62fae6b: 100 records, 4.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e85d0532: 100 records, 3.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030454+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030451+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9030451+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.903055+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030454+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+
+
+[Facade] A query 4dadb514: 100 records, 2032.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d0cbde1b: 100 records, 2021.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a584ccef: 100 records, 2037.4ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query d6debd83: 100 records, 2015.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query b26587e9: 100 records, 2011.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 3bcccf4b: 100 records, 3.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9030764+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030728+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9045124+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030544+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.90434+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9045437+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9045121+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9045261+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9045451+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+
+
+
+
+
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9030514+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9045255+00:00"}"
+>
+
+[Facade] A query 66a3ddd6: 100 records, 6.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ff9854e7: 100 records, 2017.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7a1767c9: 100 records, 2022.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 953a3fb0: 100 records, 2077.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 642611cb: 100 records, 2065.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 086bb365: 100 records, 2031.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.916977+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] A query 544719f6: 100 records, 2045.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5a6f9355: 100 records, 2022.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query cca1da76: 100 records, 2038.6ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query a24bd54b: 100 records, 2051.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 9c875f86: 100 records, 2009.0ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 7693f69d: 100 records, 2020.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query dc2399e1: 100 records, 24.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 609a2a2e: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f81c52a0: 100 records, 5.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9329527+00:00"}"
+>
+
+[Facade] A query bb732e07: 100 records, 6.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 595ae0ab: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 019ae1d8: 100 records, 26.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 60ffc43e: 100 records, 4.5ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9461233+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9461105+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] A query 5e83cd49: 100 records, 9.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+
+[Facade] A query a306a87c: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 29b130c3: 100 records, 24.7ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 4f468b60: 100 records, 27.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query fb64ff46: 100 records, 7.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 7b972377: 100 records, 6.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 6de63dab: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9599847+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9599846+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9616454+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9599901+00:00"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9615124+00:00"}"
+>
+
+
+
+[Facade] A query 7f7906ba: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 65649bb4: 100 records, 33.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 261e2b4a: 100 records, 26.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c9bd9e1e: 100 records, 26.4ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query cfd57dda: 100 records, 37.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 59e9c911: 100 records, 32.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query f91ce431: 100 records, 9.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9745028+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9744739+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9745117+00:00"}"
+>[Facade] A query f3d8fbb2: 100 records, 9.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+
+
+[Facade] A query df09a477: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9745047+00:00"}"
+>
+
+[Facade] A query 600cee94: 100 records, 31.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 46ae2d74: 100 records, 30.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query c03d9672: 100 records, 26.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2839195c: 100 records, 25.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1d493ae0: 100 records, 7.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7f4b0229: 100 records, 4.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:54.9883285+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9883284+00:00"}"
+>
+
+[Facade] A query a20def94: 100 records, 4.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:54.9883201+00:00"}"
+>
+[Facade] A query 0289a014: 100 records, 30.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query bef6ae79: 100 records, 27.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7a98a875: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 7447ecce: 100 records, 31.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query b68a0784: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0040983+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0040746+00:00"}"
+>
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0040544+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] A query 138494b9: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 8f9dc69b: 100 records, 8.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d4aa5ae0: 100 records, 23.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d5847ae5: 100 records, 26.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 86cee2cb: 100 records, 32.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query d173280e: 100 records, 5.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 48430d5c: 100 records, 5.7ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0204559+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.020461+00:00"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0204444+00:00"}"
+>
+[Facade] A query d4f23214: 100 records, 5.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query e13c28fc: 100 records, 26.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 728f631b: 100 records, 35.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 4d6eabae: 100 records, 6.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 55e9fab9: 100 records, 29.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 9a9ff3a8: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 60d41c5c: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0359005+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0359288+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0374309+00:00"}"
+>
+[Facade] A query 16d7279c: 100 records, 6.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query fb4ce945: 100 records, 27.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f5d47f37: 100 records, 27.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 980886aa: 100 records, 24.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7ed7eb71: 100 records, 7.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0510125+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0374102+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0510049+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.052578+00:00"}"
+>
+
+
+
+[Facade] A query c911d821: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0509954+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] A query 794a3887: 100 records, 6.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f15eba62: 100 records, 6.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query aa648fd0: 100 records, 51.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 5337881d: 100 records, 27.0ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query e160bd7a: 100 records, 36.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query ef5de91a: 100 records, 34.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 192c6011: 100 records, 26.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0664214+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0663946+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0664276+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+[Facade] A query 6f4d23f5: 100 records, 9.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query d6cc24d3: 100 records, 8.0ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query e51cc2cd: 100 records, 25.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 98bf5cc6: 100 records, 32.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ed71be60: 100 records, 24.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query ac28cb17: 100 records, 7.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0816088+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0816228+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0830979+00:00"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0962499+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+[Facade] A query 6c3508c3: 100 records, 4.6ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query d77111fb: 100 records, 6.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.0962431+00:00"}"
+>
+[Facade] A query 0d987109: 100 records, 21.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a514a108: 100 records, 30.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7cfb032b: 100 records, 19.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 848bd9d4: 100 records, 10.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query baaf9dd6: 100 records, 40.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query acf67f13: 100 records, 15.9ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query fdc87ff1: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.0978862+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] A query 00451157: 100 records, 7.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+
+[Facade] A query e5330796: 100 records, 23.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 56e427fc: 100 records, 3.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query f275a4dd: 100 records, 4.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1125993+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1138679+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1270854+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] A query ce72d23e: 100 records, 33.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 7c1e9709: 100 records, 8.9ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query 787b7211: 100 records, 18.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 18653f99: 100 records, 9.0ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] A query d8a497ab: 100 records, 30.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] A query 8d18bdf1: 100 records, 7.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1284829+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.127064+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1285923+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+
+
+[Facade] A query 92707785: 100 records, 6.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 11af849c: 100 records, 22.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query a8dd6265: 100 records, 32.1ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 1eca7e25: 100 records, 23.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.1420884+00:00"}"
+>
+[Facade] A query 9887f49f: 100 records, 30.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 086dc3db: 100 records, 5.8ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 2e976816: 100 records, 4.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.1435436+00:00"}"
+>
+[Facade] A query f92f3dae: 100 records, 37.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 913b7e7e: 100 records, 5.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1696343+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.16962+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2025-11-14T00:26:55.1711388+00:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)"}"
+>
+[Facade] A query ef445c05: 100 records, 31.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 02476c97: 100 records, 25.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query bb691622: 100 records, 34.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] A query 55b42a3d: 100 records, 4.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:55.1826473+00:00"}"
+>
+[Facade] A query d362d061: 100 records, 26.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] Failed forwarding to E (192.168.1.1:60055): <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.
+ -- 10061)"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:192.168.1.1:60055: ConnectEx: Connection refused (No connection could be made because the target machine actively refused it.\r\n -- 10061)", grpc_status:14, created_time:"2025-11-14T00:26:57.2638167+00:00"}"
+>
+[Facade] A query 179e0030: 100 records, 2082.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+^C

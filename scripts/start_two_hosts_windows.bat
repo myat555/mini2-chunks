@@ -5,7 +5,9 @@ echo Starting Windows-side processes for two-host configuration...
 echo This will start: A (Leader), B (Team Leader), D (Worker) on 192.168.1.2
 echo.
 
-set CONFIG=..\two_hosts_config.json
+cd /d "%~dp0\.."
+
+set CONFIG=two_hosts_config.json
 
 python --version >nul 2>&1
 if errorlevel 1 (
@@ -19,14 +21,12 @@ if not exist "%CONFIG%" (
 )
 
 :: Create logs directory structure
-if not exist "..\logs" mkdir ..\logs
-if not exist "..\logs\two_hosts" mkdir ..\logs\two_hosts
+if not exist "logs" mkdir logs
+if not exist "logs\two_hosts" mkdir logs\two_hosts
 
-if not exist "..\overlay_pb2.py" (
+if not exist "overlay_pb2.py" (
     echo Generating proto stubs...
-    cd ..
     python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
-    cd scripts
     if errorlevel 1 (
         echo Failed to generate proto files.
         exit /b 1
@@ -34,20 +34,37 @@ if not exist "..\overlay_pb2.py" (
 )
 
 echo Starting Process A (Leader) on 192.168.1.2:60051...
-start "Node A (Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% A > logs\two_hosts\windows_192.168.1.2_node_a.log 2>&1 && pause"
+start "Node A (Leader)" cmd /c "cd /d %~dp0\.. && python -u node.py %CONFIG% A > logs\two_hosts\windows_192.168.1.2_node_a.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process B (Team Leader) on 192.168.1.2:60052...
-start "Node B (Team Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% B > logs\two_hosts\windows_192.168.1.2_node_b.log 2>&1 && pause"
+start "Node B (Team Leader)" cmd /c "cd /d %~dp0\.. && python -u node.py %CONFIG% B > logs\two_hosts\windows_192.168.1.2_node_b.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process D (Worker) on 192.168.1.2:60054...
-start "Node D (Worker)" cmd /c "cd /d .. && python -u node.py %CONFIG% D > logs\two_hosts\windows_192.168.1.2_node_d.log 2>&1 && pause"
+start "Node D (Worker)" cmd /c "cd /d %~dp0\.. && python -u node.py %CONFIG% D > logs\two_hosts\windows_192.168.1.2_node_d.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo.
+echo ============================================================
 echo Windows-side processes started: A, B, D
-echo Make sure macOS-side processes (C, E, F) are started on 192.168.1.1
+echo ============================================================
+echo.
+echo Process information:
+echo   - Process A (Leader):     192.168.1.2:60051
+echo   - Process B (Team Leader): 192.168.1.2:60052
+echo   - Process D (Worker):     192.168.1.2:60054
+echo.
+echo Log files location: logs\two_hosts\
+echo   - windows_192.168.1.2_node_a.log
+echo   - windows_192.168.1.2_node_b.log
+echo   - windows_192.168.1.2_node_d.log
+echo.
+echo Next steps:
+echo   1. On macOS (192.168.1.1), run: start_two_hosts_macos.sh
+echo   2. Wait for all processes to start (check logs for confirmation)
+echo   3. Run benchmark: benchmark_two_hosts.bat
+echo.
 echo Close this window or press any key to stop Windows processes...
 pause >nul
 

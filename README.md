@@ -244,6 +244,15 @@ Default: host=192.168.1.2, port=60051, requests=200, concurrency=20
 Results saved to: `logs/two_hosts/benchmark_results_two_hosts.json`
 Process logs saved to: `logs/two_hosts/` with filenames indicating platform and IP (e.g., `windows_192.168.1.2_node_a.log`, `macos_192.168.1.1_node_c.log`)
 
+**View logs from both hosts:**
+- **Windows**: `scripts\view_two_hosts_logs.bat` - Shows logs from both Windows and macOS (if accessible)
+- **macOS**: `scripts/view_two_hosts_logs.sh` - Shows logs from both macOS and Windows (if accessible)
+
+**Note**: macOS logs are on the macOS machine. To view complete logs from both platforms:
+1. Run `view_two_hosts_logs.sh` on the macOS machine to see macOS logs
+2. Run `view_two_hosts_logs.bat` on the Windows machine to see Windows logs
+3. Or access logs via network share if configured
+
 ## Configuration
 
 Configuration files:
