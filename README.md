@@ -275,6 +275,69 @@ Strategies are configured globally in the JSON config files:
 
 All processes started with that config file will automatically use these strategies. This ensures consistent behavior across all processes in a deployment, including across macOS and Windows in two-host setups.
 
+### Predefined Strategy Profiles
+
+To simplify testing and comparison, the project includes three predefined strategy profiles. Instead of manually editing config files, you can use these profiles by passing a profile name to the startup and benchmark scripts.
+
+**Available Profiles:**
+
+1. **`baseline`** (default): Conservative, predictable configuration
+   - Forwarding: `round_robin` (sequential)
+   - Async: `false` (blocking)
+   - Chunking: `fixed` (200 records per chunk)
+   - Fairness: `strict` (hard per-team limits)
+
+2. **`parallel`**: Optimized for throughput with parallel execution
+   - Forwarding: `parallel` (all neighbors simultaneously)
+   - Async: `true` (custom threading-based async)
+   - Chunking: `adaptive` (adjusts based on result size)
+   - Fairness: `strict` (maintains fairness guarantees)
+
+3. **`balanced`**: Smart routing with flexible fairness
+   - Forwarding: `capacity` (least-loaded first)
+   - Async: `true` (custom threading-based async)
+   - Chunking: `query_based` (adjusts based on query limit)
+   - Fairness: `weighted` (allows load balancing between teams)
+
+**Using Profiles:**
+
+All startup and benchmark scripts accept an optional profile parameter:
+
+```bash
+# Single-host: Start servers with baseline profile (default)
+scripts\start_single_host_windows.bat
+# or explicitly:
+scripts\start_single_host_windows.bat baseline
+
+# Start with parallel profile
+scripts\start_single_host_windows.bat parallel
+
+# Run benchmark with the same profile
+scripts\benchmark_single_host.bat parallel
+```
+
+**Two-host setup:**
+```bash
+# Windows side (must use same profile on both hosts)
+scripts\start_two_hosts_windows.bat balanced
+
+# macOS side (must use same profile)
+./scripts/start_two_hosts_macos.sh balanced
+
+# Run benchmark (from either machine)
+scripts\benchmark_two_hosts.bat balanced
+```
+
+**Important:** When using two-host setup, both Windows and macOS must use the **same profile** to ensure consistent behavior across all processes.
+
+**Profile Config Files:**
+
+Each profile has dedicated config files:
+- `one_host_config_baseline.json`, `one_host_config_parallel.json`, `one_host_config_balanced.json`
+- `two_hosts_config_baseline.json`, `two_hosts_config_parallel.json`, `two_hosts_config_balanced.json`
+
+These files contain the same process topology but with different strategy configurations. You can still manually edit these files if you need custom configurations.
+
 ### Overriding Strategies
 
 Strategies can be overridden per-process via command-line arguments:
@@ -287,7 +350,6 @@ python node.py config.json A --forwarding-strategy parallel --async-forwarding
 python node.py config.json A
 ```
 
-To test different strategy combinations, edit the `strategies` section in your config file and restart all processes.
 
 ## Benchmarking
 
@@ -306,17 +368,27 @@ The benchmark tests only the strategy configuration specified in the config file
 
 **Windows:**
 ```bash
+# Use baseline profile (default)
 scripts\benchmark_single_host.bat
+
+# Use specific profile
+scripts\benchmark_single_host.bat parallel
+scripts\benchmark_single_host.bat balanced
 ```
 
 **macOS/Linux:**
 ```bash
+# Use baseline profile (default)
 ./scripts/benchmark_single_host.sh
+
+# Use specific profile
+./scripts/benchmark_single_host.sh parallel
+./scripts/benchmark_single_host.sh balanced
 ```
 
 **With options:**
 ```bash
-scripts\benchmark_single_host.bat --num-requests 200 --concurrency 20 --update-interval 0.5
+scripts\benchmark_single_host.bat parallel --num-requests 200 --concurrency 20 --update-interval 0.5
 ```
 
 Results saved to: `logs/windows/benchmark_<strategy>.txt` or `logs/macos/benchmark_<strategy>.txt`
@@ -326,7 +398,12 @@ Example: `benchmark_round_robin_blocking_fixed_strict.txt`
 
 **Windows (from Windows machine):**
 ```bash
+# Use baseline profile (default)
 scripts\benchmark_two_hosts.bat
+
+# Use specific profile (must match profile used when starting servers)
+scripts\benchmark_two_hosts.bat parallel
+scripts\benchmark_two_hosts.bat balanced
 ```
 
 **macOS (from macOS machine):**

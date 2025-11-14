@@ -413,7 +413,7 @@ class UnifiedBenchmark:
                 "parameter": "PM2.5",
                 "min_value": 10.0,
                 "max_value": 50.0,
-                "limit": 100,
+                "limit": 500,
             }
             
             def worker(worker_id: int, num_per_worker: int):

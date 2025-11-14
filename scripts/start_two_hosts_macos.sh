@@ -3,12 +3,29 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-CONFIG_FILE="${ROOT_DIR}/two_hosts_config.json"
+PROFILE="${1:-baseline}"
 LOG_DIR="${SCRIPT_DIR}/logs"
 PID_DIR="${SCRIPT_DIR}/pids"
 
+case "$PROFILE" in
+    baseline)
+        CONFIG_FILE="${ROOT_DIR}/two_hosts_config_baseline.json"
+        ;;
+    parallel)
+        CONFIG_FILE="${ROOT_DIR}/two_hosts_config_parallel.json"
+        ;;
+    balanced)
+        CONFIG_FILE="${ROOT_DIR}/two_hosts_config_balanced.json"
+        ;;
+    *)
+        echo "Error: Unknown profile '$PROFILE'. Use: baseline, parallel, or balanced"
+        exit 1
+        ;;
+esac
+
 echo "Starting macOS-side processes for two-host configuration..."
 echo "This will start: C (Worker), E (Team Leader), F (Worker) on 192.168.1.1"
+echo "Using strategy profile: $PROFILE"
 echo
 
 if ! command -v python3 >/dev/null 2>&1; then
@@ -82,7 +99,7 @@ echo "  - macos_192.168.1.1_node_f.log"
 echo
 echo "Next steps:"
 echo "  1. Wait for all processes to start"
-echo "  2. Run benchmark: scripts/benchmark_two_hosts.sh (from either machine)"
+echo "  2. Run benchmark: scripts/benchmark_two_hosts.sh $PROFILE (from either machine)"
 echo
 echo "Press Ctrl+C to stop macOS processes..."
 while true; do

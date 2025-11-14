@@ -5,7 +5,23 @@ echo Starting all single-host processes on Windows...
 echo.
 
 cd /d %~dp0\..
-set CONFIG=one_host_config.json
+
+set PROFILE=%1
+if "%PROFILE%"=="" set PROFILE=baseline
+
+if "%PROFILE%"=="baseline" (
+    set CONFIG=one_host_config_baseline.json
+) else if "%PROFILE%"=="parallel" (
+    set CONFIG=one_host_config_parallel.json
+) else if "%PROFILE%"=="balanced" (
+    set CONFIG=one_host_config_balanced.json
+) else (
+    echo Error: Unknown profile "%PROFILE%". Use: baseline, parallel, or balanced
+    exit /b 1
+)
+
+echo Using strategy profile: %PROFILE%
+echo Config file: %CONFIG%
 
 python --version >nul 2>&1
 if errorlevel 1 (
@@ -61,7 +77,7 @@ echo All single-host processes started (A-F on localhost)
 echo ============================================================
 echo.
 echo To run benchmark:
-echo   scripts\benchmark_single_host.bat
+echo   scripts\benchmark_single_host.bat %PROFILE%
 echo.
 echo Close this window or press any key to stop them...
 pause >nul

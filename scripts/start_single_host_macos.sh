@@ -3,11 +3,28 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-CONFIG_FILE="${ROOT_DIR}/one_host_config.json"
+PROFILE="${1:-baseline}"
 LOG_DIR="${SCRIPT_DIR}/logs"
 PID_DIR="${SCRIPT_DIR}/pids"
 
+case "$PROFILE" in
+    baseline)
+        CONFIG_FILE="${ROOT_DIR}/one_host_config_baseline.json"
+        ;;
+    parallel)
+        CONFIG_FILE="${ROOT_DIR}/one_host_config_parallel.json"
+        ;;
+    balanced)
+        CONFIG_FILE="${ROOT_DIR}/one_host_config_balanced.json"
+        ;;
+    *)
+        echo "Error: Unknown profile '$PROFILE'. Use: baseline, parallel, or balanced"
+        exit 1
+        ;;
+esac
+
 echo "Starting all single-host processes on macOS..."
+echo "Using strategy profile: $PROFILE"
 echo
 
 if ! command -v python3 >/dev/null 2>&1; then
@@ -71,7 +88,7 @@ echo "All single-host processes started (A-F on localhost)"
 echo "============================================================"
 echo
 echo "To run benchmark:"
-echo "  scripts/benchmark_single_host.sh"
+echo "  scripts/benchmark_single_host.sh $PROFILE"
 echo
 echo "Press Ctrl+C to stop them."
 while true; do

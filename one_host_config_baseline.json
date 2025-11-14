@@ -4,14 +4,14 @@
     "async_forwarding": false,
     "chunking_strategy": "fixed",
     "fairness_strategy": "strict",
-    "chunk_size": 500
+    "chunk_size": 200
   },
   "processes": {
     "A": {
       "id": "A",
       "role": "leader",
       "team": "green",
-      "host": "192.168.1.2",
+      "host": "127.0.0.1",
       "port": 60051,
       "neighbors": ["B", "E"]
     },
@@ -19,7 +19,7 @@
       "id": "B",
       "role": "team_leader",
       "team": "green",
-      "host": "192.168.1.2",
+      "host": "127.0.0.1",
       "port": 60052,
       "neighbors": ["A", "C", "D"]
     },
@@ -27,7 +27,7 @@
       "id": "C",
       "role": "worker",
       "team": "green",
-      "host": "192.168.1.1",
+      "host": "127.0.0.1",
       "port": 60053,
       "neighbors": ["B"]
     },
@@ -35,7 +35,7 @@
       "id": "D",
       "role": "worker",
       "team": "pink",
-      "host": "192.168.1.2",
+      "host": "127.0.0.1",
       "port": 60054,
       "neighbors": ["B", "E"]
     },
@@ -43,7 +43,7 @@
       "id": "E",
       "role": "team_leader",
       "team": "pink",
-      "host": "192.168.1.1",
+      "host": "127.0.0.1",
       "port": 60055,
       "neighbors": ["A", "F", "D"]
     },
@@ -51,9 +51,10 @@
       "id": "F",
       "role": "worker",
       "team": "pink",
-      "host": "192.168.1.1",
+      "host": "127.0.0.1",
       "port": 60056,
       "neighbors": ["E"]
     }
   }
 }
+

@@ -4,7 +4,7 @@
     "async_forwarding": false,
     "chunking_strategy": "fixed",
     "fairness_strategy": "strict",
-    "chunk_size": 500
+    "chunk_size": 200
   },
   "processes": {
     "A": {
@@ -57,3 +57,4 @@
     }
   }
 }
+

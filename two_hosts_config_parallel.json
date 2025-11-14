@@ -1,10 +1,10 @@
 {
   "strategies": {
-    "forwarding_strategy": "round_robin",
-    "async_forwarding": false,
-    "chunking_strategy": "fixed",
+    "forwarding_strategy": "parallel",
+    "async_forwarding": true,
+    "chunking_strategy": "adaptive",
     "fairness_strategy": "strict",
-    "chunk_size": 500
+    "chunk_size": 200
   },
   "processes": {
     "A": {
@@ -57,3 +57,4 @@
     }
   }
 }
+

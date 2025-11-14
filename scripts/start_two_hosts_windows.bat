@@ -7,7 +7,22 @@ echo.
 
 cd /d "%~dp0\.."
 
-set CONFIG=two_hosts_config.json
+set PROFILE=%1
+if "%PROFILE%"=="" set PROFILE=baseline
+
+if "%PROFILE%"=="baseline" (
+    set CONFIG=two_hosts_config_baseline.json
+) else if "%PROFILE%"=="parallel" (
+    set CONFIG=two_hosts_config_parallel.json
+) else if "%PROFILE%"=="balanced" (
+    set CONFIG=two_hosts_config_balanced.json
+) else (
+    echo Error: Unknown profile "%PROFILE%". Use: baseline, parallel, or balanced
+    exit /b 1
+)
+
+echo Using strategy profile: %PROFILE%
+echo Config file: %CONFIG%
 
 python --version >nul 2>&1
 if errorlevel 1 (
@@ -63,7 +78,7 @@ echo.
 echo Next steps:
 echo   1. On macOS (192.168.1.1), run: start_two_hosts_macos.sh
 echo   2. Wait for all processes to start
-echo   3. Run benchmark: scripts\benchmark_two_hosts.bat
+echo   3. Run benchmark: scripts\benchmark_two_hosts.bat %PROFILE%
 echo.
 echo Close this window or press any key to stop Windows processes...
 pause >nul
