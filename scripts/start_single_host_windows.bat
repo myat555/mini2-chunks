@@ -61,7 +61,7 @@ echo All single-host processes started (A-F on localhost)
 echo ============================================================
 echo.
 echo To run benchmark:
-echo   scripts\benchmark.bat --config one_host_config.json --log-dir logs\windows
+echo   scripts\benchmark_single_host.bat
 echo.
 echo Close this window or press any key to stop them...
 pause >nul

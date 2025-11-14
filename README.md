@@ -81,8 +81,10 @@ mini2-chunks/
 │   └── result_cache.py                # Chunked result caching
 │
 ├── scripts/                           # Automation scripts
-│   ├── benchmark.bat                  # Unified benchmark (Windows)
-│   ├── benchmark.sh                   # Unified benchmark (macOS/Linux)
+│   ├── benchmark_single_host.bat      # Single-host benchmark (Windows)
+│   ├── benchmark_single_host.sh       # Single-host benchmark (macOS/Linux)
+│   ├── benchmark_two_hosts.bat        # Two-host benchmark (Windows)
+│   ├── benchmark_two_hosts.sh         # Two-host benchmark (macOS/Linux)
 │   ├── start_single_host_macos.sh     # Start single-host servers (macOS)
 │   ├── start_single_host_windows.bat  # Start single-host servers (Windows)
 │   ├── start_two_hosts_macos.sh       # Start two-host servers (macOS)
@@ -328,27 +330,26 @@ The unified benchmark tool provides real-time visualization showing:
 **Single-host benchmark:**
 ```bash
 # Windows
-scripts\benchmark.bat --config one_host_config.json --log-dir logs\windows
+scripts\benchmark_single_host.bat
 
 # macOS/Linux
-./scripts/benchmark.sh --config one_host_config.json --log-dir logs/macos
+./scripts/benchmark_single_host.sh
 ```
 
 **Two-host benchmark:**
 ```bash
 # Windows (from Windows machine)
-scripts\benchmark.bat --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs\two_hosts
+scripts\benchmark_two_hosts.bat
 
 # macOS (from macOS machine)
-./scripts/benchmark.sh --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs/two_hosts
+./scripts/benchmark_two_hosts.sh
 ```
 
-**Options:**
+**Options (can be passed to any benchmark script):**
 - `--num-requests N`: Number of requests (default: 100)
 - `--concurrency N`: Concurrency level (default: 10)
 - `--update-interval N`: Dashboard update interval in seconds (default: 1.0)
-- `--log-dir DIR`: Directory containing server log files
-- `--output-dir DIR`: Output directory for results (default: logs)
+- `--output-dir DIR`: Output directory for results (default: logs/windows or logs/two_hosts)
 
 The benchmark tool displays a real-time dashboard that updates every second, showing:
 - Process status across all hosts

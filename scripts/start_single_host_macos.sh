@@ -71,7 +71,7 @@ echo "All single-host processes started (A-F on localhost)"
 echo "============================================================"
 echo
 echo "To run benchmark:"
-echo "  scripts/benchmark.sh --config one_host_config.json --log-dir logs/macos"
+echo "  scripts/benchmark_single_host.sh"
 echo
 echo "Press Ctrl+C to stop them."
 while true; do

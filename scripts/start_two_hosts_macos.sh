@@ -82,7 +82,7 @@ echo "  - macos_192.168.1.1_node_f.log"
 echo
 echo "Next steps:"
 echo "  1. Wait for all processes to start"
-echo "  2. Run benchmark: scripts/benchmark.sh --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs/two_hosts"
+echo "  2. Run benchmark: scripts/benchmark_two_hosts.sh (from either machine)"
 echo
 echo "Press Ctrl+C to stop macOS processes..."
 while true; do
