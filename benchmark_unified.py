@@ -110,12 +110,13 @@ class UnifiedBenchmark:
                             async_fwd = m.async_forwarding
                             chunking_strat = m.chunking_strategy if m.chunking_strategy else "unknown"
                             fairness_strat = m.fairness_strategy if m.fairness_strategy else "unknown"
+                            recent_logs = list(m.recent_logs) if hasattr(m, 'recent_logs') else []
                         except AttributeError:
-                            # Fallback for older proto versions
                             forwarding_strat = "unknown"
                             async_fwd = False
                             chunking_strat = "unknown"
                             fairness_strat = "unknown"
+                            recent_logs = []
                         
                         metrics[process_id] = {
                             "process_id": m.process_id,
@@ -133,6 +134,7 @@ class UnifiedBenchmark:
                             "async_forwarding": async_fwd,
                             "chunking_strategy": chunking_strat,
                             "fairness_strategy": fairness_strat,
+                            "recent_logs": recent_logs,
                             "timestamp": time.time(),
                         }
                     except grpc.RpcError:
@@ -149,40 +151,49 @@ class UnifiedBenchmark:
         
         return metrics
 
-    def read_server_logs(self, log_dir: Path, lines: int = 3) -> Dict[str, List[str]]:
-        """Read recent server log output."""
+    def read_server_logs(self, metrics: Dict, log_dir: Optional[Path] = None, lines: int = 3) -> Dict[str, List[str]]:
+        """Read recent server log output from metrics (gRPC) or log files (fallback)."""
         logs = {}
         
-        if not log_dir or not log_dir.exists():
-            return logs
+        # First, try to get logs from metrics (works across hosts)
+        for process_id, proc_metrics in metrics.items():
+            if proc_metrics.get("status") == "online" and "recent_logs" in proc_metrics:
+                recent_logs = proc_metrics.get("recent_logs", [])
+                if recent_logs:
+                    logs[process_id] = recent_logs[-lines:] if len(recent_logs) > lines else recent_logs
         
-        processes_config = self.config.get("processes", {})
-        for process_id, process_info in processes_config.items():
-            host = process_info.get("host", "")
-            proc_lower = process_id.lower()
-            
-            patterns = [
-                f"*{host}*node_{proc_lower}.log",
-                f"*node_{proc_lower}.log",
-                f"*{proc_lower}*.log",
-                f"*{process_id}*.log",
-                f"macos_*_node_{proc_lower}.log",
-                f"windows_*_node_{proc_lower}.log",
-            ]
-            
-            for pattern in patterns:
-                log_files = list(log_dir.glob(pattern))
-                if log_files:
-                    try:
-                        log_file = log_files[0]
-                        with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
-                            all_lines = f.readlines()
-                            recent = [line.strip() for line in all_lines[-lines:] if line.strip()]
-                            if recent:
-                                logs[process_id] = recent
-                            break
-                    except Exception:
-                        pass
+        # Fallback to log files if available (for local processes)
+        if log_dir and log_dir.exists():
+            processes_config = self.config.get("processes", {})
+            for process_id, process_info in processes_config.items():
+                if process_id in logs:
+                    continue  # Already have logs from metrics
+                
+                host = process_info.get("host", "")
+                proc_lower = process_id.lower()
+                
+                patterns = [
+                    f"*{host}*node_{proc_lower}.log",
+                    f"*node_{proc_lower}.log",
+                    f"*{proc_lower}*.log",
+                    f"*{process_id}*.log",
+                    f"macos_*_node_{proc_lower}.log",
+                    f"windows_*_node_{proc_lower}.log",
+                ]
+                
+                for pattern in patterns:
+                    log_files = list(log_dir.glob(pattern))
+                    if log_files:
+                        try:
+                            log_file = log_files[0]
+                            with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
+                                all_lines = f.readlines()
+                                recent = [line.strip() for line in all_lines[-lines:] if line.strip()]
+                                if recent:
+                                    logs[process_id] = recent
+                                break
+                        except Exception:
+                            pass
         
         return logs
 
@@ -359,7 +370,7 @@ class UnifiedBenchmark:
                 while monitoring[0]:
                     iteration += 1
                     metrics = self.collect_process_metrics()
-                    logs = self.read_server_logs(log_path, lines=3) if log_path else {}
+                    logs = self.read_server_logs(metrics, log_path, lines=3)
                     
                     # Compute benchmark stats so far
                     with lock:
@@ -439,7 +450,7 @@ class UnifiedBenchmark:
             
             # Final metrics
             final_metrics = self.collect_process_metrics()
-            final_logs = self.read_server_logs(log_path, lines=5) if log_path else {}
+            final_logs = self.read_server_logs(final_metrics, log_path, lines=5)
             
             # Compute final statistics
             latencies = [r["latency"] for r in results if r.get("success")]

@@ -2,6 +2,7 @@ import json
 import threading
 import time
 import uuid
+from collections import deque
 from typing import Dict, List, Optional
 
 import overlay_pb2
@@ -69,6 +70,8 @@ class QueryOrchestrator:
         self._default_limit = default_limit
         self._rr_lock = threading.Lock()
         self._rr_index = 0
+        self._log_buffer = deque(maxlen=50)  # Store last 50 log lines
+        self._log_lock = threading.Lock()
 
     def execute_query(self, request: overlay_pb2.QueryRequest) -> overlay_pb2.QueryResponse:
         hops = list(request.hops)
@@ -135,7 +138,9 @@ class QueryOrchestrator:
             filter_summary = f"param={filters.get('parameter', 'any')}"
             if 'min_value' in filters or 'max_value' in filters:
                 filter_summary += f", value=[{filters.get('min_value', '')}, {filters.get('max_value', '')}]"
-            print(f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}", flush=True)
+            log_msg = f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}"
+            print(log_msg, flush=True)
+            self._add_log(log_msg)
 
             return overlay_pb2.QueryResponse(
                 uid=uid,
@@ -182,9 +187,20 @@ class QueryOrchestrator:
             status="success",
         )
 
+    def _add_log(self, message: str) -> None:
+        """Add a log message to the buffer."""
+        with self._log_lock:
+            self._log_buffer.append(message)
+    
+    def _get_recent_logs(self, max_lines: int = 10) -> List[str]:
+        """Get recent log lines from buffer."""
+        with self._log_lock:
+            return list(self._log_buffer)[-max_lines:]
+    
     def build_metrics_response(self) -> overlay_pb2.MetricsResponse:
         stats = self._metrics.snapshot()
         admission = self._admission.snapshot()
+        recent_logs = self._get_recent_logs(max_lines=10)
         return overlay_pb2.MetricsResponse(
             process_id=self._process.id,
             role=self._process.role,
@@ -199,6 +215,7 @@ class QueryOrchestrator:
             async_forwarding=self._use_async_forwarding,
             chunking_strategy=self._chunking_strategy.__class__.__name__,
             fairness_strategy=self._admission._fairness.__class__.__name__,
+            recent_logs=recent_logs,
         )
 
     def _parse_filters(self, raw_params: str) -> Dict[str, object]:
@@ -223,7 +240,9 @@ class QueryOrchestrator:
         if self._data_store is not None:
             local_rows = self._data_store.query(filters, limit=remaining)
             if local_rows:
-                print(f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total", flush=True)
+                log_msg = f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total"
+                print(log_msg, flush=True)
+                self._add_log(log_msg)
             aggregated.extend(local_rows)
             remaining -= len(local_rows)
             if remaining <= 0:
@@ -296,7 +315,9 @@ class QueryOrchestrator:
         try:
             response = client.query(forward_request)
         except Exception as exc:
-            print(f"[Orchestrator] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}", flush=True)
+            log_msg = f"[Orchestrator] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}"
+            print(log_msg, flush=True)
+            self._add_log(log_msg)
             return []
 
         if response.status != "ready" or not response.uid:
