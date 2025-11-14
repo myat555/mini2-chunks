@@ -48,21 +48,27 @@ mini2-chunks/
 │
 │
 ├── logs/                              # Benchmark logs and results
-│   ├── windows/                       # Windows platform logs
+│   ├── windows/                       # Single-host Windows logs
 │   │   ├── node_a.log                 # Process A (Leader) logs
 │   │   ├── node_b.log                 # Process B (Team Leader) logs
 │   │   ├── node_c.log                 # Process C (Worker) logs
 │   │   ├── node_d.log                 # Process D (Worker) logs
 │   │   ├── node_e.log                 # Process E (Team Leader) logs
 │   │   ├── node_f.log                 # Process F (Worker) logs
-│   │   ├── benchmark_results.json     # Single-host benchmark results
-│   │   └── benchmark_results_two_hosts.json  # Two-host benchmark results
-│   └── macos/                         # macOS platform logs
-│       ├── node_a.log
-│       ├── node_b.log
-│       ├── ... (same structure as windows/)
-│       ├── benchmark_results.json
-│       └── benchmark_results_two_hosts.json
+│   │   └── benchmark_results.json     # Single-host benchmark results
+│   ├── macos/                         # Single-host macOS logs
+│   │   ├── node_a.log
+│   │   ├── node_b.log
+│   │   ├── ... (same structure as windows/)
+│   │   └── benchmark_results.json
+│   └── two_hosts/                     # Two-host setup logs (filtered by IP and platform)
+│       ├── windows_192.168.1.2_node_a.log    # Windows host, Process A (Leader)
+│       ├── windows_192.168.1.2_node_b.log    # Windows host, Process B (Team Leader)
+│       ├── windows_192.168.1.2_node_d.log    # Windows host, Process D (Worker)
+│       ├── macos_192.168.1.1_node_c.log      # macOS host, Process C (Worker)
+│       ├── macos_192.168.1.1_node_e.log      # macOS host, Process E (Team Leader)
+│       ├── macos_192.168.1.1_node_f.log      # macOS host, Process F (Worker)
+│       └── benchmark_results_two_hosts.json  # Two-host benchmark results
 │
 ├── overlay_core/                      # Core implementation modules
 │   ├── __init__.py
@@ -235,7 +241,8 @@ chmod +x benchmark_two_hosts.sh
 ```
 
 Default: host=192.168.1.2, port=60051, requests=200, concurrency=20
-Results saved to: `logs/windows/benchmark_results_two_hosts.json` or `logs/macos/benchmark_results_two_hosts.json`
+Results saved to: `logs/two_hosts/benchmark_results_two_hosts.json`
+Process logs saved to: `logs/two_hosts/` with filenames indicating platform and IP (e.g., `windows_192.168.1.2_node_a.log`, `macos_192.168.1.1_node_c.log`)
 
 ## Configuration
 

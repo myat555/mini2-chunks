@@ -20,7 +20,7 @@ if not exist "%CONFIG%" (
 
 :: Create logs directory structure
 if not exist "..\logs" mkdir ..\logs
-if not exist "..\logs\windows" mkdir ..\logs\windows
+if not exist "..\logs\two_hosts" mkdir ..\logs\two_hosts
 
 if not exist "..\overlay_pb2.py" (
     echo Generating proto stubs...
@@ -34,15 +34,15 @@ if not exist "..\overlay_pb2.py" (
 )
 
 echo Starting Process A (Leader) on 192.168.1.2:60051...
-start "Node A (Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% A > logs\windows\node_a.log 2>&1 && pause"
+start "Node A (Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% A > logs\two_hosts\windows_192.168.1.2_node_a.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process B (Team Leader) on 192.168.1.2:60052...
-start "Node B (Team Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% B > logs\windows\node_b.log 2>&1 && pause"
+start "Node B (Team Leader)" cmd /c "cd /d .. && python -u node.py %CONFIG% B > logs\two_hosts\windows_192.168.1.2_node_b.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo Starting Process D (Worker) on 192.168.1.2:60054...
-start "Node D (Worker)" cmd /c "cd /d .. && python -u node.py %CONFIG% D > logs\windows\node_d.log 2>&1 && pause"
+start "Node D (Worker)" cmd /c "cd /d .. && python -u node.py %CONFIG% D > logs\two_hosts\windows_192.168.1.2_node_d.log 2>&1 && pause"
 timeout /t 2 /nobreak >nul
 
 echo.

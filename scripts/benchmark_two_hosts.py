@@ -73,14 +73,8 @@ def main():
     import os
     import platform
     
-    # Use platform-specific logs directory
-    if os.name == 'nt':  # Windows
-        output_dir = "logs/windows"
-    elif platform.system() == "Darwin":  # macOS
-        output_dir = "logs/macos"
-    else:  # Linux or other
-        output_dir = "logs/linux"
-    
+    # Use two_hosts logs directory
+    output_dir = "logs/two_hosts"
     os.makedirs(output_dir, exist_ok=True)
     
     benchmark = Benchmark(args.host, args.port)
@@ -93,6 +87,11 @@ def main():
     
     print()
     print(f"Results saved to {output_file}")
+    print("=" * 80)
+    print()
+    print("Process logs location:")
+    print(f"  Windows (192.168.1.2): {output_dir}/windows_192.168.1.2_node_*.log")
+    print(f"  macOS (192.168.1.1): {output_dir}/macos_192.168.1.1_node_*.log")
     print("=" * 80)
 
 
