@@ -1,0 +1,202 @@
+[DataStore] B loaded 214636 rows from 96 files.
+[Overlay] B (team_leader/green) listening on 127.0.0.1:60052, dataset=datasets/2020-fire/data
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b2954654: 100 records, 0.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9ee55ecd: 100 records, 0.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query fa7d3835: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query d4f73405: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 2bf09442: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B query 18d0ce83: 100 records, 2.0ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f3768a3b: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}[Facade] B local query: 100 records from 214636 total
+[Facade] B query 420a6cec: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ce4bffb0: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 0fade438: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 6e787a79: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9967d31a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query eb2c0482: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b9b57087: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 2de50aa9: 100 records, 0.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query bb933ecb: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ffda6eb1: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ddeeda0e: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f84508e4: 100 records, 0.4ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query c817e7cb: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f2653c2b: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b9ad4d93: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 1acd588c: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 56d36a5a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 73cd8f6c: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total[Facade] B local query: 100 records from 214636 total
+[Facade] B query 84f82425: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] B query 7901a2eb: 100 records, 0.7ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query e32392d2: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query e8c05fd3: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 291abb4a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9a561d61: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 2af75742: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query c42d3aff: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 2b8d2d05: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query bbfe2de3: 100 records, 0.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query bf11bd13: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query cb3ee543: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 15708590: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 73c23a69: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 71f4bade: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 44b8fad5: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query d7578460: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total[Facade] B local query: 100 records from 214636 total
+[Facade] B query f7513d40: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] B query b997f1b5: 100 records, 0.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9b7cfae2: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 61c99064: 100 records, 0.6ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b7c5ba19: 100 records, 0.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B query e8f43315: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9443378e: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b460fa3e: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query caa754bb: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 43c3459a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ab69ee02: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 543362b6: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 7565dfb6: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f02b5bd1: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ed0076e4: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 00682b4a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 7b24a00d: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query eec80d20: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query bcaac373: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 77482def: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 65b7495f: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 989afa7a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f402035a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query d60bc71d: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query dd1a24b6: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 7189898a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 7e0185fb: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 488b0898: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query aebfb758: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 42b8df1e: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B local query: 100 records from 214636 total[Facade] B query 9daa1d89: 100 records, 0.5ms, filters={param=PM2.5, value=[10.0, 50.0]}
+
+[Facade] B query d2cd35e3: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query be7ced8f: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query d3ede981: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query d5e94476: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ea686727: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f7109ed4: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 130f24b0: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 100a052d: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query a2ecda74: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 11437b80: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query c1bf2a8a: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query ffca41a3: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query fdc066ee: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 94a3cc6e: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query b9ecf545: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query fdd4aaf8: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 6e240506: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 405e76a0: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 3381bfcf: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 9cc260bc: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 73d9c730: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 220dfc59: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query f28ca552: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query cbd270e1: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 65fe1220: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query 3bd9e9e8: 100 records, 0.3ms, filters={param=PM2.5, value=[10.0, 50.0]}
+[Facade] B local query: 100 records from 214636 total
+[Facade] B query bf3304ea: 100 records, 0.2ms, filters={param=PM2.5, value=[10.0, 50.0]}
