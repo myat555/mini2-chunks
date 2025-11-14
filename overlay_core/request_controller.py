@@ -3,13 +3,21 @@ import time
 from collections import defaultdict
 from typing import Dict, Optional
 
+from .strategies import FairnessStrategy, StrictPerTeamFairness
+
 
 class RequestAdmissionController:
     """Controls concurrent queries for fairness between teams."""
 
-    def __init__(self, max_active: int = 100, per_team_limit: int = 60):
+    def __init__(
+        self,
+        max_active: int = 100,
+        per_team_limit: int = 60,
+        fairness_strategy: Optional[FairnessStrategy] = None,
+    ):
         self.max_active = max_active
         self.per_team_limit = per_team_limit
+        self._fairness = fairness_strategy or StrictPerTeamFairness()
         self._lock = threading.Lock()
         self._active: Dict[str, Dict[str, object]] = {}
         self._per_team = defaultdict(int)
@@ -18,10 +26,10 @@ class RequestAdmissionController:
     def admit(self, uid: str, team: Optional[str]) -> bool:
         team_key = (team or "").lower()
         with self._lock:
-            if len(self._active) >= self.max_active:
-                self._rejections += 1
-                return False
-            if team_key and self._per_team[team_key] >= self.per_team_limit:
+            active_per_team = dict(self._per_team)
+            if not self._fairness.should_admit(
+                team_key, active_per_team, self.max_active, self.per_team_limit
+            ):
                 self._rejections += 1
                 return False
 

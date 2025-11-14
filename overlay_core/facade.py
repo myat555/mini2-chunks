@@ -12,6 +12,20 @@ from .metrics import MetricsTracker
 from .proxies import ProxyRegistry
 from .request_controller import RequestAdmissionController
 from .result_cache import ChunkedResult, ResultCache
+from .strategies import (
+    ForwardingStrategy,
+    RoundRobinForwarding,
+    ParallelForwarding,
+    CapacityBasedForwarding,
+    ChunkingStrategy,
+    FixedChunking,
+    AdaptiveChunking,
+    QueryBasedChunking,
+    FairnessStrategy,
+    StrictPerTeamFairness,
+    WeightedFairness,
+    HybridFairness,
+)
 
 
 class OverlayFacade:
@@ -27,6 +41,10 @@ class OverlayFacade:
         chunk_size: int = 200,
         result_ttl: int = 300,
         default_limit: int = 2000,
+        forwarding_strategy: Optional[str] = "round_robin",
+        use_async_forwarding: bool = False,
+        chunking_strategy: Optional[str] = "fixed",
+        fairness_strategy: Optional[str] = "strict",
     ):
         self._config = config
         self._process = process
@@ -35,11 +53,18 @@ class OverlayFacade:
             self._data_store = None
         else:
             self._data_store = DataStore(process.id, process.team, dataset_root=dataset_root)
+        
+        # Initialize strategies
+        self._forwarding_strategy = self._create_forwarding_strategy(forwarding_strategy)
+        self._use_async_forwarding = use_async_forwarding
+        self._chunking_strategy = self._create_chunking_strategy(chunking_strategy, chunk_size)
+        fairness = self._create_fairness_strategy(fairness_strategy)
+        
         self._cache = ResultCache(ttl_seconds=result_ttl)
-        self._admission = RequestAdmissionController()
+        self._admission = RequestAdmissionController(fairness_strategy=fairness)
         self._metrics = MetricsTracker()
         self._proxy_registry = ProxyRegistry(config, process.id)
-        self._chunk_size = chunk_size
+        self._chunk_size = chunk_size  # Default/initial chunk size
         self._default_limit = default_limit
         self._rr_lock = threading.Lock()
         self._rr_index = 0
@@ -82,15 +107,24 @@ class OverlayFacade:
         start = time.time()
         try:
             records = self._collect_records(filters, hops, request.client_id, request.query_type)
+            
+            # Compute dynamic chunk size based on strategy
+            dynamic_chunk_size = self._chunking_strategy.compute_chunk_size(len(records), filters)
+            
             chunked = ChunkedResult(
                 uid=uid,
                 records=records,
-                chunk_size=self._chunk_size,
+                chunk_size=dynamic_chunk_size,
                 ttl_seconds=self._cache.ttl,
                 metadata={
                     "process": self._process.id,
                     "team": self._process.team,
                     "filters": filters,
+                    "strategy": {
+                        "forwarding": self._forwarding_strategy.__class__.__name__,
+                        "async": self._use_async_forwarding,
+                        "chunking": self._chunking_strategy.__class__.__name__,
+                    },
                 },
             )
             self._cache.store(chunked)
@@ -191,20 +225,28 @@ class OverlayFacade:
             if remaining <= 0:
                 return aggregated[: filters["limit"]]
 
-        for neighbor in self._select_forward_targets():
-            if neighbor.id in hops:
-                continue
-            remote_rows = self._request_neighbor_records(
-                neighbor,
-                filters,
-                hops,
-                client_id,
-                remaining,
-            )
+        neighbors = self._select_forward_targets()
+        if neighbors:
+            # Use forwarding strategy (async or blocking)
+            if self._use_async_forwarding:
+                remote_rows = self._forwarding_strategy.forward_async(
+                    neighbors,
+                    self._request_neighbor_records,
+                    filters,
+                    hops,
+                    client_id,
+                    remaining,
+                )
+            else:
+                remote_rows = self._forwarding_strategy.forward_blocking(
+                    neighbors,
+                    self._request_neighbor_records,
+                    filters,
+                    hops,
+                    client_id,
+                    remaining,
+                )
             aggregated.extend(remote_rows)
-            remaining -= len(remote_rows)
-            if remaining <= 0:
-                break
 
         return aggregated[: filters["limit"]]
 
@@ -291,4 +333,35 @@ class OverlayFacade:
             if chunk_resp.is_last:
                 break
         return collected
+
+    def _create_forwarding_strategy(self, strategy_name: str) -> ForwardingStrategy:
+        """Create forwarding strategy instance."""
+        strategy_name = (strategy_name or "round_robin").lower()
+        if strategy_name == "parallel":
+            return ParallelForwarding()
+        elif strategy_name == "capacity":
+            # Capacity-based needs metrics access - simplified for now
+            return CapacityBasedForwarding()
+        else:  # round_robin (default)
+            return RoundRobinForwarding()
+
+    def _create_chunking_strategy(self, strategy_name: str, base_size: int) -> ChunkingStrategy:
+        """Create chunking strategy instance."""
+        strategy_name = (strategy_name or "fixed").lower()
+        if strategy_name == "adaptive":
+            return AdaptiveChunking(base_size=base_size)
+        elif strategy_name == "query_based":
+            return QueryBasedChunking(base_size=base_size)
+        else:  # fixed (default)
+            return FixedChunking(chunk_size=base_size)
+
+    def _create_fairness_strategy(self, strategy_name: str) -> FairnessStrategy:
+        """Create fairness strategy instance."""
+        strategy_name = (strategy_name or "strict").lower()
+        if strategy_name == "weighted":
+            return WeightedFairness()
+        elif strategy_name == "hybrid":
+            return HybridFairness()
+        else:  # strict (default)
+            return StrictPerTeamFairness()
 

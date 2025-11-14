@@ -289,6 +289,83 @@ Core modules in `overlay_core/`:
 - `RequestAdmissionController` - Capacity management and fairness
 - `MetricsTracker` - Performance metrics collection
 
+## Strategy Configuration
+
+The system supports multiple strategies for forwarding, chunking, and fairness:
+
+### Forwarding Strategies
+- `round_robin` (default): Sequential round-robin forwarding
+- `parallel`: Parallel forwarding to all neighbors
+- `capacity`: Capacity-based forwarding (least-loaded first)
+
+### Chunking Strategies
+- `fixed` (default): Fixed chunk size
+- `adaptive`: Adaptive chunk size based on result size
+- `query_based`: Chunk size based on query limit
+
+### Fairness Strategies
+- `strict` (default): Strict per-team limits
+- `weighted`: Weighted fairness based on team load
+- `hybrid`: Hybrid approach (strict when high load, weighted when low load)
+
+### Usage
+
+Configure strategies when starting nodes:
+```bash
+python node.py config.json A --forwarding-strategy parallel --async-forwarding --chunking-strategy adaptive --fairness-strategy weighted
+```
+
+## Benchmarking and Monitoring
+
+### Strategy Comparison
+
+Compare different strategies:
+```bash
+# Windows
+scripts\benchmark_strategy_comparison.bat --num-requests 50
+
+# macOS/Linux
+./scripts/benchmark_strategy_comparison.sh --num-requests 50
+```
+
+This will test multiple strategy combinations and generate a comparison report in `logs/strategy_comparison/`.
+
+### Real-Time Monitoring
+
+Monitor both hosts in real-time:
+```bash
+# Windows
+scripts\monitor_two_hosts.bat --config two_hosts_config.json
+
+# macOS/Linux
+./scripts/monitor_two_hosts.sh --config two_hosts_config.json
+```
+
+Options:
+- `--interval N`: Update interval in seconds (default: 2.0)
+- `--show-logs`: Show recent log entries
+- `--log-dir DIR`: Directory containing log files
+- `--snapshot FILE`: Take a snapshot and save to file
+
+### Benchmark with Monitoring
+
+Run benchmark while monitoring both hosts:
+```bash
+# Windows
+scripts\benchmark_with_monitoring.bat --num-requests 100
+
+# macOS/Linux
+./scripts/benchmark_with_monitoring.sh --num-requests 100
+```
+
+This combines benchmark execution with real-time monitoring, capturing:
+- Benchmark performance metrics
+- Process metrics from all hosts before and after benchmark
+- Real-time snapshots during benchmark execution
+- Process status and health information
+
+Results are saved to `logs/two_hosts/benchmark_with_monitoring.json` and `benchmark_summary.txt`.
+
 ## Network Requirements
 
 - TCP ports 60051-60056 must be open between hosts

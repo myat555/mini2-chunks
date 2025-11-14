@@ -32,7 +32,17 @@ class OverlayService(overlay_pb2_grpc.OverlayNodeServicer):
         return overlay_pb2.ShutdownResponse(status="noop")
 
 
-def serve(config_path: str, process_id: str, dataset_root: str, chunk_size: int, ttl: int):
+def serve(
+    config_path: str,
+    process_id: str,
+    dataset_root: str,
+    chunk_size: int,
+    ttl: int,
+    forwarding_strategy: str = "round_robin",
+    use_async_forwarding: bool = False,
+    chunking_strategy: str = "fixed",
+    fairness_strategy: str = "strict",
+):
     config = OverlayConfig(config_path)
     process = config.get(process_id)
     facade = OverlayFacade(
@@ -41,6 +51,10 @@ def serve(config_path: str, process_id: str, dataset_root: str, chunk_size: int,
         dataset_root=dataset_root,
         chunk_size=chunk_size,
         result_ttl=ttl,
+        forwarding_strategy=forwarding_strategy,
+        use_async_forwarding=use_async_forwarding,
+        chunking_strategy=chunking_strategy,
+        fairness_strategy=fairness_strategy,
     )
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=16))
@@ -66,9 +80,42 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--chunk-size", type=int, default=200, help="Chunk size for responses.")
     parser.add_argument("--result-ttl", type=int, default=300, help="Seconds to retain query results.")
+    parser.add_argument(
+        "--forwarding-strategy",
+        choices=["round_robin", "parallel", "capacity"],
+        default="round_robin",
+        help="Forwarding strategy.",
+    )
+    parser.add_argument(
+        "--async-forwarding",
+        action="store_true",
+        help="Use async (parallel) forwarding instead of blocking.",
+    )
+    parser.add_argument(
+        "--chunking-strategy",
+        choices=["fixed", "adaptive", "query_based"],
+        default="fixed",
+        help="Chunking strategy.",
+    )
+    parser.add_argument(
+        "--fairness-strategy",
+        choices=["strict", "weighted", "hybrid"],
+        default="strict",
+        help="Fairness strategy.",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    serve(args.config, args.process_id, args.dataset_root, args.chunk_size, args.result_ttl)
+    serve(
+        args.config,
+        args.process_id,
+        args.dataset_root,
+        args.chunk_size,
+        args.result_ttl,
+        args.forwarding_strategy,
+        args.async_forwarding,
+        args.chunking_strategy,
+        args.fairness_strategy,
+    )

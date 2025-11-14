@@ -7,6 +7,20 @@ from .request_controller import RequestAdmissionController
 from .metrics import MetricsTracker
 from .proxies import ProxyRegistry
 from .facade import OverlayFacade
+from .strategies import (
+    ForwardingStrategy,
+    RoundRobinForwarding,
+    ParallelForwarding,
+    CapacityBasedForwarding,
+    ChunkingStrategy,
+    FixedChunking,
+    AdaptiveChunking,
+    QueryBasedChunking,
+    FairnessStrategy,
+    StrictPerTeamFairness,
+    WeightedFairness,
+    HybridFairness,
+)
 
 __all__ = [
     "ProcessSpec",
@@ -18,5 +32,17 @@ __all__ = [
     "MetricsTracker",
     "ProxyRegistry",
     "OverlayFacade",
+    "ForwardingStrategy",
+    "RoundRobinForwarding",
+    "ParallelForwarding",
+    "CapacityBasedForwarding",
+    "ChunkingStrategy",
+    "FixedChunking",
+    "AdaptiveChunking",
+    "QueryBasedChunking",
+    "FairnessStrategy",
+    "StrictPerTeamFairness",
+    "WeightedFairness",
+    "HybridFairness",
 ]
 
