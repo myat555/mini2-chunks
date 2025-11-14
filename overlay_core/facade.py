@@ -9,7 +9,7 @@ import overlay_pb2
 from .config import OverlayConfig, ProcessSpec
 from .data_store import DataStore
 from .metrics import MetricsTracker
-from .proxies import ProxyRegistry
+from .proxies import NeighborRegistry
 from .request_controller import RequestAdmissionController
 from .result_cache import ChunkedResult, ResultCache
 from .strategies import (
@@ -28,9 +28,10 @@ from .strategies import (
 )
 
 
-class OverlayFacade:
+class QueryOrchestrator:
     """
-    Facade that coordinates query execution, caching, fairness and proxy routing.
+    Orchestrates query execution across the overlay network.
+    Coordinates caching, fairness controls, and neighbor communication.
     """
 
     def __init__(
@@ -63,7 +64,7 @@ class OverlayFacade:
         self._cache = ResultCache(ttl_seconds=result_ttl)
         self._admission = RequestAdmissionController(fairness_strategy=fairness)
         self._metrics = MetricsTracker()
-        self._proxy_registry = ProxyRegistry(config, process.id)
+        self._neighbor_registry = NeighborRegistry(config, process.id)
         self._chunk_size = chunk_size  # Default/initial chunk size
         self._default_limit = default_limit
         self._rr_lock = threading.Lock()
@@ -135,7 +136,7 @@ class OverlayFacade:
             filter_summary = f"param={filters.get('parameter', 'any')}"
             if 'min_value' in filters or 'max_value' in filters:
                 filter_summary += f", value=[{filters.get('min_value', '')}, {filters.get('max_value', '')}]"
-            print(f"[Facade] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}")
+            print(f"[Orchestrator] {self._process.id} query {uid[:8]}: {len(records)} records, {duration_ms:.1f}ms, filters={{{filter_summary}}}")
 
             return overlay_pb2.QueryResponse(
                 uid=uid,
@@ -223,7 +224,7 @@ class OverlayFacade:
         if self._data_store is not None:
             local_rows = self._data_store.query(filters, limit=remaining)
             if local_rows:
-                print(f"[Facade] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total")
+                print(f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total")
             aggregated.extend(local_rows)
             remaining -= len(local_rows)
             if remaining <= 0:
@@ -282,7 +283,7 @@ class OverlayFacade:
         client_id: Optional[str],
         remaining: int,
     ) -> List[Dict[str, object]]:
-        proxy = self._proxy_registry.for_neighbor(neighbor.id)
+        client = self._neighbor_registry.for_neighbor(neighbor.id)
 
         forward_filters = dict(filters)
         forward_filters["limit"] = remaining
@@ -294,15 +295,15 @@ class OverlayFacade:
         )
 
         try:
-            response = proxy.query(forward_request)
+            response = client.query(forward_request)
         except Exception as exc:
-            print(f"[Facade] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}")
+            print(f"[Orchestrator] Failed forwarding to {neighbor.id} ({neighbor.address}): {exc}")
             return []
 
         if response.status != "ready" or not response.uid:
             return []
 
-        return self._drain_remote_chunks(proxy, response.uid, response.total_chunks, remaining)
+        return self._drain_remote_chunks(client, response.uid, response.total_chunks, remaining)
 
     @staticmethod
     def _safe_json_loads(payload: str) -> List[Dict[str, object]]:
@@ -316,7 +317,7 @@ class OverlayFacade:
 
     def _drain_remote_chunks(
         self,
-        proxy,
+        client,
         remote_uid: str,
         total_chunks: int,
         remaining: int,
@@ -325,7 +326,7 @@ class OverlayFacade:
         for idx in range(total_chunks):
             if remaining <= 0:
                 break
-            chunk_resp = proxy.get_chunk(remote_uid, idx)
+            chunk_resp = client.get_chunk(remote_uid, idx)
             if chunk_resp.status != "success":
                 break
             rows = self._safe_json_loads(chunk_resp.data)

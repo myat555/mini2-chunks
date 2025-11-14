@@ -198,6 +198,8 @@ python client.py 127.0.0.1 60051 metrics
 
 The system implements a strategy pattern for configurable behavior in forwarding, chunking, and fairness. This allows testing different approaches to coordination and request control as required by mini2-chunks.md.
 
+**Global Strategy Configuration**: All processes (across macOS and Windows) use the same strategies as defined in the JSON configuration files (`one_host_config.json` or `two_hosts_config.json`). This ensures consistent behavior across all processes in a deployment. Strategies can still be overridden per-process via command-line arguments if needed.
+
 ### Forwarding Strategies
 
 Controls how queries are forwarded to neighbors:
@@ -252,22 +254,40 @@ The system supports both blocking and async forwarding modes:
   - Team leaders forward to workers in parallel
   - Local data queries remain blocking
 
-### Usage
+### Configuration
 
-Configure strategies when starting nodes:
+Strategies are configured globally in the JSON config files:
 
-```bash
-# Example: Parallel async forwarding with adaptive chunking and weighted fairness
-python node.py config.json A --forwarding-strategy parallel --async-forwarding --chunking-strategy adaptive --fairness-strategy weighted --chunk-size 200
-
-# Example: Round-robin blocking with fixed chunking (default)
-python node.py config.json A
-
-# Example: Capacity-based async forwarding
-python node.py config.json A --forwarding-strategy capacity --async-forwarding
+```json
+{
+  "strategies": {
+    "forwarding_strategy": "round_robin",
+    "async_forwarding": false,
+    "chunking_strategy": "fixed",
+    "fairness_strategy": "strict",
+    "chunk_size": 200
+  },
+  "processes": {
+    ...
+  }
+}
 ```
 
-All processes in a deployment can use different strategies, allowing comparison of approaches.
+All processes started with that config file will automatically use these strategies. This ensures consistent behavior across all processes in a deployment, including across macOS and Windows in two-host setups.
+
+### Overriding Strategies
+
+Strategies can be overridden per-process via command-line arguments:
+
+```bash
+# Example: Override forwarding strategy for one process
+python node.py config.json A --forwarding-strategy parallel --async-forwarding
+
+# Example: Use default strategies from config file (recommended)
+python node.py config.json A
+```
+
+To test different strategy combinations, edit the `strategies` section in your config file and restart all processes.
 
 ## Benchmarking
 
@@ -394,14 +414,15 @@ Defined in `overlay.proto`:
 
 ### Core Modules (`overlay_core/`)
 
-- **`OverlayFacade`** - Main facade orchestrating queries, caching, routing, and strategies
-  - Coordinates between all subsystems
+- **`QueryOrchestrator`** - Orchestrates query execution across the overlay network
+  - Coordinates between all subsystems (caching, fairness, routing)
   - Handles query execution, forwarding, and result aggregation
   - Manages strategy selection and execution
   
-- **`ProxyRegistry`** - Manages proxies for remote neighbor communication
-  - Lazy proxy creation per neighbor
+- **`NeighborRegistry`** - Manages connections to neighbor nodes in the overlay
+  - Lazy client creation per neighbor
   - Handles gRPC channel management
+  - Provides `RemoteNodeClient` instances for neighbor communication
   
 - **`DataStore`** - Team-specific data loading and filtering
   - Loads CSV files for assigned date ranges
@@ -429,14 +450,13 @@ Defined in `overlay.proto`:
 
 ### Design Patterns
 
-- **Facade Pattern**: `OverlayFacade` provides unified interface to complex subsystem
-- **Proxy Pattern**: `ProxyRegistry` and `NodeProxy` hide remote gRPC complexity
+- **Facade Pattern**: `QueryOrchestrator` provides unified interface to complex subsystem
+- **Proxy Pattern**: `NeighborRegistry` and `RemoteNodeClient` hide remote gRPC complexity
 - **Strategy Pattern**: Configurable forwarding, chunking, and fairness algorithms
 - **Template Method**: Strategy base classes define common interface
 
 ### Async Implementation
 
-As per mini2-chunks.md requirements:
 - **Custom async implementation** using Python `threading` module
 - **NOT using gRPC async APIs** (as specified in requirements)
 - Parallel forwarding implemented via threads, not asyncio
@@ -449,26 +469,3 @@ As per mini2-chunks.md requirements:
 - Network latency < 100ms recommended for optimal performance
 - For two-host setup: Windows should be on 192.168.1.2, macOS on 192.168.1.1
 
-## Features
-
-- ✅ Multi-process coordination with leader-team leader-worker hierarchy
-- ✅ Team-based data partitioning (non-overlapping)
-- ✅ Chunked query responses for memory efficiency
-- ✅ Configurable forwarding strategies (round-robin, parallel, capacity-based)
-- ✅ Custom async implementation (threading-based, not gRPC async)
-- ✅ Configurable chunking strategies (fixed, adaptive, query-based)
-- ✅ Fairness algorithms (strict, weighted, hybrid)
-- ✅ Real-time benchmarking with visual monitoring
-- ✅ Cross-host data distribution visibility
-- ✅ TTL-based result caching
-- ✅ Request admission control and capacity management
-- ✅ Comprehensive metrics collection
-
-## Notes
-
-- The system adheres to mini2-chunks.md requirements:
-  - Teams have non-overlapping data (no cross-team replication)
-  - Leader does not hold data, only coordinates
-  - Custom async implementation (not gRPC async APIs)
-  - Multiple strategies for coordination and request control
-  - Chunked responses for large result sets

@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 @dataclass(frozen=True)
@@ -18,6 +18,30 @@ class ProcessSpec:
     @property
     def address(self) -> str:
         return f"{self.host}:{self.port}"
+
+
+@dataclass(frozen=True)
+class StrategyConfig:
+    """Global strategy configuration for all processes."""
+
+    forwarding_strategy: str = "round_robin"
+    async_forwarding: bool = False
+    chunking_strategy: str = "fixed"
+    fairness_strategy: str = "strict"
+    chunk_size: int = 200
+
+    @classmethod
+    def from_dict(cls, data: Optional[Dict]) -> "StrategyConfig":
+        """Create StrategyConfig from dictionary, using defaults if None or missing keys."""
+        if not data:
+            return cls()
+        return cls(
+            forwarding_strategy=data.get("forwarding_strategy", "round_robin"),
+            async_forwarding=data.get("async_forwarding", False),
+            chunking_strategy=data.get("chunking_strategy", "fixed"),
+            fairness_strategy=data.get("fairness_strategy", "strict"),
+            chunk_size=data.get("chunk_size", 200),
+        )
 
 
 class OverlayConfig:
@@ -50,6 +74,9 @@ class OverlayConfig:
                 missing = exc.args[0]
                 raise ValueError(f"Process '{pid}' missing required field '{missing}'.") from exc
 
+        # Load global strategy configuration
+        self._strategies = StrategyConfig.from_dict(payload.get("strategies"))
+
     def get(self, process_id: str) -> ProcessSpec:
         if process_id not in self._processes:
             raise KeyError(f"Process '{process_id}' is not defined in the configuration.")
@@ -61,4 +88,8 @@ class OverlayConfig:
 
     def all_processes(self) -> Dict[str, ProcessSpec]:
         return dict(self._processes)
+
+    def get_strategies(self) -> StrategyConfig:
+        """Get the global strategy configuration for all processes."""
+        return self._strategies
 

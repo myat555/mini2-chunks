@@ -1,12 +1,12 @@
-"""Shared infrastructure for overlay nodes (facades, proxies, data access)."""
+"""Shared infrastructure for overlay nodes (query orchestration, neighbor connections, data access)."""
 
-from .config import ProcessSpec, OverlayConfig
+from .config import ProcessSpec, OverlayConfig, StrategyConfig
 from .data_store import DataStore
 from .result_cache import ResultCache, ChunkedResult
 from .request_controller import RequestAdmissionController
 from .metrics import MetricsTracker
-from .proxies import ProxyRegistry
-from .facade import OverlayFacade
+from .proxies import NeighborRegistry, RemoteNodeClient
+from .facade import QueryOrchestrator
 from .strategies import (
     ForwardingStrategy,
     RoundRobinForwarding,
@@ -25,13 +25,15 @@ from .strategies import (
 __all__ = [
     "ProcessSpec",
     "OverlayConfig",
+    "StrategyConfig",
     "DataStore",
     "ResultCache",
     "ChunkedResult",
     "RequestAdmissionController",
     "MetricsTracker",
-    "ProxyRegistry",
-    "OverlayFacade",
+    "NeighborRegistry",
+    "RemoteNodeClient",
+    "QueryOrchestrator",
     "ForwardingStrategy",
     "RoundRobinForwarding",
     "ParallelForwarding",

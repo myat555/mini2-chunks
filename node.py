@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 from concurrent import futures
+from typing import Optional
 
 import grpc
 
@@ -10,23 +11,23 @@ sys.path.append(os.path.dirname(__file__))
 
 import overlay_pb2
 import overlay_pb2_grpc
-from overlay_core import OverlayConfig, OverlayFacade
+from overlay_core import OverlayConfig, QueryOrchestrator
 
 
 class OverlayService(overlay_pb2_grpc.OverlayNodeServicer):
-    """Thin gRPC service that delegates behavior to OverlayFacade."""
+    """Thin gRPC service that delegates behavior to QueryOrchestrator."""
 
-    def __init__(self, facade: OverlayFacade):
-        self._facade = facade
+    def __init__(self, orchestrator: QueryOrchestrator):
+        self._orchestrator = orchestrator
 
     def Query(self, request, context):  # pylint: disable=invalid-name
-        return self._facade.execute_query(request)
+        return self._orchestrator.execute_query(request)
 
     def GetChunk(self, request, context):  # pylint: disable=invalid-name
-        return self._facade.get_chunk(request.uid, request.chunk_index)
+        return self._orchestrator.get_chunk(request.uid, request.chunk_index)
 
     def GetMetrics(self, request, context):  # pylint: disable=invalid-name
-        return self._facade.build_metrics_response()
+        return self._orchestrator.build_metrics_response()
 
     def Shutdown(self, request, context):  # pylint: disable=invalid-name
         return overlay_pb2.ShutdownResponse(status="noop")
@@ -36,29 +37,38 @@ def serve(
     config_path: str,
     process_id: str,
     dataset_root: str,
-    chunk_size: int,
-    ttl: int,
-    forwarding_strategy: str = "round_robin",
-    use_async_forwarding: bool = False,
-    chunking_strategy: str = "fixed",
-    fairness_strategy: str = "strict",
+    chunk_size: Optional[int] = None,
+    ttl: int = 300,
+    forwarding_strategy: Optional[str] = None,
+    use_async_forwarding: Optional[bool] = None,
+    chunking_strategy: Optional[str] = None,
+    fairness_strategy: Optional[str] = None,
 ):
     config = OverlayConfig(config_path)
     process = config.get(process_id)
-    facade = OverlayFacade(
+    
+    # Get global strategies from config, allow CLI overrides
+    strategies = config.get_strategies()
+    final_forwarding = forwarding_strategy if forwarding_strategy is not None else strategies.forwarding_strategy
+    final_async = use_async_forwarding if use_async_forwarding is not None else strategies.async_forwarding
+    final_chunking = chunking_strategy if chunking_strategy is not None else strategies.chunking_strategy
+    final_fairness = fairness_strategy if fairness_strategy is not None else strategies.fairness_strategy
+    final_chunk_size = chunk_size if chunk_size is not None else strategies.chunk_size
+    
+    orchestrator = QueryOrchestrator(
         config=config,
         process=process,
         dataset_root=dataset_root,
-        chunk_size=chunk_size,
+        chunk_size=final_chunk_size,
         result_ttl=ttl,
-        forwarding_strategy=forwarding_strategy,
-        use_async_forwarding=use_async_forwarding,
-        chunking_strategy=chunking_strategy,
-        fairness_strategy=fairness_strategy,
+        forwarding_strategy=final_forwarding,
+        use_async_forwarding=final_async,
+        chunking_strategy=final_chunking,
+        fairness_strategy=final_fairness,
     )
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=16))
-    overlay_pb2_grpc.add_OverlayNodeServicer_to_server(OverlayService(facade), server)
+    overlay_pb2_grpc.add_OverlayNodeServicer_to_server(OverlayService(orchestrator), server)
     server.add_insecure_port(f"0.0.0.0:{process.port}")
 
     server.start()
@@ -78,36 +88,44 @@ def parse_args() -> argparse.Namespace:
         default="datasets/2020-fire/data",
         help="Root folder for dataset partitions.",
     )
-    parser.add_argument("--chunk-size", type=int, default=200, help="Chunk size for responses.")
+    parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=None,
+        help="Chunk size for responses (overrides config default: 200).",
+    )
     parser.add_argument("--result-ttl", type=int, default=300, help="Seconds to retain query results.")
     parser.add_argument(
         "--forwarding-strategy",
         choices=["round_robin", "parallel", "capacity"],
-        default="round_robin",
-        help="Forwarding strategy.",
+        default=None,
+        help="Forwarding strategy (overrides config).",
     )
     parser.add_argument(
         "--async-forwarding",
         action="store_true",
-        help="Use async (parallel) forwarding instead of blocking.",
+        help="Use async (parallel) forwarding instead of blocking (overrides config).",
     )
     parser.add_argument(
         "--chunking-strategy",
         choices=["fixed", "adaptive", "query_based"],
-        default="fixed",
-        help="Chunking strategy.",
+        default=None,
+        help="Chunking strategy (overrides config).",
     )
     parser.add_argument(
         "--fairness-strategy",
         choices=["strict", "weighted", "hybrid"],
-        default="strict",
-        help="Fairness strategy.",
+        default=None,
+        help="Fairness strategy (overrides config).",
     )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
+    # For store_true, if flag is not present it's False, so we need to check if it was actually set
+    # We use args.async_forwarding if True, None if False (meaning not specified)
+    async_forwarding = args.async_forwarding if args.async_forwarding else None
     serve(
         args.config,
         args.process_id,
@@ -115,7 +133,7 @@ if __name__ == "__main__":
         args.chunk_size,
         args.result_ttl,
         args.forwarding_strategy,
-        args.async_forwarding,
+        async_forwarding,
         args.chunking_strategy,
         args.fairness_strategy,
     )

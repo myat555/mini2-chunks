@@ -8,8 +8,8 @@ import overlay_pb2_grpc
 from .config import OverlayConfig, ProcessSpec
 
 
-class NodeProxy:
-    """Proxy that hides remote gRPC calls behind a simple interface."""
+class RemoteNodeClient:
+    """Client for communicating with remote overlay nodes via gRPC."""
 
     def __init__(self, spec: ProcessSpec):
         self.spec = spec
@@ -30,19 +30,19 @@ class NodeProxy:
             return stub.GetChunk(chunk_request)
 
 
-class ProxyRegistry:
-    """Lazily creates proxies per neighbor process (proxy pattern)."""
+class NeighborRegistry:
+    """Manages connections to neighbor nodes in the overlay network."""
 
     def __init__(self, config: OverlayConfig, self_id: str):
         self._config = config
         self._self_id = self_id
-        self._proxies: Dict[str, NodeProxy] = {}
+        self._clients: Dict[str, RemoteNodeClient] = {}
 
-    def for_neighbor(self, neighbor_id: str) -> NodeProxy:
+    def for_neighbor(self, neighbor_id: str) -> RemoteNodeClient:
         if neighbor_id == self._self_id:
-            raise ValueError("Cannot create proxy for self.")
-        if neighbor_id not in self._proxies:
+            raise ValueError("Cannot create client for self.")
+        if neighbor_id not in self._clients:
             spec = self._config.get(neighbor_id)
-            self._proxies[neighbor_id] = NodeProxy(spec)
-        return self._proxies[neighbor_id]
+            self._clients[neighbor_id] = RemoteNodeClient(spec)
+        return self._clients[neighbor_id]
 
