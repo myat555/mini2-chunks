@@ -62,8 +62,8 @@ echo   - windows_192.168.1.2_node_d.log
 echo.
 echo Next steps:
 echo   1. On macOS (192.168.1.1), run: start_two_hosts_macos.sh
-echo   2. Wait for all processes to start (check logs for confirmation)
-echo   3. Run benchmark: benchmark_two_hosts.bat
+echo   2. Wait for all processes to start
+echo   3. Run benchmark: scripts\benchmark.bat --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs\two_hosts
 echo.
 echo Close this window or press any key to stop Windows processes...
 pause >nul

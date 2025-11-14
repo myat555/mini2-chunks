@@ -81,16 +81,15 @@ mini2-chunks/
 │   └── result_cache.py                # Chunked result caching
 │
 ├── scripts/                           # Automation scripts
-│   ├── benchmark_single_host_macos.sh    # Single-host benchmark (macOS)
-│   ├── benchmark_single_host_windows.bat # Single-host benchmark (Windows)
-│   ├── benchmark_two_hosts.bat        # Two-host benchmark (Windows)
-│   ├── benchmark_two_hosts.py         # Two-host benchmark (Python)
-│   ├── benchmark_two_hosts.sh         # Two-host benchmark (macOS)
+│   ├── benchmark.bat                  # Unified benchmark (Windows)
+│   ├── benchmark.sh                   # Unified benchmark (macOS/Linux)
 │   ├── start_single_host_macos.sh     # Start single-host servers (macOS)
 │   ├── start_single_host_windows.bat  # Start single-host servers (Windows)
 │   ├── start_two_hosts_macos.sh       # Start two-host servers (macOS)
 │   ├── start_two_hosts_windows.bat    # Start two-host servers (Windows)
 │   └── wait_for_leader.py             # Leader readiness check utility
+│
+├── benchmark_unified.py               # Unified benchmark tool with real-time visualization
 │
 ├── .gitignore                         # Git ignore patterns
 ├── .venv/                             # Virtual environment (ignored by git)
@@ -315,56 +314,51 @@ Configure strategies when starting nodes:
 python node.py config.json A --forwarding-strategy parallel --async-forwarding --chunking-strategy adaptive --fairness-strategy weighted
 ```
 
-## Benchmarking and Monitoring
+## Benchmarking
 
-### Strategy Comparison
+### Unified Benchmark Tool
 
-Compare different strategies:
+The unified benchmark tool provides real-time visualization showing:
+- Server output from all processes across all hosts
+- Data distribution between hosts (macOS and Windows)
+- Process metrics (active requests, queue size, processing time)
+- Benchmark statistics (latency, throughput, success rate)
+- Data processing indicators (loaded, processing, ready)
+
+**Single-host benchmark:**
 ```bash
 # Windows
-scripts\benchmark_strategy_comparison.bat --num-requests 50
+scripts\benchmark.bat --config one_host_config.json --log-dir logs\windows
 
 # macOS/Linux
-./scripts/benchmark_strategy_comparison.sh --num-requests 50
+./scripts/benchmark.sh --config one_host_config.json --log-dir logs/macos
 ```
 
-This will test multiple strategy combinations and generate a comparison report in `logs/strategy_comparison/`.
-
-### Real-Time Monitoring
-
-Monitor both hosts in real-time:
+**Two-host benchmark:**
 ```bash
-# Windows
-scripts\monitor_two_hosts.bat --config two_hosts_config.json
+# Windows (from Windows machine)
+scripts\benchmark.bat --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs\two_hosts
 
-# macOS/Linux
-./scripts/monitor_two_hosts.sh --config two_hosts_config.json
+# macOS (from macOS machine)
+./scripts/benchmark.sh --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs/two_hosts
 ```
 
-Options:
-- `--interval N`: Update interval in seconds (default: 2.0)
-- `--show-logs`: Show recent log entries
-- `--log-dir DIR`: Directory containing log files
-- `--snapshot FILE`: Take a snapshot and save to file
+**Options:**
+- `--num-requests N`: Number of requests (default: 100)
+- `--concurrency N`: Concurrency level (default: 10)
+- `--update-interval N`: Dashboard update interval in seconds (default: 1.0)
+- `--log-dir DIR`: Directory containing server log files
+- `--output-dir DIR`: Output directory for results (default: logs)
 
-### Benchmark with Monitoring
+The benchmark tool displays a real-time dashboard that updates every second, showing:
+- Process status across all hosts
+- Active requests and queue sizes
+- Data files loaded per process
+- Recent server log output
+- Benchmark statistics (latency, throughput, records returned)
+- Data distribution across hosts
 
-Run benchmark while monitoring both hosts:
-```bash
-# Windows
-scripts\benchmark_with_monitoring.bat --num-requests 100
-
-# macOS/Linux
-./scripts/benchmark_with_monitoring.sh --num-requests 100
-```
-
-This combines benchmark execution with real-time monitoring, capturing:
-- Benchmark performance metrics
-- Process metrics from all hosts before and after benchmark
-- Real-time snapshots during benchmark execution
-- Process status and health information
-
-Results are saved to `logs/two_hosts/benchmark_with_monitoring.json` and `benchmark_summary.txt`.
+Results are saved to `logs/benchmark_results.json`.
 
 ## Network Requirements
 

@@ -80,7 +80,9 @@ echo "  - macos_192.168.1.1_node_c.log"
 echo "  - macos_192.168.1.1_node_e.log"
 echo "  - macos_192.168.1.1_node_f.log"
 echo
-echo "View logs: scripts/view_two_hosts_logs.sh"
+echo "Next steps:"
+echo "  1. Wait for all processes to start"
+echo "  2. Run benchmark: scripts/benchmark.sh --config two_hosts_config.json --leader-host 192.168.1.2 --log-dir logs/two_hosts"
 echo
 echo "Press Ctrl+C to stop macOS processes..."
 while true; do

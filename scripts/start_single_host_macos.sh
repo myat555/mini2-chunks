@@ -66,7 +66,14 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 echo
-echo "All processes are running. Press Ctrl+C to stop them."
+echo "============================================================"
+echo "All single-host processes started (A-F on localhost)"
+echo "============================================================"
+echo
+echo "To run benchmark:"
+echo "  scripts/benchmark.sh --config one_host_config.json --log-dir logs/macos"
+echo
+echo "Press Ctrl+C to stop them."
 while true; do
     sleep 1
 done
