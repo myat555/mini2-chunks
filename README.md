@@ -56,12 +56,12 @@ mini2-chunks/
 │   │   ├── node_d.log                 # Process D (Worker) logs
 │   │   ├── node_e.log                 # Process E (Team Leader) logs
 │   │   ├── node_f.log                 # Process F (Worker) logs
-│   │   └── benchmark_results.txt       # Single-host benchmark results (full console output)
+│   │   └── benchmark_<strategy>.txt   # Single-host benchmark results (full console output)
 │   ├── macos/                         # Single-host macOS logs
 │   │   ├── node_a.log
 │   │   ├── node_b.log
 │   │   ├── ... (same structure as windows/)
-│   │   └── benchmark_results.txt
+│   │   └── benchmark_<strategy>.txt
 │   └── two_hosts/                     # Two-host setup logs (filtered by IP and platform)
 │       ├── windows_192.168.1.2_node_a.log    # Windows host, Process A (Leader)
 │       ├── windows_192.168.1.2_node_b.log    # Windows host, Process B (Team Leader)
@@ -69,7 +69,7 @@ mini2-chunks/
 │       ├── macos_192.168.1.1_node_c.log      # macOS host, Process C (Worker)
 │       ├── macos_192.168.1.1_node_e.log      # macOS host, Process E (Team Leader)
 │       ├── macos_192.168.1.1_node_f.log      # macOS host, Process F (Worker)
-│       └── benchmark_results.txt             # Two-host benchmark results (full console output)
+│       └── benchmark_<strategy>.txt          # Two-host benchmark results (full console output)
 │
 ├── overlay_core/                      # Core implementation modules
 │   ├── __init__.py
@@ -295,11 +295,12 @@ To test different strategy combinations, edit the `strategies` section in your c
 
 The unified benchmark tool (`benchmark_unified.py`) provides real-time visualization showing:
 - Server output from all processes across all hosts in real-time
-- Data distribution between hosts (macOS and Windows)
 - Process metrics (active requests, queue size, processing time)
 - Benchmark statistics (latency, throughput, success rate)
-- Data processing indicators (loaded ✓, processing →, ready ✓)
+- Strategy configuration from config file
 - Recent log output from each process
+
+The benchmark tests only the strategy configuration specified in the config file. Results are saved to a text file named with the strategy (e.g., `benchmark_round_robin_blocking_fixed_strict.txt`).
 
 ### Single-Host Benchmark
 
@@ -318,7 +319,8 @@ scripts\benchmark_single_host.bat
 scripts\benchmark_single_host.bat --num-requests 200 --concurrency 20 --update-interval 0.5
 ```
 
-Results saved to: `logs/windows/benchmark_results.txt` or `logs/macos/benchmark_results.txt`
+Results saved to: `logs/windows/benchmark_<strategy>.txt` or `logs/macos/benchmark_<strategy>.txt`
+Example: `benchmark_round_robin_blocking_fixed_strict.txt`
 
 ### Two-Host Benchmark
 
@@ -337,7 +339,8 @@ scripts\benchmark_two_hosts.bat
 scripts\benchmark_two_hosts.bat --num-requests 200 --concurrency 20
 ```
 
-Results saved to: `logs/two_hosts/benchmark_results.txt`
+Results saved to: `logs/two_hosts/benchmark_<strategy>.txt`
+Example: `benchmark_round_robin_blocking_fixed_strict.txt`
 
 ### Benchmark Options
 
@@ -358,7 +361,7 @@ The benchmark tool displays a real-time dashboard that updates every second (con
 - Queue size
 - Average processing time
 - Data files loaded
-- Processing indicators (→ processing, ✓ loaded, ✓ ready)
+- Processing state (Processing, Ready, No Data)
 
 **Server Output:**
 - Recent log lines from each process

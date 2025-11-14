@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unified benchmarking tool with real-time visualization of server output and strategy comparison."""
+"""Unified benchmarking tool with real-time visualization of server output."""
 
 import argparse
 import json
@@ -78,6 +78,15 @@ class UnifiedBenchmark:
         """Load overlay configuration."""
         with open(self.config_path, "r") as f:
             self.config = json.load(f)
+        
+        strategies = self.config.get("strategies", {})
+        self.forwarding_strategy = strategies.get("forwarding_strategy", "round_robin")
+        self.async_forwarding = strategies.get("async_forwarding", False)
+        self.chunking_strategy = strategies.get("chunking_strategy", "fixed")
+        self.fairness_strategy = strategies.get("fairness_strategy", "strict")
+        
+        async_str = "async" if self.async_forwarding else "blocking"
+        self.strategy_name = f"{self.forwarding_strategy}_{async_str}_{self.chunking_strategy}_{self.fairness_strategy}"
 
     def clear_screen(self):
         """Clear terminal screen."""
@@ -176,25 +185,21 @@ class UnifiedBenchmark:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         print("=" * 120)
-        print(f"UNIFIED BENCHMARK DASHBOARD - {current_time}")
+        print(f"BENCHMARK DASHBOARD - {current_time}")
+        print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
         print("=" * 120)
         
-        # Group by host
         hosts = defaultdict(list)
         for process_id, proc in metrics.items():
             host = proc.get("host", "unknown")
             hosts[host].append((process_id, proc))
         
-        # Display metrics by host
         for host, host_processes in sorted(hosts.items()):
             print(f"\n{'─' * 120}")
             print(f"HOST: {host}")
             print(f"{'─' * 120}")
-            print(f"{'ID':<4} {'Role':<12} {'Team':<6} {'Status':<8} {'Active':<8} {'Queue':<8} {'Avg(ms)':<10} {'Files':<8} {'Processing':<12}")
+            print(f"{'ID':<4} {'Role':<12} {'Team':<6} {'Status':<8} {'Active':<8} {'Queue':<8} {'Avg(ms)':<10} {'Files':<8} {'State':<15}")
             print(f"{'─' * 120}")
-            
-            # Track strategies for this host
-            host_strategies = {}
             
             for process_id, proc in sorted(host_processes):
                 pid = proc.get("process_id", "N/A")
@@ -206,51 +211,29 @@ class UnifiedBenchmark:
                 avg_ms = proc.get("avg_processing_time_ms", 0)
                 files = proc.get("data_files_loaded", 0)
                 
-                # Check if data is being processed
-                data_indicator = "✓ Loaded" if files > 0 else "✗ No Data"
                 if active > 0:
-                    data_indicator = f"→ {active} req"  # Processing
-                elif files > 0 and active == 0:
-                    data_indicator = "✓ Ready"
-                
-                status_icon = "✓" if status == "online" else "✗"
+                    data_indicator = f"Processing {active}"
+                elif files > 0:
+                    data_indicator = "Ready"
+                else:
+                    data_indicator = "No Data"
                 
                 print(
-                    f"{pid:<4} {role:<12} {team:<6} {status_icon} {status:<7} "
-                    f"{active:<8} {queue:<8} {avg_ms:<10.2f} {files:<8} {data_indicator:<12}"
+                    f"{pid:<4} {role:<12} {team:<6} {status:<8} "
+                    f"{active:<8} {queue:<8} {avg_ms:<10.2f} {files:<8} {data_indicator:<15}"
                 )
-                
-                # Store strategy info
-                if status == "online":
-                    host_strategies[process_id] = {
-                        "forwarding": proc.get("forwarding_strategy", "unknown"),
-                        "async": proc.get("async_forwarding", False),
-                        "chunking": proc.get("chunking_strategy", "unknown"),
-                        "fairness": proc.get("fairness_strategy", "unknown"),
-                    }
             
-            # Show strategies in use on this host
-            if host_strategies:
+            if logs:
                 print(f"\n{'─' * 120}")
-                print(f"STRATEGIES IN USE ({host}):")
+                print(f"RECENT LOGS ({host}):")
                 print(f"{'─' * 120}")
-                for proc_id, strat in sorted(host_strategies.items()):
-                    async_str = "async" if strat["async"] else "blocking"
-                    print(f"  {proc_id}: Forward={strat['forwarding']}({async_str}), Chunk={strat['chunking']}, Fair={strat['fairness']}")
-            
-            # Show recent server output for this host
-            print(f"\n{'─' * 120}")
-            print(f"RECENT SERVER OUTPUT ({host}):")
-            print(f"{'─' * 120}")
-            for process_id, proc in sorted(host_processes):
-                if process_id in logs:
-                    for log_line in logs[process_id][-2:]:  # Last 2 lines
-                        # Truncate long lines
-                        if len(log_line) > 110:
-                            log_line = log_line[:107] + "..."
-                        print(f"  {process_id}: {log_line}")
+                for process_id, proc in sorted(host_processes):
+                    if process_id in logs:
+                        for log_line in logs[process_id][-2:]:
+                            if len(log_line) > 110:
+                                log_line = log_line[:107] + "..."
+                            print(f"  {process_id}: {log_line}")
         
-        # Benchmark statistics
         if benchmark_stats:
             print(f"\n{'─' * 120}")
             print("BENCHMARK STATISTICS:")
@@ -264,54 +247,19 @@ class UnifiedBenchmark:
             print(f"Throughput: {stats.get('throughput_req_per_sec', 0):.2f} req/s")
             print(f"Total Records: {stats.get('total_records_returned', 0)}")
             
-            # Show data distribution across hosts
             print(f"\n{'─' * 120}")
-            print("DATA DISTRIBUTION ACROSS HOSTS:")
+            print("STRATEGY IN USE:")
             print(f"{'─' * 120}")
+            async_str = "async" if self.async_forwarding else "blocking"
+            print(f"Forwarding: {self.forwarding_strategy} ({async_str})")
+            print(f"Chunking: {self.chunking_strategy}")
+            print(f"Fairness: {self.fairness_strategy}")
+            
             for host, host_processes in sorted(hosts.items()):
                 total_files = sum(p[1].get("data_files_loaded", 0) for p in host_processes)
                 active_total = sum(p[1].get("active_requests", 0) for p in host_processes)
-                queue_total = sum(p[1].get("queue_size", 0) for p in host_processes)
                 online_count = sum(1 for p in host_processes if p[1].get("status") == "online")
-                print(f"{host}: {online_count}/{len(host_processes)} online, {total_files} files, {active_total} active, {queue_total} queued")
-            
-            # Strategy comparison summary
-            if benchmark_stats:
-                print(f"\n{'─' * 120}")
-                print("STRATEGY COMPARISON:")
-                print(f"{'─' * 120}")
-                
-                # Collect all strategies in use across all hosts
-                all_strategies = {}
-                for host, host_processes in sorted(hosts.items()):
-                    for process_id, proc in host_processes:
-                        if proc.get("status") == "online":
-                            key = (
-                                proc.get("forwarding_strategy", "unknown"),
-                                proc.get("async_forwarding", False),
-                                proc.get("chunking_strategy", "unknown"),
-                                proc.get("fairness_strategy", "unknown"),
-                            )
-                            if key not in all_strategies:
-                                all_strategies[key] = []
-                            all_strategies[key].append(process_id)
-                
-                if all_strategies:
-                    print("Strategies currently in use:")
-                    for (fwd, async_flag, chunk, fair), procs in sorted(all_strategies.items()):
-                        async_str = "async" if async_flag else "blocking"
-                        print(f"  {', '.join(sorted(procs))}: {fwd}({async_str}), {chunk}, {fair}")
-                
-                print("\nTo compare different strategies:")
-                print("  1. Run servers with one strategy configuration (e.g., round_robin blocking)")
-                print("  2. Run benchmark and note performance metrics (latency, throughput)")
-                print("  3. Restart servers with different configuration (e.g., parallel async)")
-                print("  4. Run benchmark again and compare results")
-                print("\nExpected performance characteristics:")
-                print("  - Parallel + async: Higher throughput, lower latency for concurrent queries")
-                print("  - Round-robin: More balanced load, predictable order")
-                print("  - Adaptive chunking: Better memory usage for varying result sizes")
-                print("  - Weighted fairness: Better system utilization under mixed loads")
+                print(f"{host}: {online_count}/{len(host_processes)} online, {total_files} files, {active_total} active")
         
         print(f"\n{'─' * 120}")
         print("Press Ctrl+C to stop")
@@ -385,10 +333,11 @@ class UnifiedBenchmark:
         
         try:
             print("=" * 120)
-            print("UNIFIED BENCHMARK WITH REAL-TIME MONITORING")
+            print("BENCHMARK")
             print("=" * 120)
+            print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
             print(f"Requests: {num_requests}, Concurrency: {concurrency}")
-            print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             print("=" * 120)
             
             log_path = Path(log_dir) if log_dir else None
@@ -524,8 +473,8 @@ class UnifiedBenchmark:
             # Stop capturing output
             self.output_capture.stop()
             
-            # Save all console output to text file
-            output_file = self.output_dir / "benchmark_results.txt"
+            # Save all console output to text file with strategy name
+            output_file = self.output_dir / f"benchmark_{self.strategy_name}.txt"
             captured_output = self.output_capture.get_output()
             
             # Add final summary section
