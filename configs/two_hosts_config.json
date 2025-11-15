@@ -13,7 +13,7 @@
       "team": "green",
       "host": "192.168.1.2",
       "port": 60051,
-      "neighbors": ["B", "E"]
+      "neighbors": ["E"]
     },
     "B": {
       "id": "B",

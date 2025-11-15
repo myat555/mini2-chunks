@@ -290,8 +290,8 @@ class QueryOrchestrator:
 
         neighbors = self._select_forward_targets()
         if neighbors:
+            total_limit = max(1, filters.get("limit", self._default_limit))
             if self._process.role == "leader":
-                total_limit = max(1, filters.get("limit", self._default_limit))
                 allocations = self._compute_leader_allocations(len(neighbors), total_limit)
                 for neighbor, allocation in zip(neighbors, allocations):
                     remote_rows = self._request_neighbor_records(
@@ -304,18 +304,36 @@ class QueryOrchestrator:
                     )
                     aggregated.extend(remote_rows)
             elif self._process.role == "team_leader":
-                total_limit = max(1, filters.get("limit", self._default_limit))
-                allocations = self._compute_leader_allocations(len(neighbors), total_limit)
-                for neighbor, allocation in zip(neighbors, allocations):
+                same_team_neighbors = [n for n in neighbors if n.team == self._process.team]
+                other_team_neighbors = [n for n in neighbors if n.team != self._process.team]
+
+                primary = same_team_neighbors or neighbors
+                allocations = self._compute_leader_allocations(len(primary), total_limit)
+                for neighbor, allocation in zip(primary, allocations):
                     remote_rows = self._request_neighbor_records(
                         neighbor,
                         filters,
                         hops,
                         client_id,
                         allocation,
-                        team_hint=neighbor.team,
+                        team_hint=self._process.team,
                     )
                     aggregated.extend(remote_rows)
+
+                if other_team_neighbors:
+                    other_allocations = self._compute_leader_allocations(
+                        len(other_team_neighbors), total_limit
+                    )
+                    for neighbor, allocation in zip(other_team_neighbors, other_allocations):
+                        remote_rows = self._request_neighbor_records(
+                            neighbor,
+                            filters,
+                            hops,
+                            client_id,
+                            allocation,
+                            team_hint=neighbor.team,
+                        )
+                        aggregated.extend(remote_rows)
             else:
                 if self._use_async_forwarding:
                     remote_rows = self._forwarding_strategy.forward_async(
