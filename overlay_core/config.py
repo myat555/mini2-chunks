@@ -25,9 +25,6 @@ class ProcessSpec:
 class StrategyConfig:
     """Global strategy configuration for all processes."""
 
-    forwarding_strategy: str = "round_robin"
-    async_forwarding: bool = False
-    chunking_strategy: str = "fixed"
     fairness_strategy: str = "strict"
     chunk_size: int = 200
 
@@ -37,9 +34,6 @@ class StrategyConfig:
         if not data:
             return cls()
         return cls(
-            forwarding_strategy=data.get("forwarding_strategy", "round_robin"),
-            async_forwarding=data.get("async_forwarding", False),
-            chunking_strategy=data.get("chunking_strategy", "fixed"),
             fairness_strategy=data.get("fairness_strategy", "strict"),
             chunk_size=data.get("chunk_size", 200),
         )

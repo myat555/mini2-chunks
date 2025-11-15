@@ -48,11 +48,8 @@ message MetricsResponse {
   int32 queue_size = 7;
   float avg_processing_time_ms = 8;
   int32 data_files_loaded = 9;
-  string forwarding_strategy = 10;  // Current forwarding strategy
-  bool async_forwarding = 11;        // Whether async forwarding is enabled
-  string chunking_strategy = 12;     // Current chunking strategy
-  string fairness_strategy = 13;     // Current fairness strategy
-  repeated string recent_logs = 14;  // Recent log lines (last N lines)
+  string fairness_strategy = 10;     // Current fairness strategy
+  repeated string recent_logs = 11;  // Recent log lines (last N lines)
 }
 
 message ShutdownRequest {

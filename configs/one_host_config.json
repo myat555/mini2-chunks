@@ -1,8 +1,5 @@
 {
   "strategies": {
-    "forwarding_strategy": "round_robin",
-    "async_forwarding": false,
-    "chunking_strategy": "fixed",
     "fairness_strategy": "strict",
     "chunk_size": 200
   },

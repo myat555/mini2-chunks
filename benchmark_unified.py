@@ -42,13 +42,8 @@ class UnifiedBenchmark:
             self.config = json.load(f)
         
         strategies = self.config.get("strategies", {})
-        self.forwarding_strategy = strategies.get("forwarding_strategy", "round_robin")
-        self.async_forwarding = strategies.get("async_forwarding", False)
-        self.chunking_strategy = strategies.get("chunking_strategy", "fixed")
         self.fairness_strategy = strategies.get("fairness_strategy", "strict")
-        
-        async_str = "async" if self.async_forwarding else "blocking"
-        self.strategy_name = f"{self.forwarding_strategy}_{async_str}_{self.chunking_strategy}_{self.fairness_strategy}"
+        self.strategy_name = f"fairness_{self.fairness_strategy}"
 
     def collect_process_metrics(self) -> Dict[str, Dict]:
         """Collect metrics from all processes."""
@@ -64,15 +59,9 @@ class UnifiedBenchmark:
                         m = stub.GetMetrics(overlay_pb2.MetricsRequest(), timeout=1)
                         # Try to get strategy fields, with fallback for older proto versions
                         try:
-                            forwarding_strat = m.forwarding_strategy if m.forwarding_strategy else "unknown"
-                            async_fwd = m.async_forwarding
-                            chunking_strat = m.chunking_strategy if m.chunking_strategy else "unknown"
                             fairness_strat = m.fairness_strategy if m.fairness_strategy else "unknown"
                             recent_logs = list(m.recent_logs) if hasattr(m, 'recent_logs') else []
                         except AttributeError:
-                            forwarding_strat = "unknown"
-                            async_fwd = False
-                            chunking_strat = "unknown"
                             fairness_strat = "unknown"
                             recent_logs = []
                         
@@ -88,9 +77,6 @@ class UnifiedBenchmark:
                             "data_files_loaded": m.data_files_loaded,
                             "is_healthy": m.is_healthy,
                             "status": "online",
-                            "forwarding_strategy": forwarding_strat,
-                            "async_forwarding": async_fwd,
-                            "chunking_strategy": chunking_strat,
                             "fairness_strategy": fairness_strat,
                             "recent_logs": recent_logs,
                             "timestamp": time.time(),
@@ -223,7 +209,7 @@ class UnifiedBenchmark:
         print("=" * 120)
         print("BENCHMARK")
         print("=" * 120)
-        print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
+        print(f"Fairness Strategy: {self.fairness_strategy}")
         print(f"Requests: {num_requests}, Concurrency: {concurrency}")
         print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 120)
@@ -319,7 +305,7 @@ class UnifiedBenchmark:
             f.write("=" * 120 + "\n")
             f.write("BENCHMARK\n")
             f.write("=" * 120 + "\n")
-            f.write(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}\n")
+            f.write(f"Fairness Strategy: {self.fairness_strategy}\n")
             f.write(f"Requests: {num_requests}, Concurrency: {concurrency}\n")
             f.write(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
             f.write("=" * 120 + "\n\n")

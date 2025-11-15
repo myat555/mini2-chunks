@@ -8,12 +8,6 @@ from .metrics import MetricsTracker
 from .proxies import NeighborRegistry, RemoteNodeClient
 from .facade import QueryOrchestrator
 from .strategies import (
-    ForwardingStrategy,
-    RoundRobinForwarding,
-    ParallelForwarding,
-    ChunkingStrategy,
-    FixedChunking,
-    AdaptiveChunking,
     FairnessStrategy,
     StrictPerTeamFairness,
     WeightedFairness,
@@ -32,12 +26,6 @@ __all__ = [
     "NeighborRegistry",
     "RemoteNodeClient",
     "QueryOrchestrator",
-    "ForwardingStrategy",
-    "RoundRobinForwarding",
-    "ParallelForwarding",
-    "ChunkingStrategy",
-    "FixedChunking",
-    "AdaptiveChunking",
     "FairnessStrategy",
     "StrictPerTeamFairness",
     "WeightedFairness",

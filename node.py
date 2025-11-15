@@ -39,9 +39,6 @@ def serve(
     dataset_root: str,
     chunk_size: Optional[int] = None,
     ttl: int = 300,
-    forwarding_strategy: Optional[str] = None,
-    use_async_forwarding: Optional[bool] = None,
-    chunking_strategy: Optional[str] = None,
     fairness_strategy: Optional[str] = None,
 ):
     config = OverlayConfig(config_path)
@@ -49,9 +46,6 @@ def serve(
     
     # Get global strategies from config, allow CLI overrides
     strategies = config.get_strategies()
-    final_forwarding = forwarding_strategy if forwarding_strategy is not None else strategies.forwarding_strategy
-    final_async = use_async_forwarding if use_async_forwarding is not None else strategies.async_forwarding
-    final_chunking = chunking_strategy if chunking_strategy is not None else strategies.chunking_strategy
     final_fairness = fairness_strategy if fairness_strategy is not None else strategies.fairness_strategy
     final_chunk_size = chunk_size if chunk_size is not None else strategies.chunk_size
     
@@ -61,9 +55,6 @@ def serve(
         dataset_root=dataset_root,
         chunk_size=final_chunk_size,
         result_ttl=ttl,
-        forwarding_strategy=final_forwarding,
-        use_async_forwarding=final_async,
-        chunking_strategy=final_chunking,
         fairness_strategy=final_fairness,
     )
 
@@ -97,23 +88,6 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--result-ttl", type=int, default=300, help="Seconds to retain query results.")
     parser.add_argument(
-        "--forwarding-strategy",
-        choices=["round_robin", "parallel", "capacity"],
-        default=None,
-        help="Forwarding strategy (overrides config).",
-    )
-    parser.add_argument(
-        "--async-forwarding",
-        action="store_true",
-        help="Use async (parallel) forwarding instead of blocking (overrides config).",
-    )
-    parser.add_argument(
-        "--chunking-strategy",
-        choices=["fixed", "adaptive", "query_based"],
-        default=None,
-        help="Chunking strategy (overrides config).",
-    )
-    parser.add_argument(
         "--fairness-strategy",
         choices=["strict", "weighted", "hybrid"],
         default=None,
@@ -124,17 +98,11 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
     args = parse_args()
-    # For store_true, if flag is not present it's False, so we need to check if it was actually set
-    # We use args.async_forwarding if True, None if False (meaning not specified)
-    async_forwarding = args.async_forwarding if args.async_forwarding else None
     serve(
         args.config,
         args.process_id,
         args.dataset_root,
         args.chunk_size,
         args.result_ttl,
-        args.forwarding_strategy,
-        async_forwarding,
-        args.chunking_strategy,
         args.fairness_strategy,
     )

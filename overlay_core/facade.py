@@ -14,12 +14,6 @@ from .proxies import NeighborRegistry
 from .request_controller import RequestAdmissionController
 from .result_cache import ChunkedResult, ResultCache
 from .strategies import (
-    ForwardingStrategy,
-    RoundRobinForwarding,
-    ParallelForwarding,
-    ChunkingStrategy,
-    FixedChunking,
-    AdaptiveChunking,
     FairnessStrategy,
     StrictPerTeamFairness,
     WeightedFairness,
@@ -41,9 +35,6 @@ class QueryOrchestrator:
         chunk_size: int = 200,
         result_ttl: int = 300,
         default_limit: int = 2000,
-        forwarding_strategy: Optional[str] = "round_robin",
-        use_async_forwarding: bool = False,
-        chunking_strategy: Optional[str] = "fixed",
         fairness_strategy: Optional[str] = "strict",
     ):
         self._config = config
@@ -60,20 +51,15 @@ class QueryOrchestrator:
             team_members=team_members,
         )
         
-        # Initialize strategies
-        self._forwarding_strategy = self._create_forwarding_strategy(forwarding_strategy)
-        self._use_async_forwarding = use_async_forwarding
-        self._chunking_strategy = self._create_chunking_strategy(chunking_strategy, chunk_size)
+        # Initialize fairness strategy
         fairness = self._create_fairness_strategy(fairness_strategy)
         
         self._cache = ResultCache(ttl_seconds=result_ttl)
         self._admission = RequestAdmissionController(fairness_strategy=fairness)
         self._metrics = MetricsTracker()
         self._neighbor_registry = NeighborRegistry(config, process.id)
-        self._chunk_size = chunk_size  # Default/initial chunk size
+        self._chunk_size = chunk_size  # Fixed chunk size
         self._default_limit = default_limit
-        self._rr_lock = threading.Lock()
-        self._rr_index = 0
         self._log_buffer = deque(maxlen=50)  # Store last 50 log lines
         self._log_lock = threading.Lock()
 
@@ -139,23 +125,16 @@ class QueryOrchestrator:
         try:
             records = self._collect_records(filters, hops, request.client_id, request.query_type)
             
-            # Compute dynamic chunk size based on strategy
-            dynamic_chunk_size = self._chunking_strategy.compute_chunk_size(len(records), filters)
-            
             chunked = ChunkedResult(
                 uid=uid,
                 records=records,
-                chunk_size=dynamic_chunk_size,
+                chunk_size=self._chunk_size,
                 ttl_seconds=self._cache.ttl,
                 metadata={
                     "process": self._process.id,
                     "team": self._process.team,
                     "filters": filters,
-                    "strategy": {
-                        "forwarding": self._forwarding_strategy.__class__.__name__,
-                        "async": self._use_async_forwarding,
-                        "chunking": self._chunking_strategy.__class__.__name__,
-                    },
+                    "fairness_strategy": self._admission._fairness.__class__.__name__,
                 },
             )
             self._cache.store(chunked)
@@ -242,9 +221,6 @@ class QueryOrchestrator:
             queue_size=len(self._cache),
             avg_processing_time_ms=float(stats["avg_ms"]),
             data_files_loaded=self._data_store.files_loaded if self._data_store else 0,
-            forwarding_strategy=self._forwarding_strategy.__class__.__name__,
-            async_forwarding=self._use_async_forwarding,
-            chunking_strategy=self._chunking_strategy.__class__.__name__,
             fairness_strategy=self._admission._fairness.__class__.__name__,
             recent_logs=recent_logs,
         )
@@ -298,25 +274,23 @@ class QueryOrchestrator:
                     )
                     aggregated.extend(remote_rows)
             else:
-                if self._use_async_forwarding:
-                    remote_rows = self._forwarding_strategy.forward_async(
-                        neighbors,
-                        self._request_neighbor_records,
-                        filters,
-                        hops,
-                        client_id,
-                        remaining,
-                    )
-                else:
-                    remote_rows = self._forwarding_strategy.forward_blocking(
-                        neighbors,
-                        self._request_neighbor_records,
-                        filters,
-                        hops,
-                        client_id,
-                        remaining,
-                    )
-                aggregated.extend(remote_rows)
+                # Simple sequential forwarding for workers
+                for neighbor in neighbors:
+                    if remaining <= 0:
+                        break
+                    try:
+                        rows = self._request_neighbor_records(
+                            neighbor,
+                            filters,
+                            hops,
+                            client_id,
+                            remaining,
+                            team_hint=neighbor.team,
+                        )
+                        aggregated.extend(rows)
+                        remaining -= len(rows)
+                    except Exception as exc:
+                        print(f"[Orchestrator] Failed forwarding to {neighbor.id}: {exc}", flush=True)
 
         return aggregated[: filters["limit"]]
 
@@ -326,19 +300,21 @@ class QueryOrchestrator:
             return []
 
         if self._process.role == "leader":
+            # Leader forwards to team leaders
             neighbors = [n for n in neighbors if n.role == "team_leader"]
         elif self._process.role == "team_leader":
-            neighbors = [n for n in neighbors if n.team == self._process.team and n.role == "worker"]
+            # Team leaders forward to their own team workers first
+            own_team_workers = [n for n in neighbors if n.team == self._process.team and n.role == "worker"]
+            if own_team_workers:
+                neighbors = own_team_workers
+            else:
+                # Fallback to cross-team workers if no own-team workers
+                neighbors = [n for n in neighbors if n.role == "worker"]
         else:
+            # Workers don't forward
             neighbors = []
 
-        if not neighbors:
-            return []
-
-        with self._rr_lock:
-            start = self._rr_index % len(neighbors)
-            self._rr_index += 1
-        return neighbors[start:] + neighbors[:start]
+        return neighbors
 
     def _request_neighbor_records(
         self,
@@ -412,22 +388,6 @@ class QueryOrchestrator:
             if chunk_resp.is_last:
                 break
         return collected
-
-    def _create_forwarding_strategy(self, strategy_name: str) -> ForwardingStrategy:
-        """Create forwarding strategy instance."""
-        strategy_name = (strategy_name or "round_robin").lower()
-        if strategy_name == "parallel":
-            return ParallelForwarding()
-        else:  # round_robin (default)
-            return RoundRobinForwarding()
-
-    def _create_chunking_strategy(self, strategy_name: str, base_size: int) -> ChunkingStrategy:
-        """Create chunking strategy instance."""
-        strategy_name = (strategy_name or "fixed").lower()
-        if strategy_name == "adaptive":
-            return AdaptiveChunking(base_size=base_size)
-        else:  # fixed (default)
-            return FixedChunking(chunk_size=base_size)
 
     def _create_fairness_strategy(self, strategy_name: str) -> FairnessStrategy:
         """Create fairness strategy instance."""
