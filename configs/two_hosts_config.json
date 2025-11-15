@@ -21,8 +21,7 @@
       "team": "green",
       "host": "192.168.1.2",
       "port": 60052,
-      "neighbors": ["A", "C", "D"],
-      "date_bounds": ["20200810", "20200815"]
+      "neighbors": ["A", "C", "D"]
     },
     "C": {
       "id": "C",
@@ -30,8 +29,7 @@
       "team": "green",
       "host": "192.168.1.1",
       "port": 60053,
-      "neighbors": ["B"],
-      "date_bounds": ["20200816", "20200820"]
+      "neighbors": ["B"]
     },
     "D": {
       "id": "D",
@@ -39,8 +37,7 @@
       "team": "pink",
       "host": "192.168.1.2",
       "port": 60054,
-      "neighbors": ["B", "E"],
-      "date_bounds": ["20200821", "20200905"]
+      "neighbors": ["B", "E"]
     },
     "E": {
       "id": "E",
@@ -48,8 +45,7 @@
       "team": "pink",
       "host": "192.168.1.1",
       "port": 60055,
-      "neighbors": ["A", "F", "D"],
-      "date_bounds": ["20200906", "20200924"]
+      "neighbors": ["A", "F", "D"]
     },
     "F": {
       "id": "F",
@@ -57,8 +53,7 @@
       "team": "pink",
       "host": "192.168.1.1",
       "port": 60056,
-      "neighbors": ["E"],
-      "date_bounds": ["20200912", "20200924"]
+      "neighbors": ["E"]
     }
   }
 }

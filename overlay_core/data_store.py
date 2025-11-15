@@ -1,6 +1,10 @@
 import csv
+import math
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .config import ProcessSpec
 
 
 TEAM_DATE_BOUNDS = {
@@ -12,15 +16,21 @@ TEAM_DATE_BOUNDS = {
 class DataStore:
     """Local dataset accessor responsible for enforcing team-specific slices."""
 
-    def __init__(self, process_id: str, team: str, dataset_root: str = "datasets/2020-fire/data", date_bounds: Optional[Tuple[str, str]] = None):
+    def __init__(
+        self,
+        process_id: str,
+        team: str,
+        dataset_root: str = "datasets/2020-fire/data",
+        date_bounds: Optional[Tuple[str, str]] = None,
+        team_members: Optional[Sequence["ProcessSpec"]] = None,
+    ):
         self.process_id = process_id
         self.team = team.lower()
         self.dataset_root = Path(dataset_root)
         self._records: List[Dict[str, object]] = []
         self._files_loaded = 0
-        self._date_bounds = date_bounds or TEAM_DATE_BOUNDS.get(self.team)
-        if not self._date_bounds:
-            raise ValueError(f"No date bounds for team '{self.team}' and process '{self.process_id}'")
+        self._explicit_bounds = date_bounds
+        self._team_members = list(team_members or [])
         self._load()
 
     @property
@@ -39,14 +49,20 @@ class DataStore:
         if not bounds:
             raise ValueError(f"Unknown team '{self.team}' for datastore.")
 
-        lower, upper = self._date_bounds
+        date_directories: List[Tuple[str, Path]] = []
+        lower, upper = bounds
         for date_dir in sorted(self.dataset_root.iterdir()):
             if not date_dir.is_dir():
                 continue
             date_str = date_dir.name
-            if not (lower <= date_str <= upper):
-                continue
+            if lower <= date_str <= upper:
+                date_directories.append((date_str, date_dir))
 
+        selected_dates = self._resolve_selected_dates([date for date, _ in date_directories])
+
+        for date_str, date_dir in date_directories:
+            if selected_dates and date_str not in selected_dates:
+                continue
             for csv_file in sorted(date_dir.glob("*.csv")):
                 self._load_file(csv_file, date_str)
 
@@ -142,4 +158,58 @@ class DataStore:
             "records": self.records_loaded,
             "files": self.files_loaded,
         }
+
+    def _resolve_selected_dates(self, all_dates: List[str]) -> Optional[Set[str]]:
+        if not all_dates:
+            return set()
+
+        if self._explicit_bounds:
+            lower, upper = self._explicit_bounds
+            return {date for date in all_dates if lower <= date <= upper}
+
+        if not self._team_members:
+            return None
+
+        team_members = [
+            member for member in self._team_members if member.team.lower() == self.team
+        ]
+        if not team_members:
+            return None
+
+        member_ids = [member.id for member in team_members]
+        if self.process_id not in member_ids:
+            return None
+
+        shares = self._compute_member_shares(team_members, len(all_dates))
+        start = 0
+        selected: Set[str] = set()
+        for idx, member in enumerate(team_members):
+            share = shares[idx]
+            end = min(len(all_dates), start + share)
+            if idx == len(team_members) - 1:
+                end = len(all_dates)
+            if member.id == self.process_id:
+                selected.update(all_dates[start:end])
+            start = end
+        return selected or None
+
+    def _compute_member_shares(self, members: Sequence["ProcessSpec"], total_dates: int) -> List[int]:
+        if total_dates <= 0:
+            return [0 for _ in members]
+
+        role_weights = {"team_leader": 1, "worker": 2}
+        weights = [role_weights.get(member.role, 1) for member in members]
+        weight_total = sum(weights) or len(members)
+        raw_shares = [
+            max(1, int(round((weight / weight_total) * total_dates))) for weight in weights
+        ]
+
+        diff = total_dates - sum(raw_shares)
+        if diff > 0:
+            raw_shares[-1] += diff
+        elif diff < 0 and raw_shares:
+            take = min(raw_shares[-1] - 1, abs(diff))
+            if take > 0:
+                raw_shares[-1] -= take
+        return raw_shares
 
