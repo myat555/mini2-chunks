@@ -21,7 +21,7 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 - **Team Leaders (B, E)**: Load their team's data partition and coordinate workers
 - **Workers (C, D, F)**: Load their team's data partition and process queries
 - **Partitions**: Team Green (20200810-20200820), Team Pink (20200821-20200924)
-- **No Cross-Team Replication**: Each team has non-overlapping data as per mini2 requirements
+- **No Cross-Team Replication**: Each team has non-overlapping data
 
 ### Query Flow
 
@@ -35,7 +35,7 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 
 ```
 mini2-chunks/
-├── datasets/                          # Dataset folder (ignored by git)
+├── datasets/                          # Dataset folder
 │   └── 2020-fire/
 │       ├── airnow-output-desc.pdf
 │       └── data/                      # CSV data files organized by date
@@ -110,9 +110,8 @@ mini2-chunks/
 ```
 
 **Important Notes:**
-- `datasets/` folder is required but ignored by git - you must provide the dataset files
+- `datasets/` folder is required but ignored by git
 - `logs/` folder is created automatically during benchmarks
-- `.venv/` is the virtual environment (ignored by git)
 - Generated files: `overlay_pb2.py`, `overlay_pb2_grpc.py` (created by `build_proto.sh`)
 
 ## Prerequisites
@@ -120,7 +119,7 @@ mini2-chunks/
 - Python 3.7+
 - Virtual environment (recommended)
 - Network connectivity between hosts (for two-host setup)
-- **Dataset files**: The `datasets/2020-fire/data/` folder must contain CSV files organized by date
+- **Dataset files**: The `datasets/2020-fire/data/` folder must contain CSV files
 
 ## Setup
 
@@ -135,10 +134,6 @@ pip install -r requirements.txt
 
 # Generate gRPC code
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
-
-# Ensure dataset folder structure exists
-# datasets/2020-fire/data/ should contain date folders (20200810, 20200811, etc.)
-# Each date folder should contain hourly CSV files (20200810-01.csv, 20200810-03.csv, etc.)
 ```
 
 ## Running the System

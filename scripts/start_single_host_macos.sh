@@ -43,7 +43,9 @@ PY
 start_process() {
   local proc_id="$1"
   local label="$2"
-  local log_file="${ROOT_DIR}/logs/macos/node_${proc_id,,}.log"
+  local lower_id
+  lower_id="$(echo "${proc_id}" | tr '[:upper:]' '[:lower:]')"
+  local log_file="${ROOT_DIR}/logs/macos/node_${lower_id}.log"
   echo "Starting Process ${proc_id} (${label})..."
   (cd "${ROOT_DIR}" && python3 -u node.py "${ACTIVE_CONFIG}" "${proc_id}" > "${log_file}" 2>&1) &
   local pid=$!
