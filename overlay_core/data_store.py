@@ -1,6 +1,9 @@
 import csv
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .config import ProcessSpec
 
 
 TEAM_DATE_BOUNDS = {
@@ -8,19 +11,44 @@ TEAM_DATE_BOUNDS = {
     "pink": ("20200821", "20200924"),
 }
 
+ROLE_WEIGHTS = {
+    "leader": 1,
+    "team_leader": 2,
+    "worker": 3,
+    "__default__": 1,
+}
+
+ROLE_PRIORITY = {
+    "leader": 0,
+    "team_leader": 1,
+    "worker": 2,
+}
+
 
 class DataStore:
     """Local dataset accessor responsible for enforcing team-specific slices."""
 
-    def __init__(self, process_id: str, team: str, dataset_root: str = "datasets/2020-fire/data", date_bounds: Optional[Tuple[str, str]] = None):
+    def __init__(
+        self,
+        process_id: str,
+        team: str,
+        dataset_root: str = "datasets/2020-fire/data",
+        date_bounds: Optional[Tuple[str, str]] = None,
+        team_members: Optional[List["ProcessSpec"]] = None,
+        role_weights: Optional[Dict[str, int]] = None,
+    ):
         self.process_id = process_id
         self.team = team.lower()
         self.dataset_root = Path(dataset_root)
         self._records: List[Dict[str, object]] = []
         self._files_loaded = 0
-        self._date_bounds = date_bounds or TEAM_DATE_BOUNDS.get(self.team)
-        if not self._date_bounds:
-            raise ValueError(f"No date bounds for team '{self.team}' and process '{self.process_id}'")
+        self._team_members = team_members or []
+        self._role_weights = role_weights or ROLE_WEIGHTS
+        self._explicit_bounds = date_bounds
+        self._team_bounds = self._resolve_team_bounds()
+        self._available_dates = self._list_available_dates()
+        self._selected_dates = self._determine_selected_dates()
+        self._selected_date_set = set(self._selected_dates)
         self._load()
 
     @property
@@ -35,16 +63,11 @@ class DataStore:
         if not self.dataset_root.exists():
             raise FileNotFoundError(f"Dataset root missing: {self.dataset_root}")
 
-        bounds = TEAM_DATE_BOUNDS.get(self.team)
-        if not bounds:
-            raise ValueError(f"Unknown team '{self.team}' for datastore.")
-
-        lower, upper = self._date_bounds
         for date_dir in sorted(self.dataset_root.iterdir()):
             if not date_dir.is_dir():
                 continue
             date_str = date_dir.name
-            if not (lower <= date_str <= upper):
+            if date_str not in self._selected_date_set:
                 continue
 
             for csv_file in sorted(date_dir.glob("*.csv")):
@@ -142,4 +165,107 @@ class DataStore:
             "records": self.records_loaded,
             "files": self.files_loaded,
         }
+
+    def _resolve_team_bounds(self) -> Tuple[str, str]:
+        """Return the overall bounds for the team."""
+        if self._explicit_bounds:
+            return self._explicit_bounds
+        bounds = TEAM_DATE_BOUNDS.get(self.team)
+        if not bounds:
+            raise ValueError(f"No date bounds for team '{self.team}'.")
+        return bounds
+
+    def _list_available_dates(self) -> List[str]:
+        """Collect all date directories that fall within the team bounds."""
+        lower, upper = self._team_bounds
+        dates: List[str] = []
+        if not self.dataset_root.exists():
+            raise FileNotFoundError(f"Dataset root missing: {self.dataset_root}")
+
+        for date_dir in sorted(self.dataset_root.iterdir()):
+            if not date_dir.is_dir():
+                continue
+            date_str = date_dir.name
+            if lower <= date_str <= upper:
+                dates.append(date_str)
+
+        if not dates:
+            raise ValueError(f"No dataset directories available for team '{self.team}'.")
+        return dates
+
+    def _determine_selected_dates(self) -> List[str]:
+        """Determine which dates this process is responsible for loading."""
+        if self._explicit_bounds:
+            lower, upper = self._explicit_bounds
+            subset = [date for date in self._available_dates if lower <= date <= upper]
+            return subset or self._available_dates
+
+        if not self._team_members:
+            return self._available_dates
+
+        shares = self._compute_member_shares(self._available_dates)
+        selection = shares.get(self.process_id)
+        if not selection:
+            # Fallback to entire range to avoid empty datasets
+            return self._available_dates
+        return selection
+
+    def _compute_member_shares(self, dates: List[str]) -> Dict[str, List[str]]:
+        """Split available dates among team members using weighted slices."""
+        same_team = [member for member in self._team_members if member.team.lower() == self.team]
+        if not same_team:
+            return {self.process_id: dates}
+
+        ordered_members = sorted(
+            same_team,
+            key=lambda m: (ROLE_PRIORITY.get(m.role.lower(), 99), m.id),
+        )
+
+        weights: List[int] = [
+            self._role_weights.get(member.role.lower(), self._role_weights.get("__default__", 1))
+            for member in ordered_members
+        ]
+        total_weight = sum(weights) or len(ordered_members)
+        total_days = len(dates)
+
+        base_counts: List[int] = []
+        remainders: List[float] = []
+        for weight in weights:
+            exact = (total_days * weight) / total_weight
+            count = int(exact)
+            base_counts.append(count)
+            remainders.append(exact - count)
+
+        assigned = sum(base_counts)
+        remaining = total_days - assigned
+
+        # Ensure members with zero allocation get at least one day when possible
+        for idx, count in enumerate(base_counts):
+            if remaining <= 0:
+                break
+            if count == 0:
+                base_counts[idx] = 1
+                remaining -= 1
+
+        # Distribute any remaining days based on remainders and weight priority
+        while remaining > 0:
+            idx = max(
+                range(len(ordered_members)),
+                key=lambda i: (
+                    remainders[i],
+                    weights[i],
+                    -ROLE_PRIORITY.get(ordered_members[i].role.lower(), 99),
+                    ordered_members[i].id,
+                ),
+            )
+            base_counts[idx] += 1
+            remaining -= 1
+
+        allocations: Dict[str, List[str]] = {}
+        cursor = 0
+        for member, count in zip(ordered_members, base_counts):
+            slice_dates = dates[cursor : cursor + count]
+            cursor += count
+            allocations[member.id] = slice_dates
+        return allocations
 

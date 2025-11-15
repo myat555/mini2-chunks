@@ -17,17 +17,15 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 
 ### Data Distribution
 
-Following the spec requirement that "Leaders, team leaders, and workers all can act as workers":
-
-- **Leader (A)**: Primary coordinator that also holds a small data slice (`20200810-20200812`). 
-  Splits client requests across team leaders and can contribute local results.
-- **Team Leaders (B, E)**: Hybrid routers with small data slices. B holds `20200813-20200815`, 
-  E holds `20200821-20200823`. They query local data first, then forward to workers.
-- **Workers (C, D, F)**: Hold the bulk of the dataset. C: `20200816-20200820`, 
-  D: `20200824-20200905`, F: `20200906-20200924`.
-- **Partitions**: Team Green handles dates `20200810-20200820`, Team Pink handles
-  `20200821-20200924`. No cross-team replication.
-- **Overlay Edges**: AB, BC, BD, AE, EF, ED (as specified in mini2-chunks.md)
+- **Automatic sharding**: Each team owns a date range (Green: `20200810-20200820`, Pink: `20200821-20200924`).
+  The `DataStore` inspects available folders and splits them evenly-with-weights across all processes in the team,
+  so no `date_bounds` need to be hardcoded in the configuration files.
+- **Role weights**: Workers receive the largest slices, team leaders receive medium slices, and the leader receives the
+  smallest slice. This satisfies the spec's guidance that leaders and team leaders can act as workers without manually
+  micro-managing configurations.
+- **Forwarding path**: A still coordinates across team leaders (AB, AE), team leaders prioritize their own workers (BC, BD, EF, ED),
+  and every process can serve results from its local slice before forwarding.
+- **Overlay Edges**: AB, BC, BD, AE, EF, ED (as specified in `mini2-chunks.md`).
 
 ### Query Flow
 

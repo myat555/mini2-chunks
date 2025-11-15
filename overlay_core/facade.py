@@ -50,18 +50,17 @@ class QueryOrchestrator:
     ):
         self._config = config
         self._process = process
-        # Leaders and team leaders can act as workers if they have date_bounds configured
-        # This follows the spec: "Leaders, team leaders, and workers all can act as workers"
+        team_members = self._compute_team_members(process.team)
+        bounds = None
         if process.date_bounds and len(process.date_bounds) == 2:
             bounds = (process.date_bounds[0], process.date_bounds[1])
-            self._data_store = DataStore(
-                process.id,
-                process.team,
-                dataset_root=dataset_root,
-                date_bounds=bounds,
-            )
-        else:
-            self._data_store = None
+        self._data_store = DataStore(
+            process.id,
+            process.team,
+            dataset_root=dataset_root,
+            date_bounds=bounds,
+            team_members=team_members,
+        )
         
         # Initialize strategies
         self._forwarding_strategy = self._create_forwarding_strategy(forwarding_strategy)
@@ -79,6 +78,15 @@ class QueryOrchestrator:
         self._rr_index = 0
         self._log_buffer = deque(maxlen=50)  # Store last 50 log lines
         self._log_lock = threading.Lock()
+
+    def _compute_team_members(self, team: str) -> List[ProcessSpec]:
+        """Collect process specs that belong to the same team as this node."""
+        team_lower = (team or "").lower()
+        return [
+            spec
+            for spec in self._config.all_processes().values()
+            if spec.team.lower() == team_lower
+        ]
 
     def _compute_leader_allocations(self, neighbor_count: int, total_limit: int) -> List[int]:
         if neighbor_count <= 0:
@@ -261,7 +269,7 @@ class QueryOrchestrator:
         aggregated: List[Dict[str, object]] = []
         remaining = filters.get("limit", self._default_limit)
 
-        # Only query local data if this process has a data store (not leader)
+        # Query local data first if this process owns a dataset slice
         if self._data_store is not None:
             local_rows = self._data_store.query(filters, limit=remaining)
             if local_rows:
