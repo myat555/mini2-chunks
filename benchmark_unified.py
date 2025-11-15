@@ -62,6 +62,7 @@ class UnifiedBenchmark:
         leader_port: int,
         config_path: str,
         output_dir: str = "logs",
+        query_limit: int = 500,
     ):
         self.leader_host = leader_host
         self.leader_port = leader_port
@@ -73,6 +74,7 @@ class UnifiedBenchmark:
         self.process_metrics_history = defaultdict(list)
         self.server_outputs = defaultdict(list)
         self.output_capture = OutputCapture()
+        self.query_limit = max(1, query_limit)
 
     def _load_config(self):
         """Load overlay configuration."""
@@ -413,7 +415,7 @@ class UnifiedBenchmark:
                 "parameter": "PM2.5",
                 "min_value": 10.0,
                 "max_value": 50.0,
-                "limit": 500,
+                "limit": self.query_limit,
             }
             
             def worker(worker_id: int, num_per_worker: int):
@@ -593,6 +595,12 @@ def main():
         "--log-dir",
         help="Directory containing server log files.",
     )
+    parser.add_argument(
+        "--query-limit",
+        type=int,
+        default=5000,
+        help="Per-request record limit to apply in benchmark queries.",
+    )
 
     args = parser.parse_args()
 
@@ -601,6 +609,7 @@ def main():
         args.leader_port,
         args.config,
         args.output_dir,
+        query_limit=args.query_limit,
     )
     
     benchmark.run_benchmark(
