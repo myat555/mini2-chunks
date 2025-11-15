@@ -17,11 +17,14 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 
 ### Data Distribution
 
-- **Leader (A)**: Coordinator only, no data storage - delegates queries to team leaders
-- **Team Leaders (B, E)**: Load their team's data partition and coordinate workers
-- **Workers (C, D, F)**: Load their team's data partition and process queries
-- **Partitions**: Team Green (20200810-20200820), Team Pink (20200821-20200924)
-- **No Cross-Team Replication**: Each team has non-overlapping data
+- **Leader (A)**: Coordinator only; splits every client limit across team leaders
+- **Team Leaders (B, E)**: Stateless routers. They never load data and immediately
+  forward proportional sub-requests to their workers.
+- **Workers (C, D, F)**: Own the actual dataset slices. The loader automatically
+  splits each team's date range across its workers to avoid manual box-by-box
+  configuration.
+- **Partitions**: Team Green handles dates `20200810-20200820`, Team Pink handles
+  `20200821-20200924`. No cross-team replication.
 
 ### Query Flow
 
@@ -90,8 +93,7 @@ mini2-chunks/
 │   ├── start_single_host_macos.sh     # Start single-host servers (macOS)
 │   ├── start_single_host_windows.bat  # Start single-host servers (Windows)
 │   ├── start_two_hosts_macos.sh       # Start two-host servers (macOS)
-│   ├── start_two_hosts_windows.bat    # Start two-host servers (Windows)
-│   └── wait_for_leader.py             # Leader readiness check utility
+│   └── start_two_hosts_windows.bat    # Start two-host servers (Windows)
 │
 ├── benchmark_unified.py               # Unified benchmark tool with real-time visualization
 ├── .gitignore                         # Git ignore patterns
@@ -172,6 +174,35 @@ chmod +x scripts/start_two_hosts_macos.sh
 ```
 Starts: C (Worker), E (Team Leader), F (Worker)
 
+> **Networking tip:** the hosts must be able to reach each other both ways.
+> Make sure Windows firewall allows inbound TCP 60051-60056 (and optionally
+> ICMP) so macOS workers can call the Windows nodes.
+
+## Workload Simulation & Benchmarks
+
+- The `datasets/2020-fire/data` bundle contains **214,636 green** records and
+  **952,889 pink** records (1,167,525 total). Sharding happens automatically:
+  team leaders stay stateless and workers load their share.
+- Use the unified benchmark from either host:
+
+  ```bash
+  # Windows
+  scripts\benchmark_two_hosts.bat
+
+  # macOS
+  ./scripts/benchmark_two_hosts.sh
+  ```
+
+  By default the scripts run a heavy scenario (`--num-requests 400
+  --concurrency 20`) so that both workers and leaders stay busy. Override flags
+  as needed, e.g. `scripts\benchmark_two_hosts.bat --num-requests 200
+  --concurrency 10`.
+
+- Single-host benchmarks use the same entrypoints (`benchmark_single_host.*`).
+
+- Under the hood these scripts call `benchmark_unified.py`, which renders the
+  live dashboard and saves full logs to `logs/<platform>/benchmark_*.txt`.
+
 ## Testing
 
 ### Basic Query Test
@@ -188,6 +219,13 @@ python test_system.py 127.0.0.1 60051
 ```bash
 python client.py 127.0.0.1 60051 metrics
 ```
+
+## Relationship to `leader-adv` lab
+
+The original `leader-adv` OpenMP lab lives in `docs/leader-adv/` for reference.
+This project keeps the same design ideas (leaders delegating to workers, queue
+admission, centralized vs. decentralized execution) but applies them across two
+physical hosts over gRPC instead of in-memory threads.
 
 ## Strategy Configuration
 
