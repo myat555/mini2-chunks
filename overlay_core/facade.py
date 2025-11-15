@@ -57,13 +57,11 @@ class QueryOrchestrator:
             bounds = None
             if process.date_bounds and len(process.date_bounds) == 2:
                 bounds = (process.date_bounds[0], process.date_bounds[1])
-            team_members = self._compute_team_members(process)
             self._data_store = DataStore(
                 process.id,
                 process.team,
                 dataset_root=dataset_root,
                 date_bounds=bounds,
-                team_members=team_members,
             )
         
         # Initialize strategies
@@ -82,18 +80,6 @@ class QueryOrchestrator:
         self._rr_index = 0
         self._log_buffer = deque(maxlen=50)  # Store last 50 log lines
         self._log_lock = threading.Lock()
-
-    def _compute_team_members(self, process: ProcessSpec) -> List[ProcessSpec]:
-        if process.role == "leader":
-            return []
-        role_priority = {"team_leader": 0, "worker": 1}
-        members = [
-            spec
-            for spec in self._config.all_processes().values()
-            if spec.team == process.team and spec.role != "leader"
-        ]
-        members.sort(key=lambda spec: (role_priority.get(spec.role, 2), spec.id))
-        return members
 
     def _compute_leader_allocations(self, neighbor_count: int, total_limit: int) -> List[int]:
         if neighbor_count <= 0:
