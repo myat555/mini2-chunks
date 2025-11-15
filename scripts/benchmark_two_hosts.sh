@@ -43,6 +43,6 @@ prepare_config
 
 mkdir -p logs/two_hosts
 echo "Running benchmark with profile ${PROFILE}..."
-python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 192.168.1.2 --leader-port 60051 --log-dir logs/two_hosts --output-dir logs/two_hosts
+python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 192.168.1.2 --leader-port 60051 --num-requests 400 --concurrency 20 --log-dir logs/two_hosts --output-dir logs/two_hosts
 
 rm -f "${ACTIVE_CONFIG}"

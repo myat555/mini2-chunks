@@ -12,7 +12,7 @@ call :prepare_config
 if not exist "logs\two_hosts" mkdir "logs\two_hosts"
 
 echo Running benchmark with profile !PROFILE! ...
-python benchmark_unified.py --config "!ACTIVE_CONFIG!" --leader-host 192.168.1.2 --leader-port 60051 --log-dir logs\two_hosts --output-dir logs\two_hosts
+python benchmark_unified.py --config "!ACTIVE_CONFIG!" --leader-host 192.168.1.2 --leader-port 60051 --num-requests 400 --concurrency 20 --log-dir logs\two_hosts --output-dir logs\two_hosts
 
 del /q "!ACTIVE_CONFIG!" >nul 2>&1
 exit /b 0

@@ -43,6 +43,6 @@ prepare_config
 
 mkdir -p logs/macos
 echo "Running benchmark with profile ${PROFILE}..."
-python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 127.0.0.1 --leader-port 60051 --log-dir logs/macos --output-dir logs/macos
+python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 127.0.0.1 --leader-port 60051 --num-requests 400 --concurrency 20 --log-dir logs/macos --output-dir logs/macos
 
 rm -f "${ACTIVE_CONFIG}"

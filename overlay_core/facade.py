@@ -95,6 +95,20 @@ class QueryOrchestrator:
         members.sort(key=lambda spec: (role_priority.get(spec.role, 2), spec.id))
         return members
 
+    def _compute_leader_allocations(self, neighbor_count: int, total_limit: int) -> List[int]:
+        if neighbor_count <= 0:
+            return []
+        total_limit = max(1, int(total_limit))
+        base = max(1, total_limit // neighbor_count)
+        allocations = [base for _ in range(neighbor_count)]
+        remainder = total_limit - base * neighbor_count
+        idx = 0
+        while remainder > 0:
+            allocations[idx % neighbor_count] += 1
+            remainder -= 1
+            idx += 1
+        return allocations
+
     def execute_query(self, request: overlay_pb2.QueryRequest) -> overlay_pb2.QueryResponse:
         hops = list(request.hops)
         if self._process.id in hops:
@@ -276,26 +290,39 @@ class QueryOrchestrator:
 
         neighbors = self._select_forward_targets()
         if neighbors:
-            # Use forwarding strategy (async or blocking)
-            if self._use_async_forwarding:
-                remote_rows = self._forwarding_strategy.forward_async(
-                    neighbors,
-                    self._request_neighbor_records,
-                    filters,
-                    hops,
-                    client_id,
-                    remaining,
-                )
+            if self._process.role == "leader":
+                total_limit = max(1, filters.get("limit", self._default_limit))
+                allocations = self._compute_leader_allocations(len(neighbors), total_limit)
+                for neighbor, allocation in zip(neighbors, allocations):
+                    remote_rows = self._request_neighbor_records(
+                        neighbor,
+                        filters,
+                        hops,
+                        client_id,
+                        allocation,
+                        team_hint=neighbor.team,
+                    )
+                    aggregated.extend(remote_rows)
             else:
-                remote_rows = self._forwarding_strategy.forward_blocking(
-                    neighbors,
-                    self._request_neighbor_records,
-                    filters,
-                    hops,
-                    client_id,
-                    remaining,
-                )
-            aggregated.extend(remote_rows)
+                if self._use_async_forwarding:
+                    remote_rows = self._forwarding_strategy.forward_async(
+                        neighbors,
+                        self._request_neighbor_records,
+                        filters,
+                        hops,
+                        client_id,
+                        remaining,
+                    )
+                else:
+                    remote_rows = self._forwarding_strategy.forward_blocking(
+                        neighbors,
+                        self._request_neighbor_records,
+                        filters,
+                        hops,
+                        client_id,
+                        remaining,
+                    )
+                aggregated.extend(remote_rows)
 
         return aggregated[: filters["limit"]]
 
@@ -325,12 +352,15 @@ class QueryOrchestrator:
         filters: Dict[str, object],
         hops: List[str],
         client_id: Optional[str],
-        remaining: int,
+        limit: int,
+        team_hint: Optional[str] = None,
     ) -> List[Dict[str, object]]:
         client = self._neighbor_registry.for_neighbor(neighbor.id)
 
         forward_filters = dict(filters)
-        forward_filters["limit"] = remaining
+        forward_filters["limit"] = max(1, int(limit))
+        if team_hint:
+            forward_filters["team"] = team_hint
         forward_request = overlay_pb2.QueryRequest(
             query_type="filter",
             query_params=json.dumps(forward_filters),
@@ -338,7 +368,7 @@ class QueryOrchestrator:
             client_id=client_id or self._process.id,
         )
 
-        log_msg = f"[Orchestrator] {self._process.id} forwarding to {neighbor.id} ({neighbor.role}/{neighbor.team}), remaining={remaining}"
+        log_msg = f"[Orchestrator] {self._process.id} forwarding to {neighbor.id} ({neighbor.role}/{neighbor.team}), remaining={forward_filters['limit']}"
         print(log_msg, flush=True)
         self._add_log(log_msg)
 
@@ -353,7 +383,7 @@ class QueryOrchestrator:
         if response.status != "ready" or not response.uid:
             return []
 
-        return self._drain_remote_chunks(client, response.uid, response.total_chunks, remaining)
+        return self._drain_remote_chunks(client, response.uid, response.total_chunks, forward_filters["limit"])
 
     @staticmethod
     def _safe_json_loads(payload: str) -> List[Dict[str, object]]:
