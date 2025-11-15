@@ -50,19 +50,18 @@ class QueryOrchestrator:
     ):
         self._config = config
         self._process = process
-        # Leader does not load data - it only coordinates and delegates to team leaders
-        if process.role in ("leader", "team_leader"):
-            self._data_store = None
-        else:
-            bounds = None
-            if process.date_bounds and len(process.date_bounds) == 2:
-                bounds = (process.date_bounds[0], process.date_bounds[1])
+        # Leaders and team leaders can act as workers if they have date_bounds configured
+        # This follows the spec: "Leaders, team leaders, and workers all can act as workers"
+        if process.date_bounds and len(process.date_bounds) == 2:
+            bounds = (process.date_bounds[0], process.date_bounds[1])
             self._data_store = DataStore(
                 process.id,
                 process.team,
                 dataset_root=dataset_root,
                 date_bounds=bounds,
             )
+        else:
+            self._data_store = None
         
         # Initialize strategies
         self._forwarding_strategy = self._create_forwarding_strategy(forwarding_strategy)

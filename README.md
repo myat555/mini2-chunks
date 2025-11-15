@@ -17,14 +17,17 @@ A gRPC-based distributed system implementing a leader-queue architecture with te
 
 ### Data Distribution
 
-- **Leader (A)**: Coordinator only; splits every client limit across team leaders
-- **Team Leaders (B, E)**: Stateless routers. They never load data and immediately
-  forward proportional sub-requests to their workers.
-- **Workers (C, D, F)**: Own the actual dataset slices. The loader automatically
-  splits each team's date range across its workers to avoid manual box-by-box
-  configuration.
+Following the spec requirement that "Leaders, team leaders, and workers all can act as workers":
+
+- **Leader (A)**: Primary coordinator that also holds a small data slice (`20200810-20200812`). 
+  Splits client requests across team leaders and can contribute local results.
+- **Team Leaders (B, E)**: Hybrid routers with small data slices. B holds `20200813-20200815`, 
+  E holds `20200821-20200823`. They query local data first, then forward to workers.
+- **Workers (C, D, F)**: Hold the bulk of the dataset. C: `20200816-20200820`, 
+  D: `20200824-20200905`, F: `20200906-20200924`.
 - **Partitions**: Team Green handles dates `20200810-20200820`, Team Pink handles
   `20200821-20200924`. No cross-team replication.
+- **Overlay Edges**: AB, BC, BD, AE, EF, ED (as specified in mini2-chunks.md)
 
 ### Query Flow
 
