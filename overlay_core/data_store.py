@@ -171,7 +171,9 @@ class DataStore:
             return None
 
         team_members = [
-            member for member in self._team_members if member.team.lower() == self.team
+            member
+            for member in self._team_members
+            if member.team.lower() == self.team and member.role != "team_leader"
         ]
         if not team_members:
             return None
