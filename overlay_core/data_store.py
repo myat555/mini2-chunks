@@ -197,8 +197,8 @@ class DataStore:
         if total_dates <= 0:
             return [0 for _ in members]
 
-        role_weights = {"team_leader": 1, "worker": 2}
-        weights = [role_weights.get(member.role, 1) for member in members]
+        role_weights = {"team_leader": 0.4, "worker": 2.6}
+        weights = [role_weights.get(member.role, 1.0) for member in members]
         weight_total = sum(weights) or len(members)
         raw_shares = [
             max(1, int(round((weight / weight_total) * total_dates))) for weight in weights
