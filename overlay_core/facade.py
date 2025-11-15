@@ -51,7 +51,7 @@ class QueryOrchestrator:
         self._config = config
         self._process = process
         # Leader does not load data - it only coordinates and delegates to team leaders
-        if process.role == "leader":
+        if process.role in ("leader", "team_leader"):
             self._data_store = None
         else:
             bounds = None
