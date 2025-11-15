@@ -5,3 +5,4 @@ docs/
 datasets/
 logs/
 pids/
+.DS_Store
