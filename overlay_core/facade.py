@@ -303,6 +303,19 @@ class QueryOrchestrator:
                         team_hint=neighbor.team,
                     )
                     aggregated.extend(remote_rows)
+            elif self._process.role == "team_leader":
+                total_limit = max(1, filters.get("limit", self._default_limit))
+                allocations = self._compute_leader_allocations(len(neighbors), total_limit)
+                for neighbor, allocation in zip(neighbors, allocations):
+                    remote_rows = self._request_neighbor_records(
+                        neighbor,
+                        filters,
+                        hops,
+                        client_id,
+                        allocation,
+                        team_hint=neighbor.team,
+                    )
+                    aggregated.extend(remote_rows)
             else:
                 if self._use_async_forwarding:
                     remote_rows = self._forwarding_strategy.forward_async(
