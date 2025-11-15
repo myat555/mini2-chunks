@@ -11,50 +11,14 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
 from collections import defaultdict
-from io import StringIO
-from contextlib import contextmanager
 
 import overlay_pb2
 import overlay_pb2_grpc
 import grpc
 
 
-class OutputCapture:
-    """Captures stdout and stderr to a buffer."""
-    
-    def __init__(self):
-        self.stdout_buffer = StringIO()
-        self.stderr_buffer = StringIO()
-        self.original_stdout = sys.stdout
-        self.original_stderr = sys.stderr
-        
-    def start(self):
-        """Start capturing output."""
-        sys.stdout = self
-        sys.stderr = self
-        
-    def stop(self):
-        """Stop capturing output."""
-        sys.stdout = self.original_stdout
-        sys.stderr = self.original_stderr
-        
-    def write(self, text):
-        """Write to both original stream and buffer."""
-        self.original_stdout.write(text)
-        self.stdout_buffer.write(text)
-        self.original_stdout.flush()
-        
-    def flush(self):
-        """Flush the original stream."""
-        self.original_stdout.flush()
-        
-    def get_output(self) -> str:
-        """Get all captured output."""
-        return self.stdout_buffer.getvalue()
-
-
 class UnifiedBenchmark:
-    """Unified benchmark with real-time visualization."""
+    """Unified benchmark tool."""
 
     def __init__(
         self,
@@ -70,10 +34,6 @@ class UnifiedBenchmark:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self._load_config()
-        self.monitoring = False
-        self.process_metrics_history = defaultdict(list)
-        self.server_outputs = defaultdict(list)
-        self.output_capture = OutputCapture()
         self.query_limit = max(1, query_limit)
 
     def _load_config(self):
@@ -89,10 +49,6 @@ class UnifiedBenchmark:
         
         async_str = "async" if self.async_forwarding else "blocking"
         self.strategy_name = f"{self.forwarding_strategy}_{async_str}_{self.chunking_strategy}_{self.fairness_strategy}"
-
-    def clear_screen(self):
-        """Clear terminal screen."""
-        os.system("cls" if os.name == "nt" else "clear")
 
     def collect_process_metrics(self) -> Dict[str, Dict]:
         """Collect metrics from all processes."""
@@ -199,92 +155,6 @@ class UnifiedBenchmark:
         
         return logs
 
-    def display_dashboard(self, metrics: Dict, logs: Dict, benchmark_stats: Optional[Dict] = None):
-        """Display real-time dashboard."""
-        self.clear_screen()
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        print("=" * 120)
-        print(f"BENCHMARK DASHBOARD - {current_time}")
-        print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
-        print("=" * 120)
-        
-        hosts = defaultdict(list)
-        for process_id, proc in metrics.items():
-            host = proc.get("host", "unknown")
-            hosts[host].append((process_id, proc))
-        
-        for host, host_processes in sorted(hosts.items()):
-            print(f"\n{'─' * 120}")
-            print(f"HOST: {host}")
-            print(f"{'─' * 120}")
-            print(f"{'ID':<4} {'Role':<12} {'Team':<6} {'Status':<8} {'Active':<8} {'Queue':<8} {'Avg(ms)':<10} {'Files':<8} {'State':<15}")
-            print(f"{'─' * 120}")
-            
-            for process_id, proc in sorted(host_processes):
-                pid = proc.get("process_id", "N/A")
-                role = proc.get("role", "N/A")
-                team = proc.get("team", "N/A")
-                status = proc.get("status", "unknown")
-                active = proc.get("active_requests", 0)
-                queue = proc.get("queue_size", 0)
-                avg_ms = proc.get("avg_processing_time_ms", 0)
-                files = proc.get("data_files_loaded", 0)
-                
-                if active > 0:
-                    data_indicator = f"Processing {active}"
-                elif files > 0:
-                    data_indicator = "Ready"
-                else:
-                    data_indicator = "No Data"
-                
-                print(
-                    f"{pid:<4} {role:<12} {team:<6} {status:<8} "
-                    f"{active:<8} {queue:<8} {avg_ms:<10.2f} {files:<8} {data_indicator:<15}"
-                )
-            
-            if logs:
-                print(f"\n{'─' * 120}")
-                print(f"RECENT LOGS ({host}):")
-                print(f"{'─' * 120}")
-                for process_id, proc in sorted(host_processes):
-                    if process_id in logs:
-                        for log_line in logs[process_id][-2:]:
-                            if len(log_line) > 110:
-                                log_line = log_line[:107] + "..."
-                            print(f"  {process_id}: {log_line}")
-        
-        if benchmark_stats:
-            print(f"\n{'─' * 120}")
-            print("BENCHMARK STATISTICS:")
-            print(f"{'─' * 120}")
-            stats = benchmark_stats.get("statistics", {})
-            print(f"Total Requests: {benchmark_stats.get('total_requests', 0)}")
-            print(f"Successful: {benchmark_stats.get('successful_requests', 0)}")
-            print(f"Failed: {benchmark_stats.get('failed_requests', 0)}")
-            print(f"Success Rate: {stats.get('success_rate', 0):.1f}%")
-            print(f"Avg Latency: {stats.get('avg_latency_ms', 0):.2f} ms")
-            print(f"Throughput: {stats.get('throughput_req_per_sec', 0):.2f} req/s")
-            print(f"Total Records: {stats.get('total_records_returned', 0)}")
-            
-            print(f"\n{'─' * 120}")
-            print("STRATEGY IN USE:")
-            print(f"{'─' * 120}")
-            async_str = "async" if self.async_forwarding else "blocking"
-            print(f"Forwarding: {self.forwarding_strategy} ({async_str})")
-            print(f"Chunking: {self.chunking_strategy}")
-            print(f"Fairness: {self.fairness_strategy}")
-            
-            for host, host_processes in sorted(hosts.items()):
-                total_files = sum(p[1].get("data_files_loaded", 0) for p in host_processes)
-                active_total = sum(p[1].get("active_requests", 0) for p in host_processes)
-                online_count = sum(1 for p in host_processes if p[1].get("status") == "online")
-                print(f"{host}: {online_count}/{len(host_processes)} online, {total_files} files, {active_total} active")
-        
-        print(f"\n{'─' * 120}")
-        print("Press Ctrl+C to stop")
-        print(f"{'─' * 120}\n")
-
     def send_query_request(self, query_params: Dict) -> Dict:
         """Send a query request and collect results."""
         try:
@@ -347,211 +217,196 @@ class UnifiedBenchmark:
         update_interval: float = 1.0,
         log_dir: Optional[str] = None,
     ) -> Dict:
-        """Run benchmark with real-time monitoring."""
-        # Start capturing output
-        self.output_capture.start()
+        """Run benchmark and output results to file."""
+        log_path = Path(log_dir) if log_dir else None
         
-        try:
-            print("=" * 120)
-            print("BENCHMARK")
-            print("=" * 120)
-            print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
-            print(f"Requests: {num_requests}, Concurrency: {concurrency}")
-            print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            print("=" * 120)
-            
-            log_path = Path(log_dir) if log_dir else None
-            results = []
-            errors = 0
-            lock = threading.Lock()
-            monitoring = [True]
-            
-            # Start monitoring thread
-            def monitor_loop():
-                iteration = 0
-                while monitoring[0]:
-                    iteration += 1
-                    metrics = self.collect_process_metrics()
-                    logs = self.read_server_logs(metrics, log_path, lines=3)
-                    
-                    # Compute benchmark stats so far
+        print("=" * 120)
+        print("BENCHMARK")
+        print("=" * 120)
+        print(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}")
+        print(f"Requests: {num_requests}, Concurrency: {concurrency}")
+        print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("=" * 120)
+        print("Running benchmark...")
+        
+        # Collect initial metrics
+        initial_metrics = self.collect_process_metrics()
+        
+        results = []
+        errors = 0
+        lock = threading.Lock()
+        
+        # Run benchmark
+        query_params = {
+            "parameter": "PM2.5",
+            "min_value": 10.0,
+            "max_value": 50.0,
+            "limit": self.query_limit,
+        }
+        
+        def worker(worker_id: int, num_per_worker: int):
+            nonlocal errors
+            local_results = []
+            for i in range(num_per_worker):
+                result = self.send_query_request(query_params)
+                local_results.append(result)
+                if not result.get("success"):
                     with lock:
-                        current_results = list(results)
-                        current_errors = errors
-                    
-                    benchmark_stats = None
-                    if current_results:
-                        latencies = [r["latency"] for r in current_results if r.get("success")]
-                        total_records = sum(r.get("records", 0) for r in current_results)
-                        successful = sum(1 for r in current_results if r.get("success"))
-                        failed = current_errors + len(current_results) - successful
-                        
-                        if latencies:
-                            sorted_latencies = sorted(latencies)
-                            benchmark_stats = {
-                                "total_requests": len(current_results),
-                                "successful_requests": successful,
-                                "failed_requests": failed,
-                                "statistics": {
-                                    "success_rate": (successful / len(current_results) * 100) if current_results else 0,
-                                    "avg_latency_ms": sum(latencies) / len(latencies),
-                                    "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
-                                    "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
-                                    "throughput_req_per_sec": len(current_results) / (time.time() - start_time) if time.time() > start_time else 0,
-                                    "total_records_returned": total_records,
-                                },
-                            }
-                    
-                    self.display_dashboard(metrics, logs, benchmark_stats)
-                    time.sleep(update_interval)
+                        errors += 1
+                time.sleep(0.01)
             
-            start_time = time.time()
-            monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
-            monitor_thread.start()
-            time.sleep(1)  # Let monitoring start
-            
-            # Run benchmark
-            query_params = {
-                "parameter": "PM2.5",
-                "min_value": 10.0,
-                "max_value": 50.0,
-                "limit": self.query_limit,
-            }
-            
-            def worker(worker_id: int, num_per_worker: int):
-                nonlocal errors
-                local_results = []
-                for i in range(num_per_worker):
-                    result = self.send_query_request(query_params)
-                    local_results.append(result)
-                    if not result.get("success"):
-                        with lock:
-                            errors += 1
-                    time.sleep(0.01)
-                
-                with lock:
-                    results.extend(local_results)
+            with lock:
+                results.extend(local_results)
+    
+        start_time = time.time()
         
-            # Start workers
-            workers = []
-            requests_per_worker = num_requests // concurrency
-            for i in range(concurrency):
-                worker_id = i
-                num_reqs = requests_per_worker + (1 if i < num_requests % concurrency else 0)
-                thread = threading.Thread(target=worker, args=(worker_id, num_reqs))
-                thread.start()
-                workers.append(thread)
-            
-            # Wait for workers
-            for thread in workers:
-                thread.join()
-            
-            # Stop monitoring
-            monitoring[0] = False
-            time.sleep(update_interval + 0.5)
-            
-            # Final metrics
-            final_metrics = self.collect_process_metrics()
-            final_logs = self.read_server_logs(final_metrics, log_path, lines=5)
-            
-            # Compute final statistics
-            latencies = [r["latency"] for r in results if r.get("success")]
-            total_records = sum(r.get("records", 0) for r in results)
-            successful = sum(1 for r in results if r.get("success"))
-            failed = errors
-            duration = time.time() - start_time
-            
-            if latencies:
-                sorted_latencies = sorted(latencies)
-                statistics = {
-                    "success_rate": (successful / len(results) * 100) if results else 0,
-                    "avg_latency_ms": sum(latencies) / len(latencies),
-                    "min_latency_ms": min(latencies),
-                    "max_latency_ms": max(latencies),
-                    "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
-                    "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
-                    "throughput_req_per_sec": len(results) / duration if duration > 0 else 0,
-                    "total_records_returned": total_records,
-                    "avg_records_per_query": total_records / successful if successful > 0 else 0,
-                }
-            else:
-                statistics = {}
-            
-            benchmark_results = {
-                "total_requests": len(results),
-                "successful_requests": successful,
-                "failed_requests": failed,
-                "duration_seconds": duration,
-                "statistics": statistics,
-                "final_metrics": final_metrics,
-                "timestamp": time.time(),
+        # Start workers
+        workers = []
+        requests_per_worker = num_requests // concurrency
+        for i in range(concurrency):
+            worker_id = i
+            num_reqs = requests_per_worker + (1 if i < num_requests % concurrency else 0)
+            thread = threading.Thread(target=worker, args=(worker_id, num_reqs))
+            thread.start()
+            workers.append(thread)
+        
+        # Wait for workers
+        for thread in workers:
+            thread.join()
+        
+        duration = time.time() - start_time
+        
+        # Collect final metrics
+        final_metrics = self.collect_process_metrics()
+        final_logs = self.read_server_logs(final_metrics, log_path, lines=10)
+        
+        # Compute final statistics
+        latencies = [r["latency"] for r in results if r.get("success")]
+        total_records = sum(r.get("records", 0) for r in results)
+        successful = sum(1 for r in results if r.get("success"))
+        failed = errors
+        
+        if latencies:
+            sorted_latencies = sorted(latencies)
+            statistics = {
+                "success_rate": (successful / len(results) * 100) if results else 0,
+                "avg_latency_ms": sum(latencies) / len(latencies),
+                "min_latency_ms": min(latencies),
+                "max_latency_ms": max(latencies),
+                "p95_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.95)] if len(sorted_latencies) > 0 else 0,
+                "p99_latency_ms": sorted_latencies[int(len(sorted_latencies) * 0.99)] if len(sorted_latencies) > 0 else 0,
+                "throughput_req_per_sec": len(results) / duration if duration > 0 else 0,
+                "total_records_returned": total_records,
+                "avg_records_per_query": total_records / successful if successful > 0 else 0,
             }
+        else:
+            statistics = {}
+        
+        benchmark_results = {
+            "total_requests": len(results),
+            "successful_requests": successful,
+            "failed_requests": failed,
+            "duration_seconds": duration,
+            "statistics": statistics,
+            "final_metrics": final_metrics,
+            "timestamp": time.time(),
+        }
+        
+        # Generate output file
+        output_file = self.output_dir / f"benchmark_{self.strategy_name}.txt"
+        
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write("=" * 120 + "\n")
+            f.write("BENCHMARK\n")
+            f.write("=" * 120 + "\n")
+            f.write(f"Strategy: {self.forwarding_strategy} ({'async' if self.async_forwarding else 'blocking'}), {self.chunking_strategy}, {self.fairness_strategy}\n")
+            f.write(f"Requests: {num_requests}, Concurrency: {concurrency}\n")
+            f.write(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("=" * 120 + "\n\n")
             
-            # Final display
-            self.display_dashboard(final_metrics, final_logs, benchmark_results)
+            # Process metrics
+            hosts = defaultdict(list)
+            for process_id, proc in final_metrics.items():
+                host = proc.get("host", "unknown")
+                hosts[host].append((process_id, proc))
             
-            # Stop capturing output
-            self.output_capture.stop()
+            for host, host_processes in sorted(hosts.items()):
+                f.write("-" * 120 + "\n")
+                f.write(f"HOST: {host}\n")
+                f.write("-" * 120 + "\n")
+                f.write(f"{'ID':<4} {'Role':<12} {'Team':<6} {'Status':<8} {'Active':<8} {'Queue':<8} {'Avg(ms)':<10} {'Files':<8} {'State':<15}\n")
+                f.write("-" * 120 + "\n")
+                
+                for process_id, proc in sorted(host_processes):
+                    pid = proc.get("process_id", "N/A")
+                    role = proc.get("role", "N/A")
+                    team = proc.get("team", "N/A")
+                    status = proc.get("status", "unknown")
+                    active = proc.get("active_requests", 0)
+                    queue = proc.get("queue_size", 0)
+                    avg_ms = proc.get("avg_processing_time_ms", 0)
+                    files = proc.get("data_files_loaded", 0)
+                    
+                    if active > 0:
+                        data_indicator = f"Processing {active}"
+                    elif files > 0:
+                        data_indicator = "Ready"
+                    else:
+                        data_indicator = "No Data"
+                    
+                    f.write(
+                        f"{pid:<4} {role:<12} {team:<6} {status:<8} "
+                        f"{active:<8} {queue:<8} {avg_ms:<10.2f} {files:<8} {data_indicator:<15}\n"
+                    )
+                
+                if final_logs:
+                    f.write(f"\n{'─' * 120}\n")
+                    f.write(f"RECENT LOGS ({host}):\n")
+                    f.write(f"{'─' * 120}\n")
+                    for process_id, proc in sorted(host_processes):
+                        if process_id in final_logs:
+                            for log_line in final_logs[process_id][-3:]:
+                                if len(log_line) > 110:
+                                    log_line = log_line[:107] + "..."
+                                f.write(f"  {process_id}: {log_line}\n")
             
-            # Save all console output to text file with strategy name
-            output_file = self.output_dir / f"benchmark_{self.strategy_name}.txt"
-            captured_output = self.output_capture.get_output()
-            
-            # Add final summary section
-            summary = f"""
-{'=' * 120}
-BENCHMARK SUMMARY
-{'=' * 120}
-Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Duration: {duration:.2f} seconds
-
-Total Requests: {len(results)}
-Successful: {successful}
-Failed: {failed}
-Success Rate: {statistics.get('success_rate', 0):.2f}%
-
-Performance Metrics:
-  Average Latency: {statistics.get('avg_latency_ms', 0):.2f} ms
-  Min Latency: {statistics.get('min_latency_ms', 0):.2f} ms
-  Max Latency: {statistics.get('max_latency_ms', 0):.2f} ms
-  P95 Latency: {statistics.get('p95_latency_ms', 0):.2f} ms
-  P99 Latency: {statistics.get('p99_latency_ms', 0):.2f} ms
-  Throughput: {statistics.get('throughput_req_per_sec', 0):.2f} req/sec
-
-Data Metrics:
-  Total Records Returned: {statistics.get('total_records_returned', 0)}
-  Average Records per Query: {statistics.get('avg_records_per_query', 0):.2f}
-
-Final Process Metrics:
-"""
-            for process_id, metrics in final_metrics.items():
+            # Summary
+            f.write(f"\n{'=' * 120}\n")
+            f.write("BENCHMARK SUMMARY\n")
+            f.write(f"{'=' * 120}\n")
+            f.write(f"Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Duration: {duration:.2f} seconds\n\n")
+            f.write(f"Total Requests: {len(results)}\n")
+            f.write(f"Successful: {successful}\n")
+            f.write(f"Failed: {failed}\n")
+            f.write(f"Success Rate: {statistics.get('success_rate', 0):.2f}%\n\n")
+            f.write("Performance Metrics:\n")
+            f.write(f"  Average Latency: {statistics.get('avg_latency_ms', 0):.2f} ms\n")
+            f.write(f"  Min Latency: {statistics.get('min_latency_ms', 0):.2f} ms\n")
+            f.write(f"  Max Latency: {statistics.get('max_latency_ms', 0):.2f} ms\n")
+            f.write(f"  P95 Latency: {statistics.get('p95_latency_ms', 0):.2f} ms\n")
+            f.write(f"  P99 Latency: {statistics.get('p99_latency_ms', 0):.2f} ms\n")
+            f.write(f"  Throughput: {statistics.get('throughput_req_per_sec', 0):.2f} req/sec\n\n")
+            f.write("Data Metrics:\n")
+            f.write(f"  Total Records Returned: {statistics.get('total_records_returned', 0)}\n")
+            f.write(f"  Average Records per Query: {statistics.get('avg_records_per_query', 0):.2f}\n\n")
+            f.write("Final Process Metrics:\n")
+            for process_id, metrics in sorted(final_metrics.items()):
                 if metrics.get("status") == "online":
-                    summary += f"  {process_id} ({metrics.get('role', 'unknown')}/{metrics.get('team', 'unknown')}): "
-                    summary += f"Active={metrics.get('active_requests', 0)}, "
-                    summary += f"Queue={metrics.get('queue_size', 0)}, "
-                    summary += f"AvgTime={metrics.get('avg_processing_time_ms', 0):.2f}ms, "
-                    summary += f"Files={metrics.get('data_files_loaded', 0)}\n"
-            
-            summary += f"{'=' * 120}\n"
-            
-            # Write complete output to file
-            with open(output_file, "w", encoding="utf-8") as f:
-                f.write(captured_output)
-                f.write(summary)
-            
-            print(f"\n{'=' * 120}")
-            print(f"Complete benchmark output saved to: {output_file}")
-            print(f"{'=' * 120}")
-        finally:
-            # Ensure output capture is stopped even on error
-            if hasattr(self, 'output_capture'):
-                self.output_capture.stop()
+                    f.write(f"  {process_id} ({metrics.get('role', 'unknown')}/{metrics.get('team', 'unknown')}): ")
+                    f.write(f"Active={metrics.get('active_requests', 0)}, ")
+                    f.write(f"Queue={metrics.get('queue_size', 0)}, ")
+                    f.write(f"AvgTime={metrics.get('avg_processing_time_ms', 0):.2f}ms, ")
+                    f.write(f"Files={metrics.get('data_files_loaded', 0)}\n")
+            f.write("=" * 120 + "\n")
+        
+        print(f"Benchmark completed. Results saved to: {output_file}")
         
         return benchmark_results
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Unified benchmark with real-time visualization.")
+    parser = argparse.ArgumentParser(description="Unified benchmark tool.")
     parser.add_argument(
         "--leader-host",
         default="127.0.0.1",
@@ -586,12 +441,6 @@ def main():
         help="Concurrency level.",
     )
     parser.add_argument(
-        "--update-interval",
-        type=float,
-        default=1.0,
-        help="Dashboard update interval in seconds.",
-    )
-    parser.add_argument(
         "--log-dir",
         help="Directory containing server log files.",
     )
@@ -615,7 +464,7 @@ def main():
     benchmark.run_benchmark(
         args.num_requests,
         args.concurrency,
-        args.update_interval,
+        1.0,  # update_interval not used anymore but kept for compatibility
         args.log_dir,
     )
 

@@ -17,11 +17,9 @@ from .strategies import (
     ForwardingStrategy,
     RoundRobinForwarding,
     ParallelForwarding,
-    CapacityBasedForwarding,
     ChunkingStrategy,
     FixedChunking,
     AdaptiveChunking,
-    QueryBasedChunking,
     FairnessStrategy,
     StrictPerTeamFairness,
     WeightedFairness,
@@ -420,9 +418,6 @@ class QueryOrchestrator:
         strategy_name = (strategy_name or "round_robin").lower()
         if strategy_name == "parallel":
             return ParallelForwarding()
-        elif strategy_name == "capacity":
-            # Capacity-based needs metrics access - simplified for now
-            return CapacityBasedForwarding()
         else:  # round_robin (default)
             return RoundRobinForwarding()
 
@@ -431,8 +426,6 @@ class QueryOrchestrator:
         strategy_name = (strategy_name or "fixed").lower()
         if strategy_name == "adaptive":
             return AdaptiveChunking(base_size=base_size)
-        elif strategy_name == "query_based":
-            return QueryBasedChunking(base_size=base_size)
         else:  # fixed (default)
             return FixedChunking(chunk_size=base_size)
 

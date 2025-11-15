@@ -5,20 +5,51 @@ cd "$(dirname "$0")/.."
 BASE_CONFIG="configs/two_hosts_config.json"
 ACTIVE_CONFIG="logs/active_two_hosts_config.json"
 
-choose_profile() {
-  echo "Choose a strategy profile:"
-  echo "  [1] Baseline  - round_robin / blocking / fixed / strict
-  echo "  [2] Parallel  - parallel    / async    / adaptive / strict
-  echo "  [3] Balanced  - capacity    / async    / query_based / weighted"
-  read -rp "Select profile [1-3, default 1]: " choice
-  [[ -z "${choice}" ]] && choice=1
-  case "${choice}" in
-    1) PROFILE="baseline"; FORWARDING="round_robin"; ASYNC="false"; CHUNKING="fixed";      FAIRNESS="strict";   CHUNK_SIZE="500" ;;
-    2) PROFILE="parallel"; FORWARDING="parallel";    ASYNC="true";  CHUNKING="adaptive";   FAIRNESS="strict";   CHUNK_SIZE="500" ;;
-    3) PROFILE="balanced"; FORWARDING="capacity";    ASYNC="true";  CHUNKING="query_based"; FAIRNESS="weighted"; CHUNK_SIZE="500" ;;
-    *) echo "Invalid choice."; choose_profile ;;
-  esac
-}
+# Parse command-line arguments
+PROFILE="${1:-baseline}"
+NUM_REQUESTS="${2:-400}"
+CONCURRENCY="${3:-20}"
+
+FORWARDING="round_robin"
+ASYNC="false"
+CHUNKING="fixed"
+FAIRNESS="strict"
+CHUNK_SIZE="500"
+
+case "${PROFILE}" in
+  parallel)
+    FORWARDING="parallel"
+    ASYNC="true"
+    CHUNKING="adaptive"
+    FAIRNESS="strict"
+    ;;
+  weighted)
+    FORWARDING="round_robin"
+    ASYNC="false"
+    CHUNKING="fixed"
+    FAIRNESS="weighted"
+    ;;
+  hybrid)
+    FORWARDING="round_robin"
+    ASYNC="false"
+    CHUNKING="fixed"
+    FAIRNESS="hybrid"
+    ;;
+  baseline)
+    # Default values already set
+    ;;
+  *)
+    echo "Usage: $0 [baseline|parallel|weighted|hybrid] [num_requests] [concurrency]"
+    echo "  baseline: round_robin / blocking / fixed / strict (default)"
+    echo "  parallel: parallel / async / adaptive / strict"
+    echo "  weighted: round_robin / blocking / fixed / weighted"
+    echo "  hybrid: round_robin / blocking / fixed / hybrid"
+    echo ""
+    echo "  num_requests: Number of requests (default: 400)"
+    echo "  concurrency: Concurrent requests (default: 20)"
+    exit 1
+    ;;
+esac
 
 prepare_config() {
   mkdir -p logs
@@ -38,11 +69,11 @@ with open(out, "w", encoding="utf-8") as handle:
 PY
 }
 
-choose_profile
 prepare_config
 
 mkdir -p logs/two_hosts
 echo "Running benchmark with profile ${PROFILE}..."
-python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 192.168.1.2 --leader-port 60051 --num-requests 400 --concurrency 20 --log-dir logs/two_hosts --output-dir logs/two_hosts
+echo "Requests: ${NUM_REQUESTS}, Concurrency: ${CONCURRENCY}"
+python3 benchmark_unified.py --config "${ACTIVE_CONFIG}" --leader-host 192.168.1.2 --leader-port 60051 --num-requests "${NUM_REQUESTS}" --concurrency "${CONCURRENCY}" --log-dir logs/two_hosts --output-dir logs/two_hosts
 
 rm -f "${ACTIVE_CONFIG}"

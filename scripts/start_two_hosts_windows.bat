@@ -6,7 +6,43 @@ cd /d "%~dp0\.."
 set BASE_CONFIG=configs\two_hosts_config.json
 set ACTIVE_CONFIG=logs\active_two_hosts_config.json
 
-call :choose_profile
+REM Parse command-line arguments
+set PROFILE=baseline
+set FORWARDING=round_robin
+set ASYNC=false
+set CHUNKING=fixed
+set FAIRNESS=strict
+set CHUNK_SIZE=500
+
+if "%1"=="parallel" (
+    set PROFILE=parallel
+    set FORWARDING=parallel
+    set ASYNC=true
+    set CHUNKING=adaptive
+    set FAIRNESS=strict
+) else if "%1"=="weighted" (
+    set PROFILE=weighted
+    set FORWARDING=round_robin
+    set ASYNC=false
+    set CHUNKING=fixed
+    set FAIRNESS=weighted
+) else if "%1"=="hybrid" (
+    set PROFILE=hybrid
+    set FORWARDING=round_robin
+    set ASYNC=false
+    set CHUNKING=fixed
+    set FAIRNESS=hybrid
+) else if "%1"=="" (
+    REM Default to baseline
+) else (
+    echo Usage: %~nx0 [baseline^|parallel^|weighted^|hybrid]
+    echo   baseline: round_robin / blocking / fixed / strict (default)
+    echo   parallel: parallel / async / adaptive / strict
+    echo   weighted: round_robin / blocking / fixed / weighted
+    echo   hybrid: round_robin / blocking / fixed / hybrid
+    exit /b 1
+)
+
 call :ensure_python
 call :ensure_proto
 call :prepare_config
@@ -36,34 +72,6 @@ for %%W in ("Node A (Leader)" "Node B (Team Leader)" "Node D (Worker)") do (
 if exist "!ACTIVE_CONFIG!" del /q "!ACTIVE_CONFIG!" >nul 2>&1
 echo Done.
 exit /b 0
-
-:choose_profile
-echo Choose a strategy profile:
-echo   [1] Baseline  - round_robin / blocking / fixed / strict
-echo   [2] Parallel  - parallel    / async    / adaptive / strict
-echo   [3] Balanced  - capacity    / async    / query_based / weighted
-set /p _choice=Select profile [1-3, default 1]: 
-if "%_choice%"=="" set _choice=1
-if "%_choice%"=="1" (
-    call :set_profile baseline round_robin false fixed strict 500
-) else if "%_choice%"=="2" (
-    call :set_profile parallel parallel true adaptive strict 500
-) else if "%_choice%"=="3" (
-    call :set_profile balanced capacity true query_based weighted 500
-) else (
-    echo Invalid choice. Try again.
-    goto :choose_profile
-)
-goto :eof
-
-:set_profile
-set PROFILE=%1
-set FORWARDING=%2
-set ASYNC=%3
-set CHUNKING=%4
-set FAIRNESS=%5
-set CHUNK_SIZE=%6
-goto :eof
 
 :ensure_python
 python --version >nul 2>&1

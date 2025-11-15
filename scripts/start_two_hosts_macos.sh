@@ -7,20 +7,45 @@ BASE_CONFIG="${ROOT_DIR}/configs/two_hosts_config.json"
 ACTIVE_CONFIG="${ROOT_DIR}/logs/active_two_hosts_config.json"
 PID_DIR="${SCRIPT_DIR}/pids"
 
-choose_profile() {
-  echo "Choose a strategy profile:"
-  echo "  [1] Baseline  - round_robin / blocking / fixed / strict"
-  echo "  [2] Parallel  - parallel    / async    / adaptive / strict"
-  echo "  [3] Balanced  - capacity    / async    / query_based / weighted"
-  read -rp "Select profile [1-3, default 1]: " choice
-  [[ -z "${choice}" ]] && choice=1
-  case "${choice}" in
-    1) PROFILE="baseline"; FORWARDING="round_robin"; ASYNC="false"; CHUNKING="fixed";      FAIRNESS="strict";   CHUNK_SIZE="500" ;;
-    2) PROFILE="parallel"; FORWARDING="parallel";    ASYNC="true";  CHUNKING="adaptive";   FAIRNESS="strict";   CHUNK_SIZE="500" ;;
-    3) PROFILE="balanced"; FORWARDING="capacity";    ASYNC="true";  CHUNKING="query_based"; FAIRNESS="weighted"; CHUNK_SIZE="500" ;;
-    *) echo "Invalid choice."; choose_profile ;;
-  esac
-}
+# Parse command-line arguments
+PROFILE="${1:-baseline}"
+FORWARDING="round_robin"
+ASYNC="false"
+CHUNKING="fixed"
+FAIRNESS="strict"
+CHUNK_SIZE="500"
+
+case "${PROFILE}" in
+  parallel)
+    FORWARDING="parallel"
+    ASYNC="true"
+    CHUNKING="adaptive"
+    FAIRNESS="strict"
+    ;;
+  weighted)
+    FORWARDING="round_robin"
+    ASYNC="false"
+    CHUNKING="fixed"
+    FAIRNESS="weighted"
+    ;;
+  hybrid)
+    FORWARDING="round_robin"
+    ASYNC="false"
+    CHUNKING="fixed"
+    FAIRNESS="hybrid"
+    ;;
+  baseline)
+    # Default values already set
+    ;;
+  *)
+    echo "Usage: $0 [baseline|parallel|weighted|hybrid]"
+    echo "  baseline: round_robin / blocking / fixed / strict (default)"
+    echo "  parallel: parallel / async / adaptive / strict"
+    echo "  weighted: round_robin / blocking / fixed / weighted"
+    echo "  hybrid: round_robin / blocking / fixed / hybrid"
+    exit 1
+    ;;
+esac
 
 prepare_config() {
   mkdir -p "${ROOT_DIR}/logs"
@@ -58,7 +83,7 @@ start_process() {
 cleanup() {
   echo
   echo "Stopping macOS-side processes..."
-  find "${PID_DIR}" -name 'process_*.pid' -print 2>/div/0 | while read -r pidfile; do
+  find "${PID_DIR}" -name 'process_*.pid' -print 2>/dev/null | while read -r pidfile; do
     if [[ -f "${pidfile}" ]]; then
       kill "$(cat "${pidfile}")" >/dev/null 2>&1 || true
       rm -f "${pidfile}"
@@ -69,7 +94,6 @@ cleanup() {
   exit 0
 }
 
-choose_profile
 prepare_config
 
 mkdir -p "${ROOT_DIR}/logs/two_hosts" "${PID_DIR}"

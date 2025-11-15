@@ -229,80 +229,6 @@ class ParallelForwarding(ForwardingStrategy):
         return aggregated
 
 
-class CapacityBasedForwarding(ForwardingStrategy):
-    """Forward based on neighbor capacity/load (requires metrics)."""
-
-    def __init__(self, get_metrics_func=None):
-        self.get_metrics = get_metrics_func or (lambda n: {"capacity": 100, "active": 0})
-
-    def forward_async(
-        self,
-        neighbors: List[ProcessSpec],
-        request_func,
-        filters: Dict,
-        hops: List[str],
-        client_id: Optional[str],
-        remaining: int,
-    ) -> List[Dict]:
-        """Forward to least-loaded neighbors first, in parallel."""
-        valid_neighbors = [n for n in neighbors if n.id not in hops]
-        if not valid_neighbors:
-            return []
-        
-        # Sort by capacity (least loaded first)
-        def get_load(neighbor):
-            try:
-                metrics = self.get_metrics(neighbor)
-                capacity = metrics.get("capacity", 100)
-                active = metrics.get("active", 0)
-                return active / capacity if capacity > 0 else 1.0
-            except:
-                return 1.0
-        
-        sorted_neighbors = sorted(valid_neighbors, key=get_load)
-        
-        # Use parallel forwarding with sorted order
-        parallel = ParallelForwarding()
-        return parallel.forward_async(sorted_neighbors, request_func, filters, hops, client_id, remaining)
-
-    def forward_blocking(
-        self,
-        neighbors: List[ProcessSpec],
-        request_func,
-        filters: Dict,
-        hops: List[str],
-        client_id: Optional[str],
-        remaining: int,
-    ) -> List[Dict]:
-        """Forward sequentially to least-loaded first."""
-        valid_neighbors = [n for n in neighbors if n.id not in hops]
-        if not valid_neighbors:
-            return []
-        
-        def get_load(neighbor):
-            try:
-                metrics = self.get_metrics(neighbor)
-                capacity = metrics.get("capacity", 100)
-                active = metrics.get("active", 0)
-                return active / capacity if capacity > 0 else 1.0
-            except:
-                return 1.0
-        
-        sorted_neighbors = sorted(valid_neighbors, key=get_load)
-        
-        aggregated = []
-        for neighbor in sorted_neighbors:
-            if remaining <= 0:
-                break
-            try:
-                rows = request_func(neighbor, filters, hops, client_id, remaining)
-                aggregated.extend(rows)
-                remaining -= len(rows)
-            except Exception as exc:
-                print(f"[CapacityBased] Failed forwarding to {neighbor.id}: {exc}")
-        return aggregated
-
-
 class ChunkingStrategy(ABC):
     """Base class for chunking strategies."""
 
@@ -338,18 +264,6 @@ class AdaptiveChunking(ChunkingStrategy):
             return min(self.base_size * 2, self.max_size)
         else:
             return self.max_size
-
-
-class QueryBasedChunking(ChunkingStrategy):
-    """Chunk size based on query limit."""
-
-    def __init__(self, base_size: int = 200):
-        self.base_size = base_size
-
-    def compute_chunk_size(self, total_records: int, filters: Dict) -> int:
-        limit = filters.get("limit", 2000)
-        # Use 10% of limit, but at least base_size
-        return max(self.base_size, min(limit // 10, 500))
 
 
 class FairnessStrategy(ABC):
