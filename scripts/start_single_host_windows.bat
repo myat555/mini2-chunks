@@ -1,94 +1,105 @@
 @echo off
-setlocal
+setlocal EnableExtensions EnableDelayedExpansion
 
-echo Starting all single-host processes on Windows...
-echo.
+cd /d "%~dp0\.."
 
-cd /d %~dp0\..
+set BASE_CONFIG=configs\one_host_config.json
+set ACTIVE_CONFIG=logs\active_one_host_config.json
 
-set PROFILE=%1
-if "%PROFILE%"=="" set PROFILE=baseline
+call :choose_profile
+call :ensure_python
+call :ensure_proto
+call :prepare_config
 
-if "%PROFILE%"=="baseline" (
-    set CONFIG=one_host_config_baseline.json
-) else if "%PROFILE%"=="parallel" (
-    set CONFIG=one_host_config_parallel.json
-) else if "%PROFILE%"=="balanced" (
-    set CONFIG=one_host_config_balanced.json
-) else (
-    echo Error: Unknown profile "%PROFILE%". Use: baseline, parallel, or balanced
-    exit /b 1
-)
-
-echo Using strategy profile: %PROFILE%
-echo Config file: %CONFIG%
-
-python --version >nul 2>&1
-if errorlevel 1 (
-    echo Error: Python not found.
-    exit /b 1
-)
-
-if not exist "%CONFIG%" (
-    echo Error: one_host_config.json not found.
-    exit /b 1
-)
-
-if not exist "overlay_pb2.py" (
-    echo Generating proto stubs...
-    python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto
-    if errorlevel 1 (
-        echo Failed to generate proto files.
-        exit /b 1
-    )
-)
-
-:: Create logs directory structure
-if not exist "logs" mkdir logs
-if not exist "logs\windows" mkdir logs\windows
-
-echo Starting Process A (Leader)...
-start "Node A" cmd /c "python -u node.py %CONFIG% A > logs\windows\node_a.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
-
-echo Starting Process B (Team Leader)...
-start "Node B" cmd /c "python -u node.py %CONFIG% B > logs\windows\node_b.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
-
-echo Starting Process C (Worker)...
-start "Node C" cmd /c "python -u node.py %CONFIG% C > logs\windows\node_c.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
-
-echo Starting Process D (Worker)...
-start "Node D" cmd /c "python -u node.py %CONFIG% D > logs\windows\node_d.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
-
-echo Starting Process E (Team Leader)...
-start "Node E" cmd /c "python -u node.py %CONFIG% E > logs\windows\node_e.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
-
-echo Starting Process F (Worker)...
-start "Node F" cmd /c "python -u node.py %CONFIG% F > logs\windows\node_f.log 2>&1 && pause"
-timeout /t 2 /nobreak >nul
+if not exist "logs" mkdir "logs"
+if not exist "logs\windows" mkdir "logs\windows"
 
 echo.
+echo Using profile: !PROFILE!
+echo Active config: !ACTIVE_CONFIG!
+echo.
+
+call :launch_node "Node A (Leader)" A logs\windows\node_a.log
+call :launch_node "Node B (Team Leader)" B logs\windows\node_b.log
+call :launch_node "Node C (Worker)" C logs\windows\node_c.log
+call :launch_node "Node D (Worker)" D logs\windows\node_d.log
+call :launch_node "Node E (Team Leader)" E logs\windows\node_e.log
+call :launch_node "Node F (Worker)" F logs\windows\node_f.log
+
 echo ============================================================
 echo All single-host processes started (A-F on localhost)
+echo Press any key to stop them...
 echo ============================================================
-echo.
-echo To run benchmark:
-echo   scripts\benchmark_single_host.bat %PROFILE%
-echo.
-echo Close this window or press any key to stop them...
 pause >nul
 
 echo Stopping all processes...
-taskkill /fi "WINDOWTITLE eq Node A" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq Node B" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq Node C" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq Node D" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq Node E" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq Node F" /f >nul 2>&1
+for %%W in ("Node A (Leader)" "Node B (Team Leader)" "Node C (Worker)" "Node D (Worker)" "Node E (Team Leader)" "Node F (Worker)") do (
+    taskkill /fi "WINDOWTITLE eq %%~W" /f >nul 2>&1
+)
 
-echo All processes stopped.
+if exist "!ACTIVE_CONFIG!" del /q "!ACTIVE_CONFIG!" >nul 2>&1
+echo Done.
+exit /b 0
 
+:choose_profile
+echo Choose a strategy profile:
+echo   [1] Baseline  - round_robin / blocking / fixed / strict
+echo   [2] Parallel  - parallel    / async    / adaptive / strict
+echo   [3] Balanced  - capacity    / async    / query_based / weighted
+set /p _choice=Select profile [1-3, default 1]: 
+if "%_choice%"=="" set _choice=1
+if "%_choice%"=="1" (
+    call :set_profile baseline round_robin false fixed strict 200
+) else if "%_choice%"=="2" (
+    call :set_profile parallel parallel true adaptive strict 200
+) else if "%_choice%"=="3" (
+    call :set_profile balanced capacity true query_based weighted 200
+) else (
+    echo Invalid choice. Try again.
+    goto :choose_profile
+)
+goto :eof
+
+:set_profile
+set PROFILE=%1
+set FORWARDING=%2
+set ASYNC=%3
+set CHUNKING=%4
+set FAIRNESS=%5
+set CHUNK_SIZE=%6
+goto :eof
+
+:ensure_python
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo Error: Python is required on PATH.
+    exit /b 1
+)
+goto :eof
+
+:ensure_proto
+if exist "overlay_pb2.py" goto :eof
+echo Generating proto stubs...
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. overlay.proto || (
+    echo Failed to generate gRPC stubs.
+    exit /b 1
+)
+goto :eof
+
+:prepare_config
+if not exist "!BASE_CONFIG!" (
+    echo Error: !BASE_CONFIG! not found.
+    exit /b 1
+)
+if not exist "logs" mkdir "logs"
+python -c "import json,sys; data=json.load(open(sys.argv[1])); data.setdefault('strategies', {}); data['strategies']['forwarding_strategy']=sys.argv[3]; data['strategies']['async_forwarding']=sys.argv[4].lower()=='true'; data['strategies']['chunking_strategy']=sys.argv[5]; data['strategies']['fairness_strategy']=sys.argv[6]; data['strategies']['chunk_size']=int(sys.argv[7]); json.dump(data, open(sys.argv[2],'w'), indent=2)" "!BASE_CONFIG!" "!ACTIVE_CONFIG!" "!FORWARDING!" "!ASYNC!" "!CHUNKING!" "!FAIRNESS!" "!CHUNK_SIZE!" || (
+    echo Failed to build active config.
+    exit /b 1
+)
+goto :eof
+
+:launch_node
+echo Starting %2...
+start "%~1" cmd /c "cd /d %~dp0\.. && python -u node.py "!ACTIVE_CONFIG!" %2 > %3 2>&1 && pause"
+timeout /t 2 /nobreak >nul
+goto :eof

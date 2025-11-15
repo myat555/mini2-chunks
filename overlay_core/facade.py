@@ -54,7 +54,10 @@ class QueryOrchestrator:
         if process.role == "leader":
             self._data_store = None
         else:
-            self._data_store = DataStore(process.id, process.team, dataset_root=dataset_root)
+            bounds = None
+            if process.date_bounds and len(process.date_bounds) == 2:
+                bounds = (process.date_bounds[0], process.date_bounds[1])
+            self._data_store = DataStore(process.id, process.team, dataset_root=dataset_root, date_bounds=bounds)
         
         # Initialize strategies
         self._forwarding_strategy = self._create_forwarding_strategy(forwarding_strategy)

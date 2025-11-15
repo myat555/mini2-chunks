@@ -1,20 +1,58 @@
 @echo off
-cd /d %~dp0\..
+setlocal EnableExtensions EnableDelayedExpansion
 
-set PROFILE=%1
-if "%PROFILE%"=="" set PROFILE=baseline
+cd /d "%~dp0\.."
 
-if "%PROFILE%"=="baseline" (
-    set CONFIG=one_host_config_baseline.json
-) else if "%PROFILE%"=="parallel" (
-    set CONFIG=one_host_config_parallel.json
-) else if "%PROFILE%"=="balanced" (
-    set CONFIG=one_host_config_balanced.json
+set BASE_CONFIG=configs\one_host_config.json
+set ACTIVE_CONFIG=logs\active_one_host_config.json
+
+call :choose_profile
+call :prepare_config
+
+if not exist "logs\windows" mkdir "logs\windows"
+
+echo Running benchmark with profile !PROFILE! ...
+python benchmark_unified.py --config "!ACTIVE_CONFIG!" --leader-host 127.0.0.1 --leader-port 60051 --log-dir logs\windows --output-dir logs\windows
+
+del /q "!ACTIVE_CONFIG!" >nul 2>&1
+exit /b 0
+
+:choose_profile
+echo Choose a strategy profile:
+echo   [1] Baseline  - round_robin / blocking / fixed / strict
+echo   [2] Parallel  - parallel    / async    / adaptive / strict
+echo   [3] Balanced  - capacity    / async    / query_based / weighted
+set /p _choice=Select profile [1-3, default 1]: 
+if "%_choice%"=="" set _choice=1
+if "%_choice%"=="1" (
+    call :set_profile baseline round_robin false fixed strict 200
+) else if "%_choice%"=="2" (
+    call :set_profile parallel parallel true adaptive strict 200
+) else if "%_choice%"=="3" (
+    call :set_profile balanced capacity true query_based weighted 200
 ) else (
-    echo Error: Unknown profile "%PROFILE%". Use: baseline, parallel, or balanced
+    echo Invalid choice. Try again.
+    goto :choose_profile
+)
+goto :eof
+
+:set_profile
+set PROFILE=%1
+set FORWARDING=%2
+set ASYNC=%3
+set CHUNKING=%4
+set FAIRNESS=%5
+set CHUNK_SIZE=%6
+goto :eof
+
+:prepare_config
+if not exist "!BASE_CONFIG!" (
+    echo Error: !BASE_CONFIG! not found.
     exit /b 1
 )
-
-echo Using strategy profile: %PROFILE%
-python benchmark_unified.py --config %CONFIG% --leader-host 127.0.0.1 --leader-port 60051 --log-dir logs\windows --output-dir logs\windows
-
+if not exist "logs" mkdir "logs"
+python -c "import json,sys; data=json.load(open(sys.argv[1])); data.setdefault('strategies', {}); data['strategies']['forwarding_strategy']=sys.argv[3]; data['strategies']['async_forwarding']=sys.argv[4].lower()=='true'; data['strategies']['chunking_strategy']=sys.argv[5]; data['strategies']['fairness_strategy']=sys.argv[6]; data['strategies']['chunk_size']=int(sys.argv[7]); json.dump(data, open(sys.argv[2],'w'), indent=2)" "!BASE_CONFIG!" "!ACTIVE_CONFIG!" "!FORWARDING!" "!ASYNC!" "!CHUNKING!" "!FAIRNESS!" "!CHUNK_SIZE!" || (
+    echo Failed to build active config.
+    exit /b 1
+)
+goto :eof

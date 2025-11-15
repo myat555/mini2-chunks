@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 
 TEAM_DATE_BOUNDS = {
@@ -12,12 +12,15 @@ TEAM_DATE_BOUNDS = {
 class DataStore:
     """Local dataset accessor responsible for enforcing team-specific slices."""
 
-    def __init__(self, process_id: str, team: str, dataset_root: str = "datasets/2020-fire/data"):
+    def __init__(self, process_id: str, team: str, dataset_root: str = "datasets/2020-fire/data", date_bounds: Optional[Tuple[str, str]] = None):
         self.process_id = process_id
         self.team = team.lower()
         self.dataset_root = Path(dataset_root)
         self._records: List[Dict[str, object]] = []
         self._files_loaded = 0
+        self._date_bounds = date_bounds or TEAM_DATE_BOUNDS.get(self.team)
+        if not self._date_bounds:
+            raise ValueError(f"No date bounds for team '{self.team}' and process '{self.process_id}'")
         self._load()
 
     @property
@@ -36,7 +39,7 @@ class DataStore:
         if not bounds:
             raise ValueError(f"Unknown team '{self.team}' for datastore.")
 
-        lower, upper = bounds
+        lower, upper = self._date_bounds
         for date_dir in sorted(self.dataset_root.iterdir()):
             if not date_dir.is_dir():
                 continue

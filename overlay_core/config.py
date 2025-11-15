@@ -14,6 +14,7 @@ class ProcessSpec:
     host: str
     port: int
     neighbors: List[str]
+    date_bounds: Optional[List[str]] = None
 
     @property
     def address(self) -> str:
@@ -69,6 +70,7 @@ class OverlayConfig:
                     host=spec["host"],
                     port=int(spec["port"]),
                     neighbors=list(spec.get("neighbors", [])),
+                    date_bounds=list(spec.get("date_bounds", [])) or None,
                 )
             except KeyError as exc:
                 missing = exc.args[0]
