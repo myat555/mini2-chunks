@@ -249,6 +249,10 @@ class QueryOrchestrator:
         if self._process.role in ("leader", "team_leader"):
             # Forward to subordinates first
             neighbors = self._select_forward_targets()
+            debug_msg = f"[Orchestrator] {self._process.id} _select_forward_targets returned {len(neighbors)} neighbors: {[n.id for n in neighbors]}"
+            print(debug_msg, flush=True)
+            self._add_log(debug_msg)
+            
             if neighbors:
                 allocations = self._compute_leader_allocations(len(neighbors), total_limit)
                 team_hint = (
@@ -258,16 +262,28 @@ class QueryOrchestrator:
                     log_msg = f"[Orchestrator] {self._process.id} forwarding to {neighbor.id} ({neighbor.role}/{neighbor.team}), allocation={allocation}, remaining={remaining}"
                     print(log_msg, flush=True)
                     self._add_log(log_msg)
-                    remote_rows = self._request_neighbor_records(
-                        neighbor,
-                        filters,
-                        hops,
-                        client_id,
-                        allocation,
-                        team_hint=team_hint or neighbor.team,
-                    )
-                    aggregated.extend(remote_rows)
-                    remaining -= len(remote_rows)
+                    try:
+                        remote_rows = self._request_neighbor_records(
+                            neighbor,
+                            filters,
+                            hops,
+                            client_id,
+                            allocation,
+                            team_hint=team_hint or neighbor.team,
+                        )
+                        aggregated.extend(remote_rows)
+                        remaining -= len(remote_rows)
+                        result_msg = f"[Orchestrator] {self._process.id} received {len(remote_rows)} records from {neighbor.id}, remaining={remaining}"
+                        print(result_msg, flush=True)
+                        self._add_log(result_msg)
+                    except Exception as exc:
+                        error_msg = f"[Orchestrator] {self._process.id} failed forwarding to {neighbor.id}: {exc}"
+                        print(error_msg, flush=True)
+                        self._add_log(error_msg)
+            else:
+                no_neighbors_msg = f"[Orchestrator] {self._process.id} no neighbors to forward to, will query locally"
+                print(no_neighbors_msg, flush=True)
+                self._add_log(no_neighbors_msg)
             
             # After forwarding, query local data if still needed
             if remaining > 0 and self._data_store is not None:
