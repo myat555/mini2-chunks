@@ -89,6 +89,9 @@ class QueryOrchestrator:
     def execute_query(self, request: overlay_pb2.QueryRequest) -> overlay_pb2.QueryResponse:
         hops = list(request.hops)
         if self._process.id in hops:
+            log_msg = f"[Orchestrator] {self._process.id} detected loop, hops={hops}"
+            print(log_msg, flush=True)
+            self._add_log(log_msg)
             return overlay_pb2.QueryResponse(
                 uid="",
                 total_chunks=0,
@@ -97,10 +100,17 @@ class QueryOrchestrator:
                 status="loop_detected",
             )
         hops.append(self._process.id)
+        
+        entry_msg = f"[Orchestrator] {self._process.id} received query, hops={request.hops}, client={request.client_id}"
+        print(entry_msg, flush=True)
+        self._add_log(entry_msg)
 
         try:
             filters = self._parse_filters(request.query_params)
         except ValueError as exc:
+            error_msg = f"[Orchestrator] {self._process.id} invalid query params: {exc}"
+            print(error_msg, flush=True)
+            self._add_log(error_msg)
             return overlay_pb2.QueryResponse(
                 uid="",
                 total_chunks=0,
@@ -111,8 +121,15 @@ class QueryOrchestrator:
 
         uid = str(uuid.uuid4())
         target_team = filters.get("team") or self._process.team
+        
+        query_info = f"[Orchestrator] {self._process.id} query {uid[:8]}: filters={filters.get('parameter', 'any')}, limit={filters.get('limit', 'default')}, target_team={target_team}"
+        print(query_info, flush=True)
+        self._add_log(query_info)
 
         if not self._admission.admit(uid, target_team):
+            reject_msg = f"[Orchestrator] {self._process.id} query {uid[:8]} REJECTED (admission control)"
+            print(reject_msg, flush=True)
+            self._add_log(reject_msg)
             return overlay_pb2.QueryResponse(
                 uid="",
                 total_chunks=0,
@@ -240,6 +257,10 @@ class QueryOrchestrator:
         client_id: Optional[str],
         query_type: Optional[str],
     ) -> List[Dict[str, object]]:
+        collect_msg = f"[Orchestrator] {self._process.id} _collect_records called, role={self._process.role}, limit={filters.get('limit', self._default_limit)}"
+        print(collect_msg, flush=True)
+        self._add_log(collect_msg)
+        
         aggregated: List[Dict[str, object]] = []
         total_limit = filters.get("limit", self._default_limit)
         remaining = total_limit
