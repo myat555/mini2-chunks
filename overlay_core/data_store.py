@@ -99,8 +99,13 @@ class DataStore:
                 "parameter": row[3].strip('"'),
                 "value": float(row[4].strip('"')) if row[4].strip('"') else 0.0,
                 "unit": row[5].strip('"'),
+                "raw_concentration": float(row[6].strip('"')) if len(row) > 6 and row[6].strip('"') else 0.0,
                 "aqi": int(row[7].strip('"')) if len(row) > 7 and row[7].strip('"') else 0,
+                "category": int(row[8].strip('"')) if len(row) > 8 and row[8].strip('"') else 0,
                 "site_name": row[9].strip('"') if len(row) > 9 else "",
+                "agency_name": row[10].strip('"') if len(row) > 10 else "",
+                "aqs_id": row[11].strip('"') if len(row) > 11 else "",
+                "full_aqs_id": row[12].strip('"') if len(row) > 12 else "",
                 "date": date_str,
             }
         except (ValueError, IndexError):
