@@ -118,5 +118,4 @@ Edit `configs/two_hosts_config.json`:
 - Windows firewall must allow TCP ports 60051-60056
 - Both hosts must be able to ping each other
 
-## Project Structure
 
