@@ -2,7 +2,6 @@
 __pycache__
 .claude
 docs/
-datasets/
 logs/
 pids/
 .DS_Store
