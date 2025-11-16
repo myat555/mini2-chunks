@@ -24,17 +24,23 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\roverlay.proto\x12\x07overlay\"(\n\x07Request\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x0c\n\x04hops\x18\x02 \x03(\t\"(\n\x08Response\x12\x0e\n\x06result\x18\x01 \x01(\t\x12\x0c\n\x04hops\x18\x02 \x03(\t2=\n\x0bOverlayNode\x12.\n\x07\x46orward\x12\x10.overlay.Request\x1a\x11.overlay.Responseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\roverlay.proto\x12\x07overlay\"\x9e\x01\n\x08\x46ireData\x12\x0f\n\x07\x66ire_id\x18\x01 \x01(\x05\x12\x10\n\x08latitude\x18\x02 \x01(\x01\x12\x11\n\tlongitude\x18\x03 \x01(\x01\x12\x13\n\x0btemperature\x18\x04 \x01(\x01\x12\x11\n\tintensity\x18\x05 \x01(\x01\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x12\x0e\n\x06region\x18\x07 \x01(\t\x12\x11\n\tis_active\x18\x08 \x01(\x08\"c\n\x07Request\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x0c\n\x04hops\x18\x02 \x03(\t\x12%\n\nfire_query\x18\x03 \x01(\x0b\x32\x11.overlay.FireData\x12\x12\n\nquery_type\x18\x04 \x01(\x05\"g\n\x08Response\x12\x0e\n\x06result\x18\x01 \x01(\t\x12\x0c\n\x04hops\x18\x02 \x03(\t\x12\'\n\x0c\x66ire_results\x18\x03 \x03(\x0b\x32\x11.overlay.FireData\x12\x14\n\x0cresult_count\x18\x04 \x01(\x05\"\x10\n\x0eMetricsRequest\"\xe7\x01\n\x0fMetricsResponse\x12\x12\n\nprocess_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0c\n\x04team\x18\x03 \x01(\t\x12\x17\n\x0f\x61\x63tive_requests\x18\x04 \x01(\x05\x12\x14\n\x0cmax_capacity\x18\x05 \x01(\x05\x12\x12\n\nis_healthy\x18\x06 \x01(\x08\x12\x12\n\nqueue_size\x18\x07 \x01(\x05\x12\x1e\n\x16\x61vg_processing_time_ms\x18\x08 \x01(\x01\x12\x17\n\x0fprocessed_count\x18\t \x01(\x05\x12\x14\n\x0c\x63urrent_load\x18\n \x01(\x01\x32~\n\x0bOverlayNode\x12.\n\x07\x46orward\x12\x10.overlay.Request\x1a\x11.overlay.Response\x12?\n\nGetMetrics\x12\x17.overlay.MetricsRequest\x1a\x18.overlay.MetricsResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'overlay_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_REQUEST']._serialized_start=26
-  _globals['_REQUEST']._serialized_end=66
-  _globals['_RESPONSE']._serialized_start=68
-  _globals['_RESPONSE']._serialized_end=108
-  _globals['_OVERLAYNODE']._serialized_start=110
-  _globals['_OVERLAYNODE']._serialized_end=171
+  _globals['_FIREDATA']._serialized_start=27
+  _globals['_FIREDATA']._serialized_end=185
+  _globals['_REQUEST']._serialized_start=187
+  _globals['_REQUEST']._serialized_end=286
+  _globals['_RESPONSE']._serialized_start=288
+  _globals['_RESPONSE']._serialized_end=391
+  _globals['_METRICSREQUEST']._serialized_start=393
+  _globals['_METRICSREQUEST']._serialized_end=409
+  _globals['_METRICSRESPONSE']._serialized_start=412
+  _globals['_METRICSRESPONSE']._serialized_end=643
+  _globals['_OVERLAYNODE']._serialized_start=645
+  _globals['_OVERLAYNODE']._serialized_end=771
 # @@protoc_insertion_point(module_scope)

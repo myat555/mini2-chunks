@@ -1,0 +1,7 @@
+F (pink) assigned to read: ['fires_south.csv', 'fires_east.csv', 'fires_west.csv']
+Warning: Data directory 'fire_data' not found. Generating sample data.
+F: Generated 74 sample fires
+Process F initialized: role=worker, team=pink, neighbors=['E']
+Process F (worker, pink) listening on localhost:50056
+Neighbors: ['E']
+F (worker) received request with hops: ['A', 'E']

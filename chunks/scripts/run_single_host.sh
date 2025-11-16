@@ -8,6 +8,16 @@ BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 cd "$BASE_DIR"
 
+# Use virtual environment Python if available
+VENV_DIR="$(cd "$BASE_DIR/.." && pwd)/.venv"
+if [ -d "$VENV_DIR" ] && [ -f "$VENV_DIR/bin/python3" ]; then
+    PYTHON_CMD="$VENV_DIR/bin/python3"
+    echo "Using virtual environment: $PYTHON_CMD"
+else
+    echo "Warning: Virtual environment not found at $VENV_DIR, using system python3"
+    PYTHON_CMD="python3"
+fi
+
 # Create directories if they don't exist
 mkdir -p logs pids
 
@@ -17,37 +27,37 @@ echo ""
 
 # Start process A (Leader)
 echo "Starting A (leader, green)..."
-python3 node.py "$CONFIG_FILE" A > logs/A.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" A > logs/A.log 2>&1 &
 echo $! > pids/A.pid
 sleep 1
 
 # Start process B (Team Leader, Green)
 echo "Starting B (team_leader, green)..."
-python3 node.py "$CONFIG_FILE" B > logs/B.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" B > logs/B.log 2>&1 &
 echo $! > pids/B.pid
 sleep 1
 
 # Start process C (Worker, Green)
 echo "Starting C (worker, green)..."
-python3 node.py "$CONFIG_FILE" C > logs/C.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" C > logs/C.log 2>&1 &
 echo $! > pids/C.pid
 sleep 1
 
 # Start process D (Worker, Pink)
 echo "Starting D (worker, pink)..."
-python3 node.py "$CONFIG_FILE" D > logs/D.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" D > logs/D.log 2>&1 &
 echo $! > pids/D.pid
 sleep 1
 
 # Start process E (Team Leader, Pink)
 echo "Starting E (team_leader, pink)..."
-python3 node.py "$CONFIG_FILE" E > logs/E.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" E > logs/E.log 2>&1 &
 echo $! > pids/E.pid
 sleep 1
 
 # Start process F (Worker, Pink)
 echo "Starting F (worker, pink)..."
-python3 node.py "$CONFIG_FILE" F > logs/F.log 2>&1 &
+$PYTHON_CMD node.py "$CONFIG_FILE" F > logs/F.log 2>&1 &
 echo $! > pids/F.pid
 sleep 1
 

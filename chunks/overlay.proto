@@ -9,14 +9,29 @@ service OverlayNode {
   rpc GetMetrics(MetricsRequest) returns (MetricsResponse);
 }
 
+message FireData {
+  int32 fire_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  double temperature = 4;
+  double intensity = 5;
+  int64 timestamp = 6;
+  string region = 7;
+  bool is_active = 8;
+}
+
 message Request {
   string payload = 1;
   repeated string hops = 2; // Path this request has taken (for loop/back prevention)
+  FireData fire_query = 3; // Optional fire data query
+  int32 query_type = 4; // 0=all, 1=by_region, 2=by_temp, 3=active_only
 }
 
 message Response {
   string result = 1;
   repeated string hops = 2; // Nodes that contributed
+  repeated FireData fire_results = 3; // Fire data results
+  int32 result_count = 4; // Number of results
 }
 
 message MetricsRequest {
@@ -32,4 +47,6 @@ message MetricsResponse {
   bool is_healthy = 6;
   int32 queue_size = 7;
   double avg_processing_time_ms = 8;
+  int32 processed_count = 9;
+  double current_load = 10;
 }

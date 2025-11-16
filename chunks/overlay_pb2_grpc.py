@@ -39,6 +39,11 @@ class OverlayNodeStub(object):
                 request_serializer=overlay__pb2.Request.SerializeToString,
                 response_deserializer=overlay__pb2.Response.FromString,
                 _registered_method=True)
+        self.GetMetrics = channel.unary_unary(
+                '/overlay.OverlayNode/GetMetrics',
+                request_serializer=overlay__pb2.MetricsRequest.SerializeToString,
+                response_deserializer=overlay__pb2.MetricsResponse.FromString,
+                _registered_method=True)
 
 
 class OverlayNodeServicer(object):
@@ -51,6 +56,13 @@ class OverlayNodeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetMetrics(self, request, context):
+        """Metrics RPC for monitoring
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_OverlayNodeServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -58,6 +70,11 @@ def add_OverlayNodeServicer_to_server(servicer, server):
                     servicer.Forward,
                     request_deserializer=overlay__pb2.Request.FromString,
                     response_serializer=overlay__pb2.Response.SerializeToString,
+            ),
+            'GetMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMetrics,
+                    request_deserializer=overlay__pb2.MetricsRequest.FromString,
+                    response_serializer=overlay__pb2.MetricsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -87,6 +104,33 @@ class OverlayNode(object):
             '/overlay.OverlayNode/Forward',
             overlay__pb2.Request.SerializeToString,
             overlay__pb2.Response.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/overlay.OverlayNode/GetMetrics',
+            overlay__pb2.MetricsRequest.SerializeToString,
+            overlay__pb2.MetricsResponse.FromString,
             options,
             channel_credentials,
             insecure,

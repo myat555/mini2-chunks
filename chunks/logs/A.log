@@ -1,0 +1,59 @@
+A (green) assigned to read: ['fires_north.csv', 'fires_central.csv']
+Warning: Data directory 'fire_data' not found. Generating sample data.
+A: Generated 76 sample fires
+Process A initialized: role=leader, team=green, neighbors=['B', 'E']
+Process A (leader, green) listening on localhost:50051
+Neighbors: ['B', 'E']
+A (leader) received request with hops: []
+A (leader) forwarding to team leaders
+A found 2 team leaders: ['B', 'E']
+A forwarding to B at localhost:50052 with hops: ['A']
+A error forwarding to B: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNKNOWN
+	details = "Exception calling application: bad argument type for built-in operation"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"Exception calling application: bad argument type for built-in operation", grpc_status:2}"
+>
+Traceback (most recent call last):
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/chunks/node.py", line 304, in handle_leader_forward
+    resp = forward_to_neighbor(
+        address,
+    ...<3 lines>...
+        query_type
+    )
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/chunks/node.py", line 528, in forward_to_neighbor
+    resp = stub.Forward(req)
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/.venv/lib/python3.14/site-packages/grpc/_channel.py", line 1166, in __call__
+    return _end_unary_response_blocking(state, call, False, None)
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/.venv/lib/python3.14/site-packages/grpc/_channel.py", line 996, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNKNOWN
+	details = "Exception calling application: bad argument type for built-in operation"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"Exception calling application: bad argument type for built-in operation", grpc_status:2}"
+>
+A forwarding to E at localhost:50055 with hops: ['A']
+A error forwarding to E: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNKNOWN
+	details = "Exception calling application: bad argument type for built-in operation"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:2, grpc_message:"Exception calling application: bad argument type for built-in operation"}"
+>
+Traceback (most recent call last):
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/chunks/node.py", line 304, in handle_leader_forward
+    resp = forward_to_neighbor(
+        address,
+    ...<3 lines>...
+        query_type
+    )
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/chunks/node.py", line 528, in forward_to_neighbor
+    resp = stub.Forward(req)
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/.venv/lib/python3.14/site-packages/grpc/_channel.py", line 1166, in __call__
+    return _end_unary_response_blocking(state, call, False, None)
+  File "/Users/spartan/Documents/JohnGashCMPE285/workingproject/fromMatt/mini2-chunks/.venv/lib/python3.14/site-packages/grpc/_channel.py", line 996, in _end_unary_response_blocking
+    raise _InactiveRpcError(state)  # pytype: disable=not-instantiable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+	status = StatusCode.UNKNOWN
+	details = "Exception calling application: bad argument type for built-in operation"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:2, grpc_message:"Exception calling application: bad argument type for built-in operation"}"
+>
