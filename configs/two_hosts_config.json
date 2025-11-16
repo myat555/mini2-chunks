@@ -1,6 +1,6 @@
 {
   "strategies": {
-    "fairness_strategy": "hybrid",
+    "fairness_strategy": "strict",
     "chunk_size": 500
   },
   "processes": {

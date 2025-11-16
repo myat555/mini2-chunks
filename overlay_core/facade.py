@@ -255,6 +255,9 @@ class QueryOrchestrator:
                     None if self._process.role == "leader" else self._process.team
                 )
                 for neighbor, allocation in zip(neighbors, allocations):
+                    log_msg = f"[Orchestrator] {self._process.id} forwarding to {neighbor.id} ({neighbor.role}/{neighbor.team}), allocation={allocation}, remaining={remaining}"
+                    print(log_msg, flush=True)
+                    self._add_log(log_msg)
                     remote_rows = self._request_neighbor_records(
                         neighbor,
                         filters,
