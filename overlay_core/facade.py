@@ -241,24 +241,15 @@ class QueryOrchestrator:
         query_type: Optional[str],
     ) -> List[Dict[str, object]]:
         aggregated: List[Dict[str, object]] = []
-        remaining = filters.get("limit", self._default_limit)
+        total_limit = filters.get("limit", self._default_limit)
+        remaining = total_limit
 
-        # Query local data first if this process owns a dataset slice
-        if self._data_store is not None:
-            local_rows = self._data_store.query(filters, limit=remaining)
-            if local_rows:
-                log_msg = f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total"
-                print(log_msg, flush=True)
-                self._add_log(log_msg)
-            aggregated.extend(local_rows)
-            remaining -= len(local_rows)
-            if remaining <= 0:
-                return aggregated[: filters["limit"]]
-
-        neighbors = self._select_forward_targets()
-        if neighbors:
-            total_limit = max(1, filters.get("limit", self._default_limit))
-            if self._process.role in ("leader", "team_leader"):
+        # Leaders and team leaders forward first (coordination role)
+        # Workers query locally first, then forward if needed
+        if self._process.role in ("leader", "team_leader"):
+            # Forward to subordinates first
+            neighbors = self._select_forward_targets()
+            if neighbors:
                 allocations = self._compute_leader_allocations(len(neighbors), total_limit)
                 team_hint = (
                     None if self._process.role == "leader" else self._process.team
@@ -273,8 +264,31 @@ class QueryOrchestrator:
                         team_hint=team_hint or neighbor.team,
                     )
                     aggregated.extend(remote_rows)
-            else:
-                # Simple sequential forwarding for workers
+                    remaining -= len(remote_rows)
+            
+            # After forwarding, query local data if still needed
+            if remaining > 0 and self._data_store is not None:
+                local_rows = self._data_store.query(filters, limit=remaining)
+                if local_rows:
+                    log_msg = f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total"
+                    print(log_msg, flush=True)
+                    self._add_log(log_msg)
+                aggregated.extend(local_rows)
+                remaining -= len(local_rows)
+        else:
+            # Workers: query local data first, then forward if needed
+            if self._data_store is not None:
+                local_rows = self._data_store.query(filters, limit=remaining)
+                if local_rows:
+                    log_msg = f"[Orchestrator] {self._process.id} local query: {len(local_rows)} records from {self._data_store.records_loaded} total"
+                    print(log_msg, flush=True)
+                    self._add_log(log_msg)
+                aggregated.extend(local_rows)
+                remaining -= len(local_rows)
+            
+            # Forward to neighbors if still needed
+            if remaining > 0:
+                neighbors = self._select_forward_targets()
                 for neighbor in neighbors:
                     if remaining <= 0:
                         break
@@ -292,7 +306,7 @@ class QueryOrchestrator:
                     except Exception as exc:
                         print(f"[Orchestrator] Failed forwarding to {neighbor.id}: {exc}", flush=True)
 
-        return aggregated[: filters["limit"]]
+        return aggregated[: total_limit]
 
     def _select_forward_targets(self) -> List[ProcessSpec]:
         neighbors = self._config.neighbors_of(self._process.id)
